@@ -193,24 +193,29 @@ function AboutController($scope, $location, $routeParams) {
 }
 
 function PostingsController($scope, $location, $routeParams, $cookieStore, postingService) {
-  $scope.postings = postingService.getPostings($cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+  $scope.postings = [];
 
+  var callback = function(data, status, headers, config) {
+    $scope.postings = data;
+  }
+
+  postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
   $scope.getUser = function() {
     return $cookieStore.get("sss-username");
   };
   $scope.deletePosting = function(id) {
     postingService.deletePosting(id);
-    $scope.postings = postingService.getPostings($cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
   };
   $scope.$on("onChangeSortOrder", function(event, dest) {
-    $scope.postings = postingService.getPostings($cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
   });
 }
 
 // -------------------------------------------------------------------------
 // SERVICES
 // -------------------------------------------------------------------------
-shredditApplication.factory("postingService", function() {
+shredditApplication.factory("postingService", function($http) {
 
   var postings = [
     { "id": "1411395110633", "title": "Sektflasche", "user": "woillpol", "date": "22.09.2014", "time": "16:11", "rating": ".76", "people": "28", "stars": "1", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "1", "tags": "", "content": "Die Bezeichnung für eine Sektflasche mit sechs Litern Inhalt ist „Methusalem“."},
@@ -280,7 +285,11 @@ shredditApplication.factory("postingService", function() {
         postings.splice(index, 1);
       }
     },
-    getPostings: function(order, username) {
+    loadPostings: function(success, order, username) {
+
+      $http.get("/data/postings").success(success);
+
+      /*
       if (order === "TOP") {
         return sortOrderTopRated();
       }
@@ -288,6 +297,7 @@ shredditApplication.factory("postingService", function() {
         return sortOrderMyPostings(username);
       }
       return sortOrderLatest();
+      */
     }
   };
 
