@@ -1,0 +1,31 @@
+
+  <div class="container sc-user-settings">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="sc-header-title">Register for SHREDDIT&sup3;</div>
+      </div>
+      <div class="panel-body sc-content-text">
+
+        <form role="form" class="">
+          <div class="form-group">
+            <label for="si-register-username">Username</label>
+            <input type="text" class="form-control" id="si-register-username" placeholder="username" ng-model="registerInfo.username">
+          </div>
+          <div class="form-group">
+            <label for="si-register-email">E-Mail</label>
+            <input type="text" class="form-control" id="si-register-email" placeholder="volcano@shreddit.com" ng-model="registerInfo.email">
+          </div>
+          <div class="form-group">
+            <label for="si-register-password">Password</label>
+            <input type="password" class="form-control" id="si-register-password" placeholder="Select a password" ng-model="registerInfo.password">
+          </div>
+          <div class="form-group">
+            <label for="si-register-retype-password">Retype Password</label>
+            <input type="password" class="form-control" id="si-register-retype-password" placeholder="Enter your password again" ng-model="registerInfo.password2">
+          </div>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
+          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="register()">Register</button>
+        </form>
+      </div>
+    </div>
+  </div>

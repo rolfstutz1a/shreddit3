@@ -1,0 +1,24 @@
+
+  <div class="container sc-login">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <div class="sc-header-title">Login to&colon; S H R E D D I T &sup3;</div>
+      </div>
+      <div class="panel-body sc-content-text container">
+        <div class="col-md-4"></div>
+        <form class="form col-md-4">
+          <div class="form-group">
+            <input type="text" class="form-control input-lg" ng-model="user.username" ng-init="volcano" placeholder="Username" required>
+          </div>
+          <div class="form-group">
+            <input type="password" class="form-control input-lg" ng-model="user.password" ng-init="1234567" placeholder="Password" required>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="isInvalidCred()">Sign In</button>
+            <button type="button" class="btn btn-link btn-sm" ng-click="register()">Register</button>
+            <button class="btn btn-link btn-sm" ng-click="fake()">(volcano)</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
