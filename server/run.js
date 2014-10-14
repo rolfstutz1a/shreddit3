@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-var debug = require('debug')('play');
+var debug = require('debug')('shreddit3');
 var app = require('../app');
 
 app.set('port', process.env.PORT || 3000);

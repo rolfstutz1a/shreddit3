@@ -196,6 +196,11 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
   $scope.postings = [];
 
   var callback = function(data, status, headers, config) {
+
+    for (var index = 0; index < data.length; ++index) {
+      data[index].date = new Date(Date.parse(data[index].time)).toLocaleString();
+    }
+
     $scope.postings = data;
   }
 
@@ -286,18 +291,7 @@ shredditApplication.factory("postingService", function($http) {
       }
     },
     loadPostings: function(success, order, username) {
-
-      $http.get("/data/postings").success(success);
-
-      /*
-      if (order === "TOP") {
-        return sortOrderTopRated();
-      }
-      if (order === "MY") {
-        return sortOrderMyPostings(username);
-      }
-      return sortOrderLatest();
-      */
+      $http.get("/data/postings?order="+order+"&user="+username).success(success);
     }
   };
 
