@@ -2,6 +2,8 @@ function ShredditDB() {
 
   var nextID = 1031;
   var users;
+
+/* ToDo Delete
   var postings = [
     { "id": "1001", "title": "Sektflasche", "user": "cyrano", "version": "1", "time": "2014-08-01T10:44:00.000Z", "rating": "3.00", "people": "5", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Die Bezeichnung für eine Sektflasche mit sechs Litern Inhalt ist „Methusalem“."},
     { "id": "1002", "title": "Pizza", "user": "volcano", "version": "1", "time": "2014-08-06T12:41:54.000Z", "rating": "2.29", "people": "7", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Eine Pizza mit dem Radius z und der Dicke a hat das Volumen Pi • z • z • a."},
@@ -21,6 +23,7 @@ function ShredditDB() {
     { "id": "1029", "title": "HUGO", "user": "bie", "version": "1", "time": "2014-10-19T16:23:39.000Z", "rating": "2.50", "people": "4", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Das Codewort „HUGO“ bezeichnet im Flugbetrieb mittransportierte Leichen – es steht entweder für „Human Gone“ oder für „heute unerwartet gestorbenes Objekt“."},
     { "id": "1030", "title": "Roulette", "user": "ceanage", "version": "1", "time": "2014-10-25T00:39:05.000Z", "rating": "4.00", "people": "1", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Alle Roulettezahlen addiert ergeben 666."}
   ];
+  */
   var comments = [
     { "id": "1004", "pid": "1003", "user": "snassnal", "time": "2014-08-13T00:02:54.000Z", "comment": "Comment 1" },
     { "id": "1005", "pid": "1003", "user": "yeringem", "time": "2014-08-14T00:43:15.000Z", "comment": "Comment 2", "response": "snassnal" },

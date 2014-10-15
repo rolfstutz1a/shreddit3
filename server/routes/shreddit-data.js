@@ -52,6 +52,32 @@ router.get('/postings', function(req, res) {
 // POST    /postings                      // create new posting
 router.post("/postings", function(req, res) {
   // res.json(DB.createPosting(req.body.user, req.body.title, req.body.content, req.body.link, req.body.url, req.body.tags));
+
+    console.log('new postings');
+    postings.insert(req.body, function (err, newDoc) {
+
+        if ( err ){
+            console.log('error posting '+ err)
+        }else {
+            /* wegen Kompatibilität setzen wir die ursprüngliche ID auch auf die _id */
+            postings.update({ _id:newDoc._id }, { $set: { id:newDoc._id }},{},function (err, numReplaced) {
+
+                postings.find({id:newDoc._id},function(err, doc){
+                    if (err = 0){
+                        console.log(' Data.js, error: ' + err );
+                    }else {
+                        if (doc.length != 0 ) {
+
+                            console.log('new posting '+doc.length + ' id ' + doc[0].id + ' ' + doc[0].title + ' _id ' + doc[0]._id);
+                            res.json(doc);
+                        }else{
+                            console.log(' Data.js, error: no elements' );
+                        }
+                    }
+                });
+            });
+        }
+    });
 });
 
 // GET     /postings/:PID                 // get posting with PID
@@ -67,6 +93,16 @@ router.delete("/", function(req, res) {
 // GET     /comments/:PID                 // get all comments for posting with PID
 router.get("/comments/:PID", function(req, res) {
   // res.json(DB.getComments(req.params.PID));
+
+    comments.find({pid:req.params.PID},function(err,doc) {
+
+        if (doc.length <= 0) {
+            console.log('no element for databas <comments> !');
+        } else {
+            console.log('Databas <comments> has ' +doc.length + 'element for user' );
+        }
+        res.json(doc);
+    });
 });
 
 // POST    /comments/:PID                 // create new comment for posting with PID
