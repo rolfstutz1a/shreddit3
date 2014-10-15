@@ -21,7 +21,7 @@
 var express = require('express');
 var router = express.Router();
 // var path = require('path');
-var shredditUtil = require('../server/shreddit-utils');
+var shredditUtil = require('../shreddit-utils');
 
 var Nedb = require('nedb');
 var postings = new Nedb({ filename: '../server/db/postings', autoload: true });
