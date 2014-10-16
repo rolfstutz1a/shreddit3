@@ -29,24 +29,33 @@ var comments = new Nedb({ filename: '../server/db/comments', autoload: true });
 
 // GET     /postings                      // get all postings
 router.get('/postings', function(req, res) {
+    var order = req.param("order");
+    var userName = req.param("user");
+    var sortOrder ={time:1};
+    var find  ={};
 
-  postings.find({}, function(err, docs) {
-    if (docs.length <= 0) {
-      console.log('the databas <posting> has no element');
-      res.json(docs);
+    if (order === "TOP") {
+        sortOrder = {rating:-1} ;  // rating
+        find = {};
+    } else if (order === "MY") {
+        sortOrder = {time:-1};  // user
+        find = {user:userName};
     } else {
-      console.log('the databas <posting> has ' + docs.length + ' elements');
-
-      var order = req.param("order");
-      if (order === "TOP") {
-        res.json(shredditUtil.sortOrderTopRated(docs));
-      } else if (order === "MY") {
-        res.json(shredditUtil.sortOrderMyPostings(docs, req.param("user")));
-      } else {
-        res.json(shredditUtil.sortOrderLatest(docs));
-      }
+        sortOrder = {time:-1}; // latest
+        find = {};
     }
-  });
+
+    postings.find(find).sort(sortOrder).exec(function(err, docs) {
+
+        if (docs.length <= 0) {
+            console.log('Databas <posting> has no element');
+            res.json(docs);
+        } else {
+            console.log('Databas <posting> has ' + docs.length + ' elements'+' sort order :'+ order );
+
+           res.json(docs);
+        }
+    });
 });
 
 // POST    /postings                      // create new posting
