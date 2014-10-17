@@ -33,6 +33,7 @@ router.get('/postings', function(req, res) {
     var userName = req.param("user");
     var sortOrder ={time:1};
     var find  ={};
+//    console.log(req);
 
     if (order === "TOP") {
         sortOrder = {rating:-1} ;  // rating
@@ -47,13 +48,16 @@ router.get('/postings', function(req, res) {
 
     postings.find(find).sort(sortOrder).exec(function(err, docs) {
 
-        if (docs.length <= 0) {
-            console.log('Databas <posting> has no element');
-            res.json(docs);
-        } else {
-            console.log('Databas <posting> has ' + docs.length + ' elements'+' sort order :'+ order );
+        if ( err ){
 
-           res.json(docs);
+            console.log('error '+req.method +': ' + req.originalUrl +': all'+ err);
+        }else {
+            if (docs.length <= 0) {
+                console.log('Databas has no element: '+req.originalUrl);
+            } else {
+                console.log('Databas '+req.method +':'+req.path+' has ' + docs.length + ' elements. '+req.originalUrl );
+            }
+            res.json(docs);
         }
     });
 });
@@ -62,27 +66,26 @@ router.get('/postings', function(req, res) {
 router.post("/postings", function(req, res) {
   // res.json(DB.createPosting(req.body.user, req.body.title, req.body.content, req.body.link, req.body.url, req.body.tags));
 
-    console.log('new postings');
     postings.insert(req.body, function (err, newDoc) {
 
         if ( err ){
-            console.log('error posting '+ err)
+            console.log('error '+req.method +': ' + req.originalUrl +' : '+ err);
         }else {
             /* wegen Kompatibilität setzen wir die ursprüngliche ID auch auf die _id */
             postings.update({ _id:newDoc._id }, { $set: { id:newDoc._id }},{},function (err, numReplaced) {
 
                 postings.find({id:newDoc._id},function(err, doc){
                     if (err = 0){
-                        console.log(' Data.js, error: ' + err );
+                        console.log('error post/find: ' + err );
                     }else {
-                        if (doc.length != 0 ) {
-
-                            console.log('new posting '+doc.length + ' id ' + doc[0].id + ' ' + doc[0].title + ' _id ' + doc[0]._id);
-                            res.json(doc);
+                        if (doc.length <= 0 ) {
+                            console.log('error no element found '+req.originalUrl );
                         }else{
-                            console.log(' Data.js, error: no elements' );
+                            console.log('Databas '+req.method +':'+req.path+' has ' + doc.length + ' elements. '+req.originalUrl );
+                            console.log('new posting:  id ' + doc[0].id + ' ' + doc[0].title + ' _id ' + doc[0]._id);
                         }
                     }
+                    res.json(doc);
                 });
             });
         }
@@ -92,6 +95,23 @@ router.post("/postings", function(req, res) {
 // GET     /postings/:PID                 // get posting with PID
 router.get("/postings/:PID", function(req, res) {
   // res.json(DB.getPosting(req.params.PID));
+    var sortOrder ={time:-1};
+    var find      ={id:req.params.PID};
+
+    postings.find(find).sort(sortOrder).exec(function(err, docs) {
+
+        if ( err ){
+
+            console.log('error '+req.method +': ' + req.originalUrl +' : '+ err);
+        }else {
+            if (docs.length <= 0) {
+                console.log('Databas has no element: '+req.originalUrl);
+            } else {
+                console.log('Databas '+req.method +': '+req.path+' has ' + docs.length + ' elements. '+req.originalUrl );
+            }
+            res.json(docs);
+        }
+    });
 });
 
 // DELETE  /postings/:PID                 // delete posting with PID
@@ -103,15 +123,20 @@ router.delete("/", function(req, res) {
 router.get("/comments/:PID", function(req, res) {
   // res.json(DB.getComments(req.params.PID));
 
-    comments.find({pid:req.params.PID},function(err,doc) {
+    if ( err ){
+        console.log('error '+req.method +': ' + req.originalUrl +' : '+ err);
+    }else {
 
-        if (doc.length <= 0) {
-            console.log('no element for databas <comments> !');
-        } else {
-            console.log('Databas <comments> has ' +doc.length + 'element for user' );
-        }
-        res.json(doc);
-    });
+        comments.find({pid: req.params.PID}, function (err, doc) {
+
+            if (doc.length <= 0) {
+                console.log('Databas has no element: '+req.originalUrl);
+            } else {
+                console.log('Databas '+req.method +': '+req.path+' has ' + docs.length + ' elements. '+req.originalUrl );
+            }
+            res.json(doc);
+        });
+    }
 });
 
 // POST    /comments/:PID                 // create new comment for posting with PID
