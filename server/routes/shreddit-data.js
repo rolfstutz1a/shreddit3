@@ -117,6 +117,26 @@ router.get("/postings/:PID", function(req, res) {
 // DELETE  /postings/:PID                 // delete posting with PID
 router.delete("/", function(req, res) {
   // res.json(DB.deletePosting(req.params.PID));
+    var _pid = req.params.PID;
+
+    comments.remove({pid:_pid},{multi:true}, function( err, numRemoved){
+
+        if ( err ){
+            console.log('error comment '+req.method +': ' + req.originalUrl +' : '+ err);
+        }else {
+            console.log('Databas '+req.path +' element '+ _pid +' count '+ numRemoved );
+        }
+    });
+
+    postings.remove({id:_pid},{multi:true}, function( err, numRemoved){
+
+        if ( err ){
+            console.log('error posting '+req.method +': ' + req.originalUrl +' : '+ err);
+        }else {
+            console.log('Databas '+req.path +' element '+ _pid +' count '+ numRemoved );
+        }
+        res.json(numRemoved);
+    });
 });
 
 // GET     /comments/:PID                 // get all comments for posting with PID
@@ -126,7 +146,6 @@ router.get("/comments/:PID", function(req, res) {
     if ( err ){
         console.log('error '+req.method +': ' + req.originalUrl +' : '+ err);
     }else {
-
         comments.find({pid: req.params.PID}, function (err, doc) {
 
             if (doc.length <= 0) {
@@ -142,11 +161,22 @@ router.get("/comments/:PID", function(req, res) {
 // POST    /comments/:PID                 // create new comment for posting with PID
 router.post("/comments/:PID", function(req, res) {
   // res.json(DB.createComment(req.params.PID, req.body.user, req.body.comment));
+
 });
 
 // DELETE  /comments/:CID                 // delete comment with CID
 router.delete("/comments/:CID", function(req, res) {
   // res.json(DB.deleteComment(req.params.CID));
+
+    comments.remove({id:req.params.CID},{multi:false}, function( err, numRemoved){
+
+        if ( err ){
+            console.log('error '+req.method +': ' + req.originalUrl +' : '+ err);
+        }else {
+            console.log('Databas '+req.path +' element '+ req.body.CID +' count '+ numRemoved );
+        }
+        res.json(numRemoved);
+    })
 });
 
 // PUT     /ratings/:PID/:USER/:STARS     // add/change rating for posting with PID and USER with STARS (0 .. 5)

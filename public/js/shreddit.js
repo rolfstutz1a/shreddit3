@@ -221,7 +221,7 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
 // SERVICES
 // -------------------------------------------------------------------------
 shredditApplication.factory("postingService", function($http) {
-
+/* todo Delete
   var postings = [
     { "id": "1411395110633", "title": "Sektflasche", "user": "woillpol", "date": "22.09.2014", "time": "16:11", "rating": ".76", "people": "28", "stars": "1", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "1", "tags": "", "content": "Die Bezeichnung für eine Sektflasche mit sechs Litern Inhalt ist „Methusalem“."},
     { "id": "1411387121633", "title": "Pizza", "user": "volcano", "date": "22.09.2014", "time": "13:58", "rating": "2.69", "people": "38", "stars": "3", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "2", "tags": "", "content": "Eine Pizza mit dem Radius z und der Dicke a hat das Volumen Pi • z • z • a."},
@@ -244,7 +244,7 @@ shredditApplication.factory("postingService", function($http) {
     //   "tags": "",
     //   "content": ""}
   ];
-
+*/
   var createCompareFunction = function(prop, asc) {
     return function(a, b) {
       if (a[prop] > b[prop]) {
