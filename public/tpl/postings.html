@@ -7,21 +7,21 @@
           <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
           <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">{{posting.user}}</div>
           <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
-            <span ng-show="posting.stars == 0" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="posting.stars == 1" class="sc-stars">&#xe006;</span><span ng-show="posting.stars == '1'" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="posting.stars == 2" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="posting.stars == '2'" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="posting.stars == 3" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="posting.stars == '3'" class="sc-no-stars">&#xe007;&#xe007;</span>
-            <span ng-show="posting.stars == 4" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="posting.stars == '4'" class="sc-no-stars">&#xe007;</span>
-            <span ng-show="posting.stars == 5" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span>
+            <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
+            <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span>
           </div>
-          <div class="sc-posting-header-info" title="Posting added on {{posting.date}} at {{posting.time}}">
+          <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
             <small>{{posting.date}}</small>
           </div>
         </div>
       </div>
       <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
         <p>{{posting.content}}</p>
-        <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting.id)" class="btn btn-default btn-sm pull-right sc-margin-left">Delete</button>
+        <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)" class="btn btn-default btn-sm pull-right sc-margin-left">Delete</button>
         <button type="button" class="btn btn-default btn-sm pull-right">Add comment</button>
         <button ng-show="posting.commentCount == '0'" type="button" disabled class="btn btn-link btn-sm pull-right">No comments</button>
         <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right">Show comment ({{posting.commentCount}})</button>

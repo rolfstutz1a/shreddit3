@@ -1,4 +1,4 @@
- 
+
   <div class="container sc-new">
     <div class="panel panel-default">
       <div class="panel-heading">
@@ -9,34 +9,34 @@
         <form name="form-new-posting" role="form" class="">
           <div class="form-group">
             <label for="si-new-posting-title">Title</label>
-            <input type="text" class="form-control" id="si-new-posting-title" name="title"
+            <input type="text" class="form-control" id="si-new-posting-title" name="title" ng-model="posting.title"
                    placeholder="Required: Title of the posting">
           </div>
           <div class="form-group">
             <label for="si-new-posting-user">User</label>
-            <input type="text" class="form-control" id="si-new-posting-user" readonly value="{{username}}">
+            <input type="text" class="form-control" id="si-new-posting-user" readonly value="{{posting.user}}">
           </div>
           <div class="form-group">
             <label for="si-new-posting-content">Posting Content</label>
-            <textarea class="form-control sp-text-area" name="content" id="si-new-posting-content"></textarea>
+            <textarea class="form-control sp-text-area" name="content" id="si-new-posting-content" ng-model="posting.content"></textarea>
           </div>
           <div class="form-group">
             <label for="si-new-posting-link-name">Link-Name</label>
-            <input type="text" class="form-control" id="si-new-posting-link-name" name="link"
+            <input type="text" class="form-control" id="si-new-posting-link-name" name="link" ng-model="posting.link"
                    placeholder="Optional: Name of the external link (e.g. BBC)">
           </div>
           <div class="form-group">
             <label for="si-new-posting-link-url">Link-URL</label>
-            <input type="text" class="form-control" id="si-new-posting-link-url" name="url"
+            <input type="text" class="form-control" id="si-new-posting-link-url" name="url" ng-model="posting.url"
                    placeholder="Optional: External link (e.g. http://www.bbc.co.uk)">
           </div>
           <div class="form-group">
             <label for="si-new-posting-tags">Tag(s)</label>
-            <input type="text" class="form-control" id="si-new-posting-tags" name="tags"
+            <input type="text" class="form-control" id="si-new-posting-tags" name="tags" ng-model="posting.tags"
                    placeholder="Optional: (Comma separated) Tags (e.g. Sport, Fun)">
           </div>
           <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
-          <button type="submit" class="btn btn-default btn-sm pull-right">Save Posting</button>
+          <button type="button" class="btn btn-default btn-sm pull-right" ng-click="createPosting()">Save Posting</button>
         </form>
       </div>
     </div>
