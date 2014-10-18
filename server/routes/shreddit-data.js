@@ -58,9 +58,9 @@ router.get("/postings", function(req, res) {
       console.log("error " + req.method + ": " + req.originalUrl + ": all" + err);
     } else {
       if (docs.length <= 0) {
-        console.log("database has no element: " + req.originalUrl);
+        console.log("postingsDB has no element: " + req.originalUrl);
       } else {
-        console.log("database " + req.method + ":" + req.path + " has " + docs.length + " elements. " + req.originalUrl);
+        console.log("postingsDB " + req.method + ":" + req.path + " has " + docs.length + " elements. " + req.originalUrl);
       }
       res.json(docs);
     }
@@ -88,8 +88,9 @@ router.post("/postings", function(req, res) {
 
   postingsDB.insert(posting, function(err, newDoc) {
     if (err) {
-      console.log("error " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
+        console.log("postingsDB " + req.method + ": " + req.path + " insert new post for " + req.body.user + req.originalUrl);
         res.json(newDoc);
     }
   });
@@ -108,10 +109,10 @@ router.get("/postings/:PID", function(req, res) {
 
   postingsDB.find(find).exec(function(err, doc) {
     if (err) {
-      console.log("error " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
       if (doc.length !== 1) {
-        console.log("database " + req.method + ": " + req.path + " has " + doc.length + " elements. " + req.originalUrl);
+        console.log("postingsDB " + req.method + ": " + req.path + " has " + doc.length + " elements. " + req.originalUrl);
       }
       res.json(doc);
     }
@@ -129,21 +130,19 @@ router.get("/postings/:PID", function(req, res) {
 router.delete("/postings/:PID", function(req, res) {
   var _pid = req.params.PID;
 
-  console.log("delete: " + _pid);
-
   commentsDB.remove({pid: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log("error comment " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
-      console.log("database " + req.path + " element " + _pid + " count " + numRemoved);
+      console.log("commentsDB delete " + req.path + " element " + _pid + " count " + numRemoved);
     }
   });
 
   postingsDB.remove({_id: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log("error posting " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
-      console.log("database " + req.path + " element " + _pid + " count " + numRemoved);
+      console.log("postingsDB delete " + req.path + " element " + _pid + " count " + numRemoved);
     }
     res.json({"removed": numRemoved});
   });
@@ -159,19 +158,44 @@ router.get("/comments/:PID", function(req, res) {
     commentsDB.find({pid: req.params.PID}, function(err, doc) {
 
       if (doc.length <= 0) {
-        console.log("database has no element: " + req.originalUrl);
+        console.log("commentsDB has no element: " + req.originalUrl);
       } else {
-        console.log("database " + req.method + ": " + req.path + " has " + docs.length + " elements. " + req.originalUrl);
+        console.log("commentsDB " + req.method + ": " + req.path + " has " + docs.length + " elements. " + req.originalUrl);
       }
       res.json(doc);
     });
   }
 });
 
+/**
+ * Create new comment for posting with PID.
+ *
+ * Method: POST
+ * Route: /comments/:PID
+ *
+ * @param pid        .
+ * @param user      the user who creates the comment.
+ * @param comment   the content of the new comment.
+ * @param response  .
+ */
+
 // POST    /comments/:PID                 // create new comment for posting with PID
 router.post("/comments/:PID", function(req, res) {
   // res.json(DB.createComment(req.params.PID, req.body.user, req.body.comment));
+    var comment = {"pid": req.body.pid,
+                   "user": req.body.user,
+                   "time": new Date().toJSON(),
+                   "comment": req.body.comment,
+                   "response":  req.body.response };
 
+     commentsDB.insert(comment, function(err, newDoc) {
+        if (err) {
+            console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
+        } else {
+            console.log("commentsDB " + req.method + ": " + req.path + " insert new comment from " + req.body.user + ' about ' + req.body.pid);
+            res.json(newDoc);
+        }
+    });
 });
 
 // DELETE  /comments/:CID                 // delete comment with CID
@@ -181,9 +205,9 @@ router.delete("/comments/:CID", function(req, res) {
   commentsDB.remove({id: req.params.CID}, {multi: false}, function(err, numRemoved) {
 
     if (err) {
-      console.log("error " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
-      console.log("database " + req.path + " element " + req.body.CID + " count " + numRemoved);
+      console.log("commentsDB " + req.path + " element " + req.body.CID + " count " + numRemoved);
     }
     res.json(numRemoved);
   })
