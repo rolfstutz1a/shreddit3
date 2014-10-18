@@ -21,11 +21,13 @@
 var express = require("express");
 var router = express.Router();
 // var path = require("path");
-var shredditUtil = require("../shreddit-utils");
+// var shredditUtil = require("../shreddit-utils");
 
 var Nedb = require("nedb");
 var postingsDB = new Nedb({ filename: "../server/db/postings", autoload: true });
 var commentsDB = new Nedb({ filename: "../server/db/comments", autoload: true });
+var usersDB = new Nedb({ filename: "../server/db/users", autoload: true });
+var ratingsDB = new Nedb({ filename: "../server/db/ratings", autoload: true });
 
 /**
  * Loading all postings from the database.

@@ -267,6 +267,7 @@ shredditApplication.factory("userService", function() {
 
   (function(map) {
     map["suz"] = { "username": "suz", "password": "123456", "email": "suz@example.com", "since": "2014/09/09", "locale": "PL", "notify": "false", "admin": "true"};
+    map["bie"] = { "username": "bie", "password": "123456", "email": "r1bieri@hsr.ch", "since": "2014/09/09", "locale": "PL", "notify": "false"};
     map["moorwor"] = { "username": "moorwor", "password": "123456", "email": "moorwor@example.com", "since": "2014/09/09", "locale": "PL", "notify": "false"};
     map["saycbel"] = { "username": "saycbel", "password": "123456", "email": "saycbel@example.com", "since": "2014/09/09", "locale": "DE", "notify": "true"};
     map["cyrano"] = { "username": "cyrano", "password": "123456", "email": "cyrano@example.com", "since": "2014/09/09", "locale": "PL", "notify": "true"};

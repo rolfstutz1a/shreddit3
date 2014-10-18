@@ -1,13 +1,13 @@
-{ "_id": "rgEqrrkArBkxu4ag", "username": "bie", "password": "123456", "email": "bie@example.com", "since": "2014-07-04T10:44:00.000Z", "locale": "EN", "notify": "true", "admin": "true"}
-{ "_id": "3nNI9ksPkatAQzM0", "username": "suz", "password": "123456", "email": "suz@example.com", "since": "2014-07-05T19:40:18.000Z", "locale": "EN", "notify": "true", "admin": "true"}
-{ "_id": "4SL9pQNAQQCJz6Cz", "username": "moorwor", "password": "123456", "email": "moorwor@example.com", "since": "2014-07-07T03:04:24.000Z", "locale": "FR", "notify": "true", "admin": "false"}
-{ "_id": "HIwxNObdZ0sxVat1", "username": "saycbel", "password": "123456", "email": "saycbel@example.com", "since": "2014-07-08T05:25:34.000Z", "locale": "EN", "notify": "false", "admin": "false"}
-{ "_id": "KGSn4VZoB9Nju9Eo", "username": "cyrano", "password": "123456", "email": "cyrano@example.com", "since": "2014-07-09T11:25:38.000Z", "locale": "DE", "notify": "true", "admin": "false"}
-{ "_id": "Pfh4D6zJKC6xDdq7", "username": "lycina", "password": "123456", "email": "lycina@example.com", "since": "2014-07-10T19:28:21.000Z", "locale": "DE", "notify": "false", "admin": "false"}
-{ "_id": "AuRnPHAvNDxY5qCE", "username": "woillpol", "password": "123456", "email": "woillpol@example.com", "since": "2014-07-11T19:35:00.000Z", "locale": "PL", "notify": "true", "admin": "false"}
-{ "_id": "ytQuQ5gVQcW4xERX", "username": "levesale", "password": "123456", "email": "levesale@example.com", "since": "2014-07-12T21:48:29.000Z", "locale": "EN", "notify": "true", "admin": "false"}
-{ "_id": "2l3Ax8Z5IoTkOh6H", "username": "fridge", "password": "123456", "email": "fridge@example.com", "since": "2014-07-14T10:02:08.000Z", "locale": "IT", "notify": "false", "admin": "false"}
-{ "_id": "8MabvARfXZmvmPeY", "username": "snassnal", "password": "123456", "email": "snassnal@example.com", "since": "2014-07-15T17:02:14.000Z", "locale": "PL", "notify": "false", "admin": "false"}
-{ "_id": "O2fsMeouCevoaybo", "username": "volcano", "password": "123456", "email": "volcano@example.com", "since": "2014-07-17T02:56:04.000Z", "locale": "IT", "notify": "true", "admin": "false"}
-{ "_id": "p6aETa5Qs0N5gQjB", "username": "yeringem", "password": "123456", "email": "yeringem@example.com", "since": "2014-07-18T06:34:33.000Z", "locale": "FR", "notify": "true", "admin": "false"}
-{ "_id": "LacGqm7zw07I01Pw", "username": "ceanage", "password": "123456", "email": "ceanage@example.com", "since": "2014-07-19T09:56:57.000Z", "locale": "FR", "notify": "false", "admin": "false"}
+{"username":"fridge","password":"123456","email":"fridge@example.com","since":"2014-07-14T10:02:08.000Z","locale":"IT","notify":"false","admin":"false","_id":"2l3Ax8Z5IoTkOh6H"}
+{"username":"suz","password":"123456","email":"suz@example.com","since":"2014-07-05T19:40:18.000Z","locale":"EN","notify":"true","admin":"true","_id":"3nNI9ksPkatAQzM0"}
+{"username":"moorwor","password":"123456","email":"moorwor@example.com","since":"2014-07-07T03:04:24.000Z","locale":"FR","notify":"true","admin":"false","_id":"4SL9pQNAQQCJz6Cz"}
+{"username":"snassnal","password":"123456","email":"snassnal@example.com","since":"2014-07-15T17:02:14.000Z","locale":"PL","notify":"false","admin":"false","_id":"8MabvARfXZmvmPeY"}
+{"username":"woillpol","password":"123456","email":"woillpol@example.com","since":"2014-07-11T19:35:00.000Z","locale":"PL","notify":"true","admin":"false","_id":"AuRnPHAvNDxY5qCE"}
+{"username":"saycbel","password":"123456","email":"saycbel@example.com","since":"2014-07-08T05:25:34.000Z","locale":"EN","notify":"false","admin":"false","_id":"HIwxNObdZ0sxVat1"}
+{"username":"cyrano","password":"123456","email":"cyrano@example.com","since":"2014-07-09T11:25:38.000Z","locale":"DE","notify":"true","admin":"false","_id":"KGSn4VZoB9Nju9Eo"}
+{"username":"ceanage","password":"123456","email":"ceanage@example.com","since":"2014-07-19T09:56:57.000Z","locale":"FR","notify":"false","admin":"false","_id":"LacGqm7zw07I01Pw"}
+{"username":"volcano","password":"123456","email":"volcano@example.com","since":"2014-07-17T02:56:04.000Z","locale":"IT","notify":"true","admin":"false","_id":"O2fsMeouCevoaybo"}
+{"username":"lycina","password":"123456","email":"lycina@example.com","since":"2014-07-10T19:28:21.000Z","locale":"DE","notify":"false","admin":"false","_id":"Pfh4D6zJKC6xDdq7"}
+{"username":"yeringem","password":"123456","email":"yeringem@example.com","since":"2014-07-18T06:34:33.000Z","locale":"FR","notify":"true","admin":"false","_id":"p6aETa5Qs0N5gQjB"}
+{"username":"bie","password":"123456","email":"bie@example.com","since":"2014-07-04T10:44:00.000Z","locale":"EN","notify":"true","admin":"true","_id":"rgEqrrkArBkxu4ag"}
+{"username":"levesale","password":"123456","email":"levesale@example.com","since":"2014-07-12T21:48:29.000Z","locale":"EN","notify":"true","admin":"false","_id":"ytQuQ5gVQcW4xERX"}
