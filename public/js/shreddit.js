@@ -155,6 +155,8 @@ function SettingsController($scope, $location, $routeParams, userService, sessio
   $scope.settings = {};
   $scope.languages = userService.getLanguages();
 
+
+
   (function(stngs) {
     var user = userService.getUserRef(sessionService.getUsername());
     stngs.language = userService.getLanguage(user.locale);

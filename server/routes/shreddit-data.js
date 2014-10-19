@@ -1,28 +1,31 @@
-/*
- GET     /postings                      // get all postings
- POST    /postings                      // create new posting
- GET     /postings/:PID                 // get posting with PID
- (PUT    /postings/:PID                 // update posting with PID)
- DELETE  /postings/:PID                 // delete posting with PID
-
- GET     /comments/:PID                 // get all comments for posting with PID
- POST    /comments/:PID                 // create new comment for posting with PID
- DELETE  /comments/:CID                 // delete comment with CID
-
- PUT     /ratings/:PID/:USER/:STARS     // add/change rating for posting with PID and USER with STARS (0 .. 5)
-
- GET     /session/:USER                 // get user-settings for USER
- POST    /session/:USER/:PWD            // register with USER (username) and PWD (password)
- PUT     /session/:USER                 // update user-setting for USER
- POST    /login/:USER/:PWD              // login user with USER (username) and PWD (password)
- POST    /logout/:USER                  // logout user with USER (username)
- */
-
 var express = require("express");
 var router = express.Router();
-// var path = require("path");
-// var shredditUtil = require("../shreddit-utils");
 
+function errorMessage(msg, req, err) {
+  return "  *** ERROR [" + req.method + ": " + req.originalUrl + "] " + msg + ": " + err;
+}
+
+function debugMessage(msg, req, data) {
+  if (Array.isArray(data)) {
+    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": size=" + data.length;
+  }
+  if (Number.isInteger(data)) {
+    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": effected=" + data;
+  }
+  if (data) {
+    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": size=1";
+  }
+  return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": (no data)";
+}
+
+/**
+ * NeDB is the database which we use to persist our data.
+ *
+ * @param postingDB contains the data with postings.
+ * @param commentsDB contains the data with the comments for the postings.
+ * @param usersDB contains the data about the registered users.
+ * @param ratingsDB contains the data about the ratings for the postings.
+ */
 var Nedb = require("nedb");
 var postingsDB = new Nedb({ filename: "../server/db/postings", autoload: true });
 var commentsDB = new Nedb({ filename: "../server/db/comments", autoload: true });
@@ -38,33 +41,31 @@ var ratingsDB = new Nedb({ filename: "../server/db/ratings", autoload: true });
  * @param user the username of the user who is requesting the postings
  * @param order how to sort the postings (LATEST: (default) latest postings first, TOP: top rated postings first, MY: only postings from the user).
  * @param search the current active search-text.
+ *
+ * @returns a sorted array of the requested postings or undefined.
  */
 router.get("/postings", function(req, res) {
   var order = req.param("order");
   var userName = req.param("user");
-  var sortOrder = {time: 1};
+  var sortOrder = { time: 1 };
   var find = {};
 
   if (order === "TOP") {
-    sortOrder = {rating: -1};  // rating
+    sortOrder = { rating: -1 };  // rating
     find = {};
   } else if (order === "MY") {
-    sortOrder = {time: -1};  // user
+    sortOrder = { time: -1 };  // user
     find = {user: userName};
   } else {
-    sortOrder = {time: -1}; // latest
+    sortOrder = { time: -1 }; // latest
     find = {};
   }
 
   postingsDB.find(find).sort(sortOrder).exec(function(err, docs) {
     if (err) {
-      console.log("error " + req.method + ": " + req.originalUrl + ": all" + err);
+      console.log(errorMessage("load postings", req, err));
     } else {
-      if (docs.length <= 0) {
-        console.log("postingsDB has no element: " + req.originalUrl);
-      } else {
-        console.log("postingsDB " + req.method + ":" + req.path + " has " + docs.length + " elements. " + req.originalUrl);
-      }
+      console.log(debugMessage("load postings", req, docs));
       res.json(docs);
     }
   });
@@ -86,14 +87,14 @@ router.get("/postings", function(req, res) {
 router.post("/postings", function(req, res) {
 
   var posting = {"title": req.body.title, "user": req.body.user, "version": "1", "time": new Date().toJSON(),
-    "rating": "0.00", "people": "0", "link": req.body.link, "url": req.body.url, "commentCount": "0",
+    "rating": "0.00", "people": "0", "link": req.body.link, "url": req.body.url, "commentCount": 0,
     "tags": req.body.tags, "content": req.body.content };
 
   postingsDB.insert(posting, function(err, newDoc) {
     if (err) {
-      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("create postings", req, err));
     } else {
-      console.log("postingsDB " + req.method + ": " + req.path + " insert new post for " + req.body.user + req.originalUrl);
+      console.log(debugMessage("create postings", req, newDoc));
       res.json(newDoc);
     }
   });
@@ -111,11 +112,9 @@ router.get("/postings/:PID", function(req, res) {
   var find = {_id: req.params.PID};
   postingsDB.findOne(find).exec(function(err, doc) {
     if (err) {
-      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("load posting["+req.params.PID+"]", req, err));
     } else {
-      if (doc.length !== 1) {
-        console.log("postingsDB " + req.method + ": " + req.path + " has " + doc.length + " elements. " + req.originalUrl);
-      }
+      console.log(debugMessage("load posting["+req.params.PID+"]", req, doc));
       res.json(doc);
     }
   });
@@ -134,17 +133,17 @@ router.delete("/postings/:PID", function(req, res) {
 
   commentsDB.remove({pid: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("delete comments["+req.params.PID+"]", req, err));
     } else {
-      console.log("commentsDB delete " + req.path + " element " + _pid + " count " + numRemoved);
+      console.log(debugMessage("delete comments["+req.params.PID+"]", req, numRemoved));
     }
   });
 
   postingsDB.remove({_id: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("delete posting["+req.params.PID+"]", req, err));
     } else {
-      console.log("postingsDB delete " + req.path + " element " + _pid + " count " + numRemoved);
+      console.log(debugMessage("delete posting["+req.params.PID+"]", req, numRemoved));
     }
     res.json({"removed": numRemoved});
   });
@@ -161,11 +160,11 @@ router.delete("/postings/:PID", function(req, res) {
  */
 router.get("/comments/:PID", function(req, res) {
 
-  commentsDB.find({pid: req.params.PID}).sort({"time":-1}).exec(function(err, docs) {
-    if (docs.length <= 0) {
-      console.log("commentsDB has no element: " + req.originalUrl);
+  commentsDB.find({pid: req.params.PID}).sort({"time": -1}).exec(function(err, docs) {
+    if (err) {
+      console.log(errorMessage("load comments["+req.params.PID+"]", req, err));
     } else {
-      console.log("commentsDB " + req.method + ": " + req.path + " has " + docs.length + " elements. " + req.originalUrl);
+      console.log(debugMessage("load comments["+req.params.PID+"]", req, docs));
     }
     res.json(docs);
   });
@@ -192,26 +191,30 @@ router.post("/comments/:PID", function(req, res) {
 
   commentsDB.insert(comment, function(err, newDoc) {
     if (err) {
-      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("create comment["+req.params.PID+"]", req, err));
     } else {
-      console.log("commentsDB " + req.method + ": " + req.path + " insert new comment from " + req.body.user + ' about ' + req.body.pid);
-      postingsDB.update({ _id: req.params.PID }, { $inc: { commentCount: 1 } }, { upsert: true }, function (xxx, yyy) {
+      console.log(debugMessage("create comment["+req.params.PID+"]", req, newDoc));
+      postingsDB.update({ _id: req.params.PID }, { $inc: { commentCount: 1 } }, { upsert: true }, function() {
         res.json(newDoc);
       });
     }
   });
 });
 
-// DELETE  /comments/:CID                 // delete comment with CID
+/**
+ * Deletes the comment with the CID from the database.
+ *
+ * Method: DELETE
+ * Route: /comments/:CID
+ *
+ * @param CID the ID of the comment to delete.
+ */
 router.delete("/comments/:CID", function(req, res) {
-  // res.json(DB.deleteComment(req.params.CID));
-
   commentsDB.remove({id: req.params.CID}, {multi: false}, function(err, numRemoved) {
-
     if (err) {
-      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
+      console.log(errorMessage("delete comment["+req.params.CID+"]", req, err));
     } else {
-      console.log("commentsDB " + req.path + " element " + req.body.CID + " count " + numRemoved);
+      console.log(debugMessage("delete comment["+req.params.CID+"]", req, numRemoved));
     }
     res.json(numRemoved);
   })
@@ -222,14 +225,62 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
   // res.json(DB.updateRatings(req.params.PID, req.params.USER, req.params.STARS));
 });
 
-// GET     /session/:USER                 // get user-settings for USER
-router.get("/session/:USER", function(req, res) {
-  // res.json(DB.getUserSetting(req.params.USER));
+/**
+ * Loads the user-data of the user with the USERNAME.
+ *
+ * Method: GET
+ * Route: /session/:USERNAME
+ *
+ * @param USERNAME the username of the requested user.
+ */
+router.get("/session/:USERNAME", function(req, res) {
+  usersDB.findOne({username: req.params.USERNAME}).exec(function(err, docs) {
+    if (err) {
+      console.log(errorMessage("load user["+req.params.USERNAME+"]", req, err));
+    } else {
+      console.log(debugMessage("load user["+req.params.USERNAME+"]", req, docs));
+    }
+    res.json(docs);
+  });
 });
 
-// POST    /session/:USER/:PWD            // register with USER (username) and PWD (password)
-router.post("/session/:USER/:PWD", function(req, res) {
-  // res.json(DB.registerUser(req.params.USER, req.params.PWD));
+/**
+ * Register a new user for shreddit.
+ *
+ * Method: POST
+ * Route: /session/:USERNAME/:PASSWORD
+ *
+ * @param USERNAME the username of the new user.
+ * @param PASSWORD the password of the new user.
+ * @param email the e-mail address of the new user.
+ */
+router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
+  var register = { "username": req.params.USERNAME,
+   "password": req.params.PASSWORD,
+    "email": req.body.email,
+    "since": new Date().toJSON(),
+    "locale":"EN",
+    "notify":"true",
+    "admin":"false" };
+
+  usersDB.findOne({username: req.params.USERNAME}).exec(function(err, docs) {
+    if (err) {
+      res.json({message:"error while checking user!"});
+    } else {
+      if (docs) {
+        res.json({message:"the user <" + req.params.USERNAME + "> already exists!"});
+      } else {
+        usersDB.insert(register, function(err, newDoc) {
+          if (err) {
+            console.log(errorMessage("register user", req, err));
+          } else {
+            console.log(debugMessage("register user", req, newDoc));
+            res.json(newDoc);
+          }
+        });
+      }
+    }
+  });
 });
 
 // PUT     /session/:USER                 // update user-setting for USER
