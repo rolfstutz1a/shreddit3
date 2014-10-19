@@ -40,6 +40,14 @@ function selectSortOrder(order) {
   }
 }
 
+/*
+(function(){
+}());
+jQuery(function(){
+
+});
+*/
+
 function onUpdateDate(data) {
   if (Array.isArray(data)) {
     for (var index = 0; index < data.length; ++index) {
@@ -98,6 +106,12 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
     console.log("logout: username=<" + $scope.user.username + "> password=<" + $scope.user.password + "> (" + $scope.user.loggedin + ")");
   };
 
+  $scope.onSearch = function(key) {
+    if (key === 13) {
+      $rootScope.$broadcast("onReloadPostings");
+    }
+  };
+
   $scope.showSettings = function() {
     $location.path("/settings");
   };
@@ -114,7 +128,7 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
     $scope.user.sortOrder = order;
     selectSortOrder(order);
     $cookieStore.put("sss-sort-order", order);
-    $rootScope.$broadcast("onChangeSortOrder");
+    $rootScope.$broadcast("onReloadPostings");
     $location.path("/postings");
   }
 
@@ -254,10 +268,10 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
     $scope.postings = onUpdateDate(data);
   };
   var reload = function(data, status, headers, config) {
-    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
   };
 
-  postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+  postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
 
   $scope.getUser = function() {
     return $cookieStore.get("sss-username");
@@ -268,8 +282,8 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
   $scope.showComments = function(id) {
     $location.path("/comments/" + id);
   };
-  $scope.$on("onChangeSortOrder", function(event, dest) {
-    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"));
+  $scope.$on("onReloadPostings", function(event, dest) {
+    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
   });
 }
 
@@ -294,8 +308,8 @@ shredditApplication.factory("postingService", function($http) {
     createComment: function(pid, comment) {
       $http({url: "/data/comments/" + pid, method: "POST", data: comment});
     },
-    loadPostings: function(onLoad, order, username) {
-      $http.get("/data/postings?order=" + order + "&user=" + username).success(onLoad);
+    loadPostings: function(onLoad, order, username, search) {
+      $http.get("/data/postings?order=" + order + "&user=" + username + "&search=" + search).success(onLoad);
     }
   };
 
