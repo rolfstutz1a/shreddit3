@@ -103,7 +103,7 @@ label {
   align-items: center;
   flex-wrap: wrap;
 }
-.sc-posting-header-title {
+.sc-posting-header-title, .sc-info-no-comments {
   font-size: 1.25rem;
   font-weight: bold;
   letter-spacing: 2px;

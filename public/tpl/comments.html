@@ -1,24 +1,25 @@
+<div class="container sc-comments">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <div class="sc-header-title">Comments for&colon; {{posting.title}}</div>
+    </div>
+    <div class="panel-body sc-content-text">
+      <button type="button" class="btn btn-default btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">Add comment</button>
+      <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Close</button>
 
-  <div class="container sc-comments">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <div class="sc-header-title">Comments for&colon; Pizza</div>
+      <div ng-repeat="comment in comments">
+
+        <blockquote class="sc-posting-comment">
+          <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}
+          </p>
+          <footer class="sc-posting-commentator">&#x2014;&nbsp;by <span
+              class="sp-user-name">{{comment.user}}</span> ({{comment.date}})
+          </footer>
+        </blockquote>
       </div>
-      <div class="panel-body sc-content-text">
-        <button type="button" class="btn btn-default btn-sm sc-btn-add-comment">Add comment</button>
-        <blockquote class="sc-posting-comment">
-          <p><span class="sp-user-name">&#64;&nbsp;fridge&colon;&nbsp;&nbsp;</span>Lorem ipsum dolor sit amet,
-            consectetur adipiscing elit. Integer posuere erat a ante.</p>
-          <footer class="sc-posting-commentator">&#x2014;&nbsp;by <span class="sp-user-name">cyrano</span> (20.08.2014
-            19:22)
-          </footer>
-        </blockquote>
-        <blockquote class="sc-posting-comment">
-          <p>I love Pizza.</p>
-          <footer class="sc-posting-commentator">&#x2014;&nbsp;by <span class="sp-user-name">fridge</span> (17.07.2014
-            03:08)
-          </footer>
-        </blockquote>
+      <div class="sc-info-no-comments" ng-show="comments.length == 0">
+        No comments (yet)!
       </div>
     </div>
   </div>
+</div>

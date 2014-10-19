@@ -37,6 +37,7 @@ var ratingsDB = new Nedb({ filename: "../server/db/ratings", autoload: true });
  *
  * @param user the username of the user who is requesting the postings
  * @param order how to sort the postings (LATEST: (default) latest postings first, TOP: top rated postings first, MY: only postings from the user).
+ * @param search the current active search-text.
  */
 router.get("/postings", function(req, res) {
   var order = req.param("order");
@@ -92,8 +93,8 @@ router.post("/postings", function(req, res) {
     if (err) {
       console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
-        console.log("postingsDB " + req.method + ": " + req.path + " insert new post for " + req.body.user + req.originalUrl);
-        res.json(newDoc);
+      console.log("postingsDB " + req.method + ": " + req.path + " insert new post for " + req.body.user + req.originalUrl);
+      res.json(newDoc);
     }
   });
 });
@@ -108,8 +109,7 @@ router.post("/postings", function(req, res) {
  */
 router.get("/postings/:PID", function(req, res) {
   var find = {_id: req.params.PID};
-
-  postingsDB.find(find).exec(function(err, doc) {
+  postingsDB.findOne(find).exec(function(err, doc) {
     if (err) {
       console.log("error postingsDB " + req.method + ": " + req.originalUrl + " : " + err);
     } else {
@@ -150,23 +150,26 @@ router.delete("/postings/:PID", function(req, res) {
   });
 });
 
-// GET     /comments/:PID                 // get all comments for posting with PID
+/**
+ * Loads the comments for the posting with the PID from the database. The comments ars sorted by their creation
+ * time (the latest first).
+ *
+ * Method: GET
+ * Route: /comments/:PID
+ *
+ * @param PID the ID of the posting for which the comments are requested..
+ */
 router.get("/comments/:PID", function(req, res) {
-  // res.json(DB.getComments(req.params.PID));
 
-  if (err) {
-    console.log("error " + req.method + ": " + req.originalUrl + " : " + err);
-  } else {
-    commentsDB.find({pid: req.params.PID}, function(err, doc) {
+  commentsDB.find({pid: req.params.PID}).sort({"time":-1}).exec(function(err, docs) {
+    if (docs.length <= 0) {
+      console.log("commentsDB has no element: " + req.originalUrl);
+    } else {
+      console.log("commentsDB " + req.method + ": " + req.path + " has " + docs.length + " elements. " + req.originalUrl);
+    }
+    res.json(docs);
+  });
 
-      if (doc.length <= 0) {
-        console.log("commentsDB has no element: " + req.originalUrl);
-      } else {
-        console.log("commentsDB " + req.method + ": " + req.path + " has " + docs.length + " elements. " + req.originalUrl);
-      }
-      res.json(doc);
-    });
-  }
 });
 
 /**
@@ -175,29 +178,28 @@ router.get("/comments/:PID", function(req, res) {
  * Method: POST
  * Route: /comments/:PID
  *
- * @param pid        .
- * @param user      the user who creates the comment.
- * @param comment   the content of the new comment.
- * @param response  .
+ * @param PID the ID of the posting for which the comment is created.       .
+ * @param user the user who creates the comment.
+ * @param comment the content of the new comment.
+ * @param response an username or another reference to an already existing comment.
  */
-
-// POST    /comments/:PID                 // create new comment for posting with PID
 router.post("/comments/:PID", function(req, res) {
-  // res.json(DB.createComment(req.params.PID, req.body.user, req.body.comment));
-    var comment = {"pid": req.body.pid,
-                   "user": req.body.user,
-                   "time": new Date().toJSON(),
-                   "comment": req.body.comment,
-                   "response":  req.body.response };
+  var comment = {"pid": req.params.PID,
+    "user": req.body.user,
+    "time": new Date().toJSON(),
+    "comment": req.body.comment,
+    "response": req.body.response };
 
-     commentsDB.insert(comment, function(err, newDoc) {
-        if (err) {
-            console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
-        } else {
-            console.log("commentsDB " + req.method + ": " + req.path + " insert new comment from " + req.body.user + ' about ' + req.body.pid);
-            res.json(newDoc);
-        }
-    });
+  commentsDB.insert(comment, function(err, newDoc) {
+    if (err) {
+      console.log("error commentsDB " + req.method + ": " + req.originalUrl + " : " + err);
+    } else {
+      console.log("commentsDB " + req.method + ": " + req.path + " insert new comment from " + req.body.user + ' about ' + req.body.pid);
+      postingsDB.update({ _id: req.params.PID }, { $inc: { commentCount: 1 } }, { upsert: true }, function (xxx, yyy) {
+        res.json(newDoc);
+      });
+    }
+  });
 });
 
 // DELETE  /comments/:CID                 // delete comment with CID

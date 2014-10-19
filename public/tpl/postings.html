@@ -22,10 +22,9 @@
       <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
         <p>{{posting.content}}</p>
         <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)" class="btn btn-default btn-sm pull-right sc-margin-left">Delete</button>
-        <button type="button" class="btn btn-default btn-sm pull-right">Add comment</button>
-        <button ng-show="posting.commentCount == '0'" type="button" disabled class="btn btn-link btn-sm pull-right">No comments</button>
-        <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right">Show comment ({{posting.commentCount}})</button>
-        <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right">Show comments ({{posting.commentCount}})</button>
+        <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">No comments</button>
+        <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comment ({{posting.commentCount}})</button>
+        <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})</button>
       </div>
     </div>
     <div class="sc-info-no-postings" ng-show="postings.length == 0">

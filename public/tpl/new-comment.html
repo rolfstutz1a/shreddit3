@@ -2,25 +2,25 @@
   <div class="container sc-new-comment">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">New comment for posting: Pizza</div>
+        <div class="sc-header-title">New comment for posting: {{posting.title}}</div>
       </div>
       <div class="panel-body sc-content-text">
 
         <form role="form" class="">
           <div class="form-group">
-            <label for="si-new-posting-comment-title">Response &#64;&colon;</label>
-            <input type="text" class="form-control" id="si-new-posting-comment-title">
+            <label for="si-new-posting-comment-title">As a response &#64;&colon;</label>
+            <input type="text" class="form-control" id="si-new-posting-comment-title" ng-model="comment.response">
           </div>
           <div class="form-group">
             <label for="si-new-posting-comment-user">User</label>
-            <input type="text" class="form-control" id="si-new-posting-comment-user" readonly value="volcano">
+            <input type="text" class="form-control" id="si-new-posting-comment-user" readonly value="volcano" ng-model="comment.user">
           </div>
           <div class="form-group">
             <label for="si-new-posting-comment-content">Comment</label>
-            <textarea class="form-control sp-text-area" id="si-new-posting-comment-content"></textarea>
+            <textarea class="form-control sp-text-area" id="si-new-posting-comment-content" ng-model="comment.comment"></textarea>
           </div>
-          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
-          <button type="submit" class="btn btn-default btn-sm pull-right">Save Comment</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close(posting._id)">Cancel</button>
+          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="createComment(posting._id)">Save Comment</button>
         </form>
       </div>
     </div>
