@@ -1,16 +1,16 @@
-{ "_id": "WxzhpY0duqcox5Ov", "_count": 5, "_average": 2.60, "moorwor": 3, "cyrano": 4, "volcano": 2, "ceanage": 2, "bie": 2 }
-{ "_id": "I0TzL2kJA3xVjSPH", "_count": 6, "_average": 2.00, "fridge": 2, "cyrano": 2, "levesale": 1, "saycbel": 1, "woillpol": 2, "bie": 4 }
-{ "_id": "5jNXTBWnU5PfwdlL", "_count": 7, "_average": 2.29, "yeringem": 1, "lycina": 3, "snassnal": 4, "cyrano": 3, "saycbel": 1, "ceanage": 2, "bie": 2 }
-{ "_id": "7Gd3HWVHfETQnNKD", "_count": 7, "_average": 2.00, "fridge": 1, "yeringem": 2, "moorwor": 2, "suz": 1, "saycbel": 3, "woillpol": 4, "bie": 1 }
-{ "_id": "jcZiVU2n7ttCkau7", "_count": 3, "_average": 4.00, "fridge": 4, "lycina": 4, "moorwor": 4 }
-{ "_id": "ULSniExFkjSgGBgw", "_count": 5, "_average": 2.40, "snassnal": 3, "moorwor": 3, "cyrano": 2, "levesale": 3, "ceanage": 1 }
-{ "_id": "6W2zKpCqorC4IfD6", "_count": 8, "_average": 2.62, "yeringem": 2, "snassnal": 2, "moorwor": 3, "suz": 2, "levesale": 4, "volcano": 4, "saycbel": 3, "bie": 1 }
-{ "_id": "oFB9yHnL7bBaH6I5", "_count": 7, "_average": 2.57, "fridge": 3, "lycina": 1, "moorwor": 4, "suz": 3, "saycbel": 1, "ceanage": 4, "bie": 2 }
-{ "_id": "wyFwRVQDMk3oN78L", "_count": 6, "_average": 3.00, "yeringem": 3, "lycina": 1, "snassnal": 4, "moorwor": 3, "cyrano": 4, "woillpol": 3 }
-{ "_id": "oBrPPpey6r7xue5M", "_count": 2, "_average": 2.00, "suz": 3, "saycbel": 1 }
-{ "_id": "jgTWsCeW5vZH1p2K", "_count": 2, "_average": 2.50, "suz": 3, "volcano": 2 }
-{ "_id": "W6sxg8orQNDgCYWM", "_count": 9, "_average": 2.33, "lycina": 4, "snassnal": 2, "moorwor": 1, "cyrano": 3, "suz": 4, "levesale": 1, "volcano": 1, "woillpol": 4, "bie": 1 }
-{ "_id": "qsGXclrtFmVawEGH", "_count": 2, "_average": 1.00, "fridge": 1, "snassnal": 1 }
-{ "_id": "O9IfBFpvRchdQPxM", "_count": 7, "_average": 2.57, "fridge": 3, "lycina": 4, "suz": 4, "levesale": 1, "saycbel": 1, "volcano": 1, "woillpol": 4 }
-{ "_id": "ME4QWkUBSZ4dEZQx", "_count": 1, "_average": 3.00, "ceanage": 3 }
-{ "_id": "8pPFEpj34AtcVEs4", "_count": 7, "_average": 2.43, "fridge": 4, "lycina": 1, "snassnal": 1, "moorwor": 4, "suz": 1, "saycbel": 3, "bie": 3 }
+{"_id":"5jNXTBWnU5PfwdlL","_count":7,"_average":2.29,"yeringem":1,"lycina":3,"snassnal":4,"cyrano":3,"saycbel":1,"ceanage":2,"bie":2}
+{"_id":"6W2zKpCqorC4IfD6","_count":8,"_average":2.62,"yeringem":2,"snassnal":2,"moorwor":3,"suz":2,"levesale":4,"volcano":4,"saycbel":3,"bie":1}
+{"_id":"7Gd3HWVHfETQnNKD","_count":7,"_average":2,"fridge":1,"yeringem":2,"moorwor":2,"suz":1,"saycbel":3,"woillpol":4,"bie":1}
+{"_id":"8pPFEpj34AtcVEs4","_count":7,"_average":2.43,"fridge":4,"lycina":1,"snassnal":1,"moorwor":4,"suz":1,"saycbel":3,"bie":3}
+{"_id":"I0TzL2kJA3xVjSPH","_count":6,"_average":2,"fridge":2,"cyrano":2,"levesale":1,"saycbel":1,"woillpol":2,"bie":4}
+{"_id":"ME4QWkUBSZ4dEZQx","_count":1,"_average":3,"ceanage":3}
+{"_id":"O9IfBFpvRchdQPxM","_count":7,"_average":2.57,"fridge":3,"lycina":4,"suz":4,"levesale":1,"saycbel":1,"volcano":1,"woillpol":4}
+{"_id":"ULSniExFkjSgGBgw","_count":5,"_average":2.4,"snassnal":3,"moorwor":3,"cyrano":2,"levesale":3,"ceanage":1}
+{"_id":"W6sxg8orQNDgCYWM","_count":9,"_average":2.33,"lycina":4,"snassnal":2,"moorwor":1,"cyrano":3,"suz":4,"levesale":1,"volcano":1,"woillpol":4,"bie":1}
+{"_id":"WxzhpY0duqcox5Ov","_count":5,"_average":2.6,"moorwor":3,"cyrano":4,"volcano":2,"ceanage":2,"bie":2}
+{"_id":"jcZiVU2n7ttCkau7","_count":3,"_average":4,"fridge":4,"lycina":4,"moorwor":4}
+{"_id":"jgTWsCeW5vZH1p2K","_count":2,"_average":2.5,"suz":3,"volcano":2}
+{"_id":"oBrPPpey6r7xue5M","_count":2,"_average":2,"suz":3,"saycbel":1}
+{"_id":"oFB9yHnL7bBaH6I5","_count":7,"_average":2.57,"fridge":3,"lycina":1,"moorwor":4,"suz":3,"saycbel":1,"ceanage":4,"bie":2}
+{"_id":"qsGXclrtFmVawEGH","_count":2,"_average":1,"fridge":1,"snassnal":1}
+{"_id":"wyFwRVQDMk3oN78L","_count":6,"_average":3,"yeringem":3,"lycina":1,"snassnal":4,"moorwor":3,"cyrano":4,"woillpol":3}

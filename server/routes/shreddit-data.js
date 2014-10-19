@@ -9,11 +9,8 @@ function debugMessage(msg, req, data) {
   if (Array.isArray(data)) {
     return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": size=" + data.length;
   }
-  if (Number.isInteger(data)) {
-    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": effected=" + data;
-  }
   if (data) {
-    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": size=1";
+    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": effected=" + data;
   }
   return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": (no data)";
 }
