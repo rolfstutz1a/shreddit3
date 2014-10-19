@@ -44,18 +44,28 @@ var ratingsDB = new Nedb({ filename: "../server/db/ratings", autoload: true });
 router.get("/postings", function(req, res) {
   var order = req.param("order");
   var userName = req.param("user");
+  var search = req.param("search");
   var sortOrder = { time: 1 };
+  var searchText = {};
   var find = {};
 
+// for tests  searchString ='Morologie';
+
+  if ((search === 'undefined') || (search ==='' )){
+      find = {};
+  }else {
+      searchText = eval('$regex:/'+search+'/');
+      find = {$or: [{content:searchText},{title:searchText},{user:searchText}]};
+      console.log(find);
+  };
+
   if (order === "TOP") {
-    sortOrder = { rating: -1 };  // rating
-    find = {};
+    sortOrder = { rating: -1 };// rating
   } else if (order === "MY") {
     sortOrder = { time: -1 };  // user
     find = {user: userName};
   } else {
     sortOrder = { time: -1 }; // latest
-    find = {};
   }
 
   postingsDB.find(find).sort(sortOrder).exec(function(err, docs) {
