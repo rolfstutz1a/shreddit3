@@ -46,17 +46,18 @@ router.get("/postings", function(req, res) {
   var userName = req.param("user");
   var search = req.param("search");
   var sortOrder = { time: 1 };
-  var searchText = {};
+  var searchObj = {};
   var find = {};
 
-// for tests  searchString ='Morologie';
+// for tests search ='Morologie';
 
   if ((search === 'undefined') || (search ==='' )){
       find = {};
   }else {
-      searchText = eval('$regex:/'+search+'/');
-      find = {$or: [{content:searchText},{title:searchText},{user:searchText}]};
-      console.log(find);
+      search = '$regex:/'+search+'/';
+      searchObj = eval('{'+search+'}');
+      console.log(typeof (searchText));
+      find = {$or: [{content:searchObj},{title:searchObj},{user:searchObj}]};
   };
 
   if (order === "TOP") {
