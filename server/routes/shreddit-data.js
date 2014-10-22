@@ -228,9 +228,74 @@ router.delete("/comments/:CID", function(req, res) {
   })
 });
 
+/**
+ * Create new rating for posting with PID.
+ *
+ * Method: POST
+ * Route: /ratinGs/:PID/:USER/:STARS
+ *
+ * @param PID   the ID of the posting for which the rating is.
+ * @param USER  the user who do the rating.
+ * @param STARS the new rating.
+ */
 // PUT     /ratings/:PID/:USER/:STARS     // add/change rating for posting with PID and USER with STARS (0 .. 5)
 router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
-  // res.json(DB.updateRatings(req.params.PID, req.params.USER, req.params.STARS));
+    var rating = {"_id": req.params.PID,
+        "_count": req.params.USER,
+        "_average": req.params.STARS,
+//todo  ******************* Hier besteht noch ein Problem mit dem _user ich bring den nicht Variabel hin.
+        "_user": req.params.STARS};
+
+    var _pid = req.params.PID;
+    var _user = req.params.USER;
+    var _stars =  req.params.STARS;
+
+    postingsDB.findOne({_id: _pid}, function (err, doc) {
+        var sum = 0;
+        var count = 0;
+        var average = 0;
+
+        if (doc === null) {
+            /* no data in the posting DB */
+            console.log(debugMessage("rating, no posting to [" + req.params.PID + "]", req, docs));
+        } else {
+
+            ratingsDB.findOne({_id: _pid}, function (err, doc) {
+                if (err) {
+                    console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
+                } else {
+                    console.log(debugMessage("rating update[" + req.params.PID + "]", req, docs));
+
+                    if (doc.hasOwnProperty(_user) === false) {
+                        count++;
+                    }
+
+                    for (var prop in doc) {
+                        if ((prop !== "_id" ) && (prop !== "_count") && (prop !== "_average")) {
+                            console.log(typeof(prop) + "   o." + prop + " = " + doc[prop]);
+                            sum = sum + doc[prop];
+                            count++;
+                        }
+                    }
+                    average = sum / count;
+
+// todo ******************* Hier besteht noch ein Problem mit dem _user ich bring den nicht Variabel hin.
+                    ratingsDB.update({_id: _pid}, {$set: {_user: _stars, "_average": average, "_count": count}}, { multi: false }, function (err, numReplaced) {
+                        if (numReplaced === 1) {
+                            console.log('numReplaced :' + numReplaced);
+                            postings.findOne({_id: _pid}, function (err, doc) {
+                                if (doc.length === 1) {
+                                    postings.update({_id: _pid}, {$set: {"rating": average}}, function (err, numReplaced) {
+                                        console.log(debugMessage("rating update[" + req.params.PID + "]", req, docs));
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    });
 });
 
 /**
