@@ -15,6 +15,10 @@ function debugMessage(msg, req, data) {
   return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": (no data)";
 }
 
+function respondError(res, message) {
+  res.send(500, {error: message});
+}
+
 /**
  * NeDB is the database which we use to persist our data.
  *
@@ -49,16 +53,20 @@ router.get("/postings", function(req, res) {
   var searchObj = {};
   var find = {};
 
-// for tests search ='Morologie';
+  // for tests search ='Morologie';
 
-  if ((search === 'undefined') || (search ==='' )){
-      find = {};
-  }else {
-      search = '$regex:/'+search+'/i'; // search is case-insensitive
-      searchObj = eval('{'+search+'}');
-      console.log(typeof (searchText));
-      find = {$or: [{content:searchObj},{title:searchObj},{user:searchObj}]};
-  };
+  if ((search === 'undefined') || (search === '' )) {
+    find = {};
+  } else {
+    search = '$regex:/' + search + '/i'; // search is case-insensitive
+    searchObj = eval('{' + search + '}');
+    console.log(typeof (searchText));
+    find = {$or: [
+      {content: searchObj},
+      {title: searchObj},
+      {user: searchObj}
+    ]};
+  }
 
   if (order === "TOP") {
     sortOrder = { rating: -1 };// rating
@@ -94,7 +102,7 @@ router.get("/postings", function(req, res) {
  */
 router.post("/postings", function(req, res) {
 
-  var posting = {"title": req.body.title, "user": req.body.user, "version": "1", "time": new Date().toJSON(),
+  var posting = {"title": req.body.title, "user": req.body.user, "version": 1, "time": new Date().toJSON(),
     "rating": "0.00", "people": "0", "link": req.body.link, "url": req.body.url, "commentCount": 0,
     "tags": req.body.tags, "content": req.body.content };
 
@@ -120,9 +128,9 @@ router.get("/postings/:PID", function(req, res) {
   var find = {_id: req.params.PID};
   postingsDB.findOne(find).exec(function(err, doc) {
     if (err) {
-      console.log(errorMessage("load posting["+req.params.PID+"]", req, err));
+      console.log(errorMessage("load posting[" + req.params.PID + "]", req, err));
     } else {
-      console.log(debugMessage("load posting["+req.params.PID+"]", req, doc));
+      console.log(debugMessage("load posting[" + req.params.PID + "]", req, doc));
       res.json(doc);
     }
   });
@@ -141,17 +149,17 @@ router.delete("/postings/:PID", function(req, res) {
 
   commentsDB.remove({pid: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log(errorMessage("delete comments["+req.params.PID+"]", req, err));
+      console.log(errorMessage("delete comments[" + req.params.PID + "]", req, err));
     } else {
-      console.log(debugMessage("delete comments["+req.params.PID+"]", req, numRemoved));
+      console.log(debugMessage("delete comments[" + req.params.PID + "]", req, numRemoved));
     }
   });
 
   postingsDB.remove({_id: _pid}, {multi: true}, function(err, numRemoved) {
     if (err) {
-      console.log(errorMessage("delete posting["+req.params.PID+"]", req, err));
+      console.log(errorMessage("delete posting[" + req.params.PID + "]", req, err));
     } else {
-      console.log(debugMessage("delete posting["+req.params.PID+"]", req, numRemoved));
+      console.log(debugMessage("delete posting[" + req.params.PID + "]", req, numRemoved));
     }
     res.json({"removed": numRemoved});
   });
@@ -170,9 +178,9 @@ router.get("/comments/:PID", function(req, res) {
 
   commentsDB.find({pid: req.params.PID}).sort({"time": -1}).exec(function(err, docs) {
     if (err) {
-      console.log(errorMessage("load comments["+req.params.PID+"]", req, err));
+      console.log(errorMessage("load comments[" + req.params.PID + "]", req, err));
     } else {
-      console.log(debugMessage("load comments["+req.params.PID+"]", req, docs));
+      console.log(debugMessage("load comments[" + req.params.PID + "]", req, docs));
     }
     res.json(docs);
   });
@@ -199,10 +207,10 @@ router.post("/comments/:PID", function(req, res) {
 
   commentsDB.insert(comment, function(err, newDoc) {
     if (err) {
-      console.log(errorMessage("create comment["+req.params.PID+"]", req, err));
+      console.log(errorMessage("create comment[" + req.params.PID + "]", req, err));
     } else {
-      console.log(debugMessage("create comment["+req.params.PID+"]", req, newDoc));
-      postingsDB.update({ _id: req.params.PID }, { $inc: { commentCount: 1 } }, { upsert: true }, function() {
+      console.log(debugMessage("create comment[" + req.params.PID + "]", req, newDoc));
+      postingsDB.update({ _id: req.params.PID }, { $inc: { commentCount: 1, _version: 1 } }, { upsert: true }, function() {
         res.json(newDoc);
       });
     }
@@ -220,82 +228,127 @@ router.post("/comments/:PID", function(req, res) {
 router.delete("/comments/:CID", function(req, res) {
   commentsDB.remove({id: req.params.CID}, {multi: false}, function(err, numRemoved) {
     if (err) {
-      console.log(errorMessage("delete comment["+req.params.CID+"]", req, err));
+      console.log(errorMessage("delete comment[" + req.params.CID + "]", req, err));
     } else {
-      console.log(debugMessage("delete comment["+req.params.CID+"]", req, numRemoved));
+      console.log(debugMessage("delete comment[" + req.params.CID + "]", req, numRemoved));
     }
     res.json(numRemoved);
   })
 });
 
 /**
+ * Updates the <code>rating</code> and <code>posting</code> with the new vote.
+ *
+ * @param posting the posting for which the voting was.
+ * @param rating the data of the previous votings.
+ * @param user  the user who do the rating.
+ * @param stars how many stars were given.
+ *
+ * @return <code>true</code> if the data has to be saved.
+ */
+function updateRating(posting, rating, user, stars) {
+  if (rating.hasOwnProperty(user)) {
+    var lastStars = rating[user];
+    if (lastStars === stars) {
+      return false; // no change in the voting
+    }
+    rating[user] = stars;
+    rating._average = ((rating._count * rating._average) - lastStars + stars) / rating._count;
+    posting.rating = "" + rating._average.toFixed(2);
+  } else {
+    rating[user] = stars;
+    rating._average = ((rating._count * rating._average) + stars) / (rating._count + 1);
+    rating._count += 1;
+    posting.people = rating._count;
+    posting.rating = "" + rating._average.toFixed(2);
+  }
+  return true;
+}
+
+/**
  * Create new rating for posting with PID.
  *
- * Method: POST
+ * Method: PUT
  * Route: /ratinGs/:PID/:USER/:STARS
  *
  * @param PID   the ID of the posting for which the rating is.
  * @param USER  the user who do the rating.
  * @param STARS the new rating.
  */
-// PUT     /ratings/:PID/:USER/:STARS     // add/change rating for posting with PID and USER with STARS (0 .. 5)
 router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
-    var rating = {"_id": req.params.PID,
-        "_count": req.params.USER,
-        "_average": req.params.STARS,
-//todo  ******************* Hier besteht noch ein Problem mit dem _user ich bring den nicht Variabel hin.
-        "_user": req.params.STARS};
+  var queryID = { _id: req.params.PID };
 
-    var _pid = req.params.PID;
-    var _user = req.params.USER;
-    var _stars =  req.params.STARS;
+  ratingsDB.persistence.compactDatafile();
+  postingsDB.persistence.compactDatafile();
 
-    postingsDB.findOne({_id: _pid}, function (err, doc) {
-        var sum = 0;
-        var count = 0;
-        var average = 0;
+  var stars = parseInt(req.params.STARS);
+  if ((stars < 0) || (stars > 5)) {
+    respondError(res, "invalid number of stars: " + req.params.STARS);
+    return;
+  }
 
-        if (doc === null) {
-            /* no data in the posting DB */
-            console.log(debugMessage("rating, no posting to [" + req.params.PID + "]", req, docs));
+  // STEP 1: load posting
+  postingsDB.findOne(queryID, function(err, doc) {
+    if (err) {
+      console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
+      respondError(res, err);
+      return;
+    }
+    if (!doc) { // no data in the posting DB
+      console.log(debugMessage("rating, no posting to [" + req.params.PID + "]", req, doc));
+      respondError(res, "no posting found for: " + req.params.PID);
+    }
+    var posting = doc;
+    // END STEP 1
+
+    // STEP 2: Load rating
+    ratingsDB.findOne(queryID, function(err, doc) {
+      if (err) {
+        console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
+        respondError(res, err);
+        return;
+      }
+      var rating;
+      var update;
+      if (!doc) {
+        rating = { _id: req.params.PID, _count: 0, _average: 0.0, _version: 1 };
+        update = false;
+      } else {
+        rating = doc;
+        update = true;
+      }
+
+      if (updateRating(posting, rating, req.params.USER, stars)) {
+        // STEP 3: Save or update rating
+
+        // STEP 4: Update posting (used twice)
+        var step4 = function(err) {
+          if (err) {
+            console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
+            respondError(res, err);
+            return;
+          }
+          // "rating":"3.00","people":"6"
+          postingsDB.update(queryID, { $set: { "rating": posting.rating, "people": posting.people }, $inc:{_version:1} }, {}, function(err) {
+            if (err) {
+              console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
+              respondError(res, err);
+              return;
+            }
+            res.json({ _id: req.params.PID, "rating": posting.rating, "people": posting.people });
+          });
+
+        };
+
+        if (update) {
+          rating._version += 1;
+          ratingsDB.update(queryID, rating, {}, step4);
         } else {
-
-            ratingsDB.findOne({_id: _pid}, function (err, doc) {
-                if (err) {
-                    console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
-                } else {
-                    console.log(debugMessage("rating update[" + req.params.PID + "]", req, docs));
-
-                    if (doc.hasOwnProperty(_user) === false) {
-                        count++;
-                    }
-
-                    for (var prop in doc) {
-                        if ((prop !== "_id" ) && (prop !== "_count") && (prop !== "_average")) {
-                            console.log(typeof(prop) + "   o." + prop + " = " + doc[prop]);
-                            sum = sum + doc[prop];
-                            count++;
-                        }
-                    }
-                    average = sum / count;
-
-// todo ******************* Hier besteht noch ein Problem mit dem _user ich bring den nicht Variabel hin.
-                    ratingsDB.update({_id: _pid}, {$set: {_user: _stars, "_average": average, "_count": count}}, { multi: false }, function (err, numReplaced) {
-                        if (numReplaced === 1) {
-                            console.log('numReplaced :' + numReplaced);
-                            postings.findOne({_id: _pid}, function (err, doc) {
-                                if (doc.length === 1) {
-                                    postings.update({_id: _pid}, {$set: {"rating": average}}, function (err, numReplaced) {
-                                        console.log(debugMessage("rating update[" + req.params.PID + "]", req, docs));
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+          ratingsDB.insert(rating, step4);
         }
+      }
     });
+  });
 });
 
 /**
@@ -309,9 +362,9 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
 router.get("/session/:USERNAME", function(req, res) {
   usersDB.findOne({username: req.params.USERNAME}).exec(function(err, docs) {
     if (err) {
-      console.log(errorMessage("load user["+req.params.USERNAME+"]", req, err));
+      console.log(errorMessage("load user[" + req.params.USERNAME + "]", req, err));
     } else {
-      console.log(debugMessage("load user["+req.params.USERNAME+"]", req, docs));
+      console.log(debugMessage("load user[" + req.params.USERNAME + "]", req, docs));
     }
     res.json(docs);
   });
@@ -329,19 +382,19 @@ router.get("/session/:USERNAME", function(req, res) {
  */
 router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
   var register = { "username": req.params.USERNAME,
-   "password": req.params.PASSWORD,
+    "password": req.params.PASSWORD,
     "email": req.body.email,
     "since": new Date().toJSON(),
-    "locale":"EN",
-    "notify":"true",
-    "admin":"false" };
+    "locale": "EN",
+    "notify": "true",
+    "admin": "false" };
 
   usersDB.findOne({username: req.params.USERNAME}).exec(function(err, docs) {
     if (err) {
-      res.json({message:"error while checking user!"});
+      res.json({message: "error while checking user!"});
     } else {
       if (docs) {
-        res.json({message:"the user <" + req.params.USERNAME + "> already exists!"});
+        res.json({message: "the user <" + req.params.USERNAME + "> already exists!"});
       } else {
         usersDB.insert(register, function(err, newDoc) {
           if (err) {

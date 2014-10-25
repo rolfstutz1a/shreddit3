@@ -41,12 +41,12 @@ function selectSortOrder(order) {
 }
 
 /*
-(function(){
-}());
-jQuery(function(){
+ (function(){
+ }());
+ jQuery(function(){
 
-});
-*/
+ });
+ */
 
 function onUpdateDate(data) {
   if (Array.isArray(data)) {
@@ -61,6 +61,17 @@ function onUpdateDate(data) {
   return data;
 }
 
+function findPostingByID(id, postings) {
+  if (Array.isArray(postings)) {
+    for (var index = 0; index < postings.length; ++index) {
+      if (id === postings[index]._id) {
+        return postings[index];
+      }
+    }
+  }
+  return null;
+}
+
 function SessionController($scope, $location, $routeParams, $cookieStore, $rootScope, userService, sessionService) {
 
   $scope.user = {
@@ -72,8 +83,8 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
   $scope.$on("$routeChangeStart", function(event, dest) {
     showMainMenu(dest.$route.hiddenMenu !== true, dest.$route.hiddenPostingsMenu !== true);
   });
-  $scope.fake = function() {
-    $scope.user.username = "volcano";
+  $scope.fake = function(name) {
+    $scope.user.username = name;
     $scope.user.password = "123456";
   };
   $scope.isValidCred = function() {
@@ -169,8 +180,6 @@ function SettingsController($scope, $location, $routeParams, userService, sessio
   $scope.settings = {};
   $scope.languages = userService.getLanguages();
 
-
-
   (function(stngs) {
     var user = userService.getUserRef(sessionService.getUsername());
     stngs.language = userService.getLanguage(user.locale);
@@ -261,7 +270,57 @@ function AboutController($scope, $location, $routeParams) {
   };
 }
 
+function RatingController($scope, $location, $routeParams, $cookieStore, postingService) {
+
+  $scope.rate = function() {
+    console.log(JSON.stringify($scope.rating));
+  };
+}
+
 function PostingsController($scope, $location, $routeParams, $cookieStore, postingService) {
+
+  jQuery("#si-rating-dialog").dialog({
+    autoOpen: false,
+    width: 300,
+    modal: true,
+    buttons: [{ text: "Close",
+        click: function() {
+          jQuery(this).dialog("close");
+        }
+      }]
+  });
+
+  var onRate = function(data, status, headers, config) {
+    console.log(" >>> Rating: " + JSON.stringify(data));
+    var p = findPostingByID(data._id, $scope.postings);
+    if (p) {
+      p.people = data.people;
+      p.rating = data.rating;
+      $location.path("/postings");
+    }
+//    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+  };
+
+  function processRating(id, rate) {
+    return function(event) {
+      jQuery("#si-rating-dialog").dialog("close");
+      console.log("Rating: id=" + id + " rate=" + rate);
+      postingService.ratePosting(id, $cookieStore.get("sss-username"), rate, onRate);
+      event.preventDefault();     };
+  }
+
+  $scope.openRatingDialog = function(id, title) {
+    var dlg = jQuery("#si-rating-dialog");
+    for (var rate = 0; rate <= 5; ++rate) {
+      var stars = jQuery("#si-select-stars-" + rate);
+      stars.unbind("click"); // remove possible previous listeners
+      stars.bind("click", processRating(id, rate));
+    }
+    dlg.dialog("option", "title", title);
+    dlg.dialog("open");
+  };
+
+  $scope.username = $cookieStore.get("sss-username");
   $scope.postings = [];
 
   var callback = function(data, status, headers, config) {
@@ -295,6 +354,9 @@ shredditApplication.factory("postingService", function($http) {
   return {
     deletePosting: function(id, onDelete) {
       $http.delete("/data/postings/" + id).success(onDelete);
+    },
+    ratePosting: function(id, user, stars, onRate) {
+      $http.put("data/ratings/"+id+"/"+user+"/" + stars).success(onRate);
     },
     createPosting: function(posting) {
       $http({url: "/data/postings", method: "POST", data: posting});

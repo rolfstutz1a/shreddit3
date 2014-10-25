@@ -7,12 +7,13 @@
           <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
           <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">{{posting.user}}</div>
           <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
+            <a class="sc-select-stars" ng-click="openRatingDialog(posting._id,posting.title)">
             <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
-            <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span>
+            <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
           </div>
           <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
             <small>{{posting.date}}</small>
@@ -30,4 +31,15 @@
     <div class="sc-info-no-postings" ng-show="postings.length == 0">
       No postings found ... !
     </div>
+
+    <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
+      <p>Rate the Posting</p>
+      <a href="#" class="sc-select-stars" id="si-select-stars-0"><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+      <a href="#" class="sc-select-stars" id="si-select-stars-1"><span class="sc-stars">&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+      <a href="#" class="sc-select-stars" id="si-select-stars-2"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+      <a href="#" class="sc-select-stars" id="si-select-stars-3"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+      <a href="#" class="sc-select-stars" id="si-select-stars-4"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;</span></a><br>
+      <a href="#" class="sc-select-stars" id="si-select-stars-5"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span></a><br>
+    </div>
+
   </div>

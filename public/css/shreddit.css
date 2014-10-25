@@ -82,6 +82,17 @@ h1, h2, h3, h4, h5, h6 {
   color: #AAAAAA;
 }
 
+.sc-stars:hover {
+    color: #B674AF;
+}
+.sc-no-stars:hover {
+    color: #888888;
+}
+.sc-select-stars, .sc-select-stars:hover, .sc-select-stars:visited, .sc-select-stars:active, .sc-select-stars:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .sc-credit-table {
   border: none;
   padding: 0;
@@ -159,6 +170,7 @@ label {
 .sc-margin-left {
     margin-left: 1rem;
 }
+
 @media screen and (max-width: 767px) {
   .sc-sub-menu-dropdown > li > a {
     color: white;
