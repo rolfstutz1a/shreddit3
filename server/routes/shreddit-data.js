@@ -54,7 +54,7 @@ router.get("/postings", function(req, res) {
   if ((search === 'undefined') || (search ==='' )){
       find = {};
   }else {
-      search = '$regex:/'+search+'/';
+      search = '$regex:/'+search+'/i'; // search is case-insensitive
       searchObj = eval('{'+search+'}');
       console.log(typeof (searchText));
       find = {$or: [{content:searchObj},{title:searchObj},{user:searchObj}]};
