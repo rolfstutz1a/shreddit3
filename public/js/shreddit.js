@@ -120,7 +120,14 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
   $scope.onSearch = function(key) {
     if (key === 13) {
       $rootScope.$broadcast("onReloadPostings");
+    } else if (key === 0) {
+      var srch = jQuery("#srch-term").val();
+      if ((srch) && (srch.length > 0)) {
+        jQuery("#srch-term").val("");
+        $rootScope.$broadcast("onReloadPostings");
+      }
     }
+    jQuery("#srch-term").focus();
   };
 
   $scope.showSettings = function() {
@@ -292,13 +299,11 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
 
   var onRate = function(data, status, headers, config) {
     console.log(" >>> Rating: " + JSON.stringify(data));
-    var p = findPostingByID(data._id, $scope.postings);
-    if (p) {
-      p.people = data.people;
-      p.rating = data.rating;
-      $location.path("/postings");
+    var posting = findPostingByID(data._id, $scope.postings);
+    if (posting) {
+      posting.people = data.people;
+      posting.rating = data.rating;
     }
-//    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
   };
 
   function processRating(id, rate) {
@@ -309,15 +314,17 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
       event.preventDefault();     };
   }
 
-  $scope.openRatingDialog = function(id, title) {
-    var dlg = jQuery("#si-rating-dialog");
-    for (var rate = 0; rate <= 5; ++rate) {
-      var stars = jQuery("#si-select-stars-" + rate);
-      stars.unbind("click"); // remove possible previous listeners
-      stars.bind("click", processRating(id, rate));
+  $scope.openRatingDialog = function(id, user, title) {
+    if (user !== $cookieStore.get("sss-username")) {
+      var dlg = jQuery("#si-rating-dialog");
+      for (var rate = 0; rate <= 5; ++rate) {
+        var stars = jQuery("#si-select-stars-" + rate);
+        stars.unbind("click"); // remove possible previous listeners
+        stars.bind("click", processRating(id, rate));
+      }
+      dlg.dialog("option", "title", title);
+      dlg.dialog("open");
     }
-    dlg.dialog("option", "title", title);
-    dlg.dialog("open");
   };
 
   $scope.username = $cookieStore.get("sss-username");

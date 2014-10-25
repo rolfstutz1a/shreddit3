@@ -7,7 +7,7 @@
           <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
           <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">{{posting.user}}</div>
           <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
-            <a class="sc-select-stars" ng-click="openRatingDialog(posting._id,posting.title)">
+            <a class="sc-select-stars" ng-diabled="posting.user == getUser()" ng-click="openRatingDialog(posting._id,posting.user,posting.title)">
             <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
             <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
