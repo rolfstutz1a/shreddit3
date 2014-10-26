@@ -278,8 +278,8 @@ function updateRating(posting, rating, user, stars) {
 router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
   var queryID = { _id: req.params.PID };
 
-  ratingsDB.persistence.compactDatafile();
-  postingsDB.persistence.compactDatafile();
+  //ratingsDB.persistence.compactDatafile();
+  // postingsDB.persistence.compactDatafile();
 
   var stars = parseInt(req.params.STARS);
   if ((stars < 0) || (stars > 5)) {
@@ -359,7 +359,7 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
  * @param USERNAME the username of the requested user.
  */
 router.get("/session/:USERNAME", function(req, res) {
-  usersDB.findOne({username: req.params.USERNAME}).exec(function(err, doc) {
+  usersDB.findOne({_id: req.params.USERNAME}).exec(function(err, doc) {
     if (err) {
       respondError(res, err);
       return;
@@ -380,9 +380,10 @@ router.get("/session/:USERNAME", function(req, res) {
  * @param email the e-mail address of the new user.
  */
 router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
-  var register = { "username": req.params.USERNAME,
+  var register = { "_id": req.params.USERNAME,
     "password": req.params.PASSWORD,
     "email": req.body.email,
+    "_version":req.body._version,
     "since": new Date().toJSON(),
     "locale": "EN",
     "notify": "true",
@@ -400,7 +401,16 @@ router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
             console.log(errorMessage("register user", req, err));
           } else {
             console.log(debugMessage("register user", req, newDoc));
-            res.json(newDoc);
+            var userData = { "username": newDoc._id,
+                  "password": newDoc.password,
+                  "email": newDoc.email,
+                  "_version": newDoc._version,
+                  "since": newDoc.since,
+                  "locale": newDoc.locale,
+                  "notify": newDoc.notify,
+                  "admin": newDoc.admin };
+
+              res.json(userData);
           }
         });
       }

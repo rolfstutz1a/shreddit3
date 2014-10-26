@@ -1,7 +1,7 @@
 /* ToDo Delete
 // alert("Hello");
  */
-
+/* todo  delete  */
 (function($){
     var ajaxRequest;
     var renderProducts;
