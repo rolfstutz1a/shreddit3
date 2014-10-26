@@ -23,7 +23,7 @@ function ShredditDB() {
     { "id": "1029", "title": "HUGO", "user": "bie", "version": "1", "time": "2014-10-19T16:23:39.000Z", "rating": "2.50", "people": "4", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Das Codewort „HUGO“ bezeichnet im Flugbetrieb mittransportierte Leichen – es steht entweder für „Human Gone“ oder für „heute unerwartet gestorbenes Objekt“."},
     { "id": "1030", "title": "Roulette", "user": "ceanage", "version": "1", "time": "2014-10-25T00:39:05.000Z", "rating": "4.00", "people": "1", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": "0", "tags": "", "content": "Alle Roulettezahlen addiert ergeben 666."}
   ];
-  */
+
   var comments = [
     { "id": "1004", "pid": "1003", "user": "snassnal", "time": "2014-08-13T00:02:54.000Z", "comment": "Comment 1" },
     { "id": "1005", "pid": "1003", "user": "yeringem", "time": "2014-08-14T00:43:15.000Z", "comment": "Comment 2", "response": "snassnal" },
@@ -39,6 +39,7 @@ function ShredditDB() {
     { "id": "1025", "pid": "1022", "user": "suz", "time": "2014-10-07T18:39:54.000Z", "comment": "Comment 3", "response": "suz" },
     { "id": "1028", "pid": "1027", "user": "snassnal", "time": "2014-10-15T10:51:56.000Z", "comment": "Comment 1" }
   ];
+
   var ratings = [
     { "id": "1001", "count": "5", "average": "3.00", "votes": [
       {"user": "yeringem", "stars": "3"},
@@ -147,6 +148,7 @@ function ShredditDB() {
       {"user": "cyrano", "stars": "4"}
     ] }
   ];
+ */
   var languages = [
     {name: "English", locale: "EN"},
     {name: "Deutsch", locale: "DE"},
