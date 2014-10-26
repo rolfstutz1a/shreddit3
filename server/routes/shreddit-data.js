@@ -328,7 +328,6 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
             respondError(res, err);
             return;
           }
-          // "rating":"3.00","people":"6"
           postingsDB.update(queryID, { $set: { "rating": posting.rating, "people": posting.people }, $inc:{_version:1} }, {}, function(err) {
             if (err) {
               console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
@@ -360,13 +359,13 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
  * @param USERNAME the username of the requested user.
  */
 router.get("/session/:USERNAME", function(req, res) {
-  usersDB.findOne({username: req.params.USERNAME}).exec(function(err, docs) {
+  usersDB.findOne({username: req.params.USERNAME}).exec(function(err, doc) {
     if (err) {
-      console.log(errorMessage("load user[" + req.params.USERNAME + "]", req, err));
-    } else {
-      console.log(debugMessage("load user[" + req.params.USERNAME + "]", req, docs));
+      respondError(res, err);
+      return;
     }
-    res.json(docs);
+      console.log(debugMessage("load user[" + req.params.USERNAME + "]", req, doc));
+    res.json(doc);
   });
 });
 

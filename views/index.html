@@ -30,21 +30,21 @@
   <div class="collapse navbar-collapse" ng-controller="SessionController">
 
     <ul class="nav navbar-nav sc-show-if-loggedin">
-      <li><a href="" ng-click="addNewPosting()">New Posting</a></li>
-      <li><a href="" ng-click="showSettings()">Settings</a></li>
-      <li><a href="" ng-click="showAbout()">About</a></li>
-      <li><a href="" ng-click="logout()">Logout</a></li>
+      <li><a href="" ng-click="addNewPosting()" title="Create a new posting">New Posting</a></li>
+      <li><a href="" ng-click="showSettings()" title="Shoe my account settings">Settings</a></li>
+      <li><a href="" ng-click="showAbout()" title="Show the about page">About</a></li>
+      <li><a href="" ng-click="logout()" title="Logout from Shreddit">Logout</a></li>
     </ul>
     <span>&nbsp;&nbsp;&nbsp;&nbsp;</span>
-    <button id="si-sort-order-latest" type="button"
+    <button id="si-sort-order-latest" type="button" title="Sort the posting list. Beginning with the latest."
             class="btn btn-default navbar-btn btn-xs sc-sort-button sc-show-if-posting"
             ng-click="setSortOrderLatest()">Latest
     </button>
-    <button id="si-sort-order-top-rated" type="button"
+    <button id="si-sort-order-top-rated" type="button" title="Sort the posting list. Beginning with the top rated."
             class="btn btn-default navbar-btn btn-xs sc-sort-button sc-show-if-posting"
             ng-click="setSortOrderTopRated()">Top Rated
     </button>
-    <button id="si-sort-order-my-postings" type="button"
+    <button id="si-sort-order-my-postings" type="button" title="Show only my postings"
             class="btn btn-default navbar-btn btn-xs sc-sort-button sc-show-if-posting"
             ng-click="setSortOrderMyPostings()">My Postings
     </button>
@@ -53,10 +53,10 @@
       <div class="navbar-text">&nbsp;</div>
       <form class="navbar-form" role="search">
         <div class="input-group pull-right">
-          <input type="text" class="form-control sc-search-field" placeholder="Search" name="srch-term" id="srch-term" ng-keyup="onSearch($event.keyCode)">
+          <input type="text" title="Enter a search text.Start the search by pressing enter or clicking  the search button on the right." class="form-control sc-search-field" placeholder="Search" name="srch-term" id="srch-term" ng-keyup="onSearch($event.keyCode)">
           <!--<div class="input-group-btn">-->
-          <button class="btn btn-default" type="submit"  ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
-          <button class="btn btn-default" type="submit"  ng-click="onSearch(0)"><i class="glyphicon glyphicon-remove"></i></button>
+          <button class="btn btn-default" title="Start searching." type="submit"  ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
+          <button class="btn btn-default" title="Clear the search field." type="submit"  ng-click="onSearch(0)"><i class="glyphicon glyphicon-remove"></i></button>
           <!--</div>-->
         </div>
       </form>

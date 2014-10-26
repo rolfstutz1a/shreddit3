@@ -1,5 +1,8 @@
 var shredditApplication = angular.module("shreddit", ["ngCookies"]);
 
+/**
+ *
+ */
 shredditApplication.config(function($routeProvider) {
   $routeProvider.
     when("/", {controller: SessionController, templateUrl: "tpl/login.html", hiddenMenu: true, hiddenPostingsMenu: true}).
@@ -72,6 +75,17 @@ function findPostingByID(id, postings) {
   return null;
 }
 
+/**
+ *
+ * @param $scope
+ * @param $location
+ * @param $routeParams
+ * @param $cookieStore
+ * @param $rootScope
+ * @param userService
+ * @param sessionService
+ * @constructor
+ */
 function SessionController($scope, $location, $routeParams, $cookieStore, $rootScope, userService, sessionService) {
 
   $scope.user = {
@@ -168,6 +182,15 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
   };
 }
 
+/**
+ *
+ * @param $scope
+ * @param $location
+ * @param $routeParams
+ * @param userService
+ * @param sessionService
+ * @constructor
+ */
 function RegisterController($scope, $location, $routeParams, userService, sessionService) {
   $scope.registerInfo = {};
 
@@ -183,6 +206,15 @@ function RegisterController($scope, $location, $routeParams, userService, sessio
   };
 }
 
+/**
+ *
+ * @param $scope
+ * @param $location
+ * @param $routeParams
+ * @param userService
+ * @param sessionService
+ * @constructor
+ */
 function SettingsController($scope, $location, $routeParams, userService, sessionService) {
   $scope.settings = {};
   $scope.languages = userService.getLanguages();
