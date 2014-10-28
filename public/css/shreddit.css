@@ -110,6 +110,10 @@ label {
   padding-right: 2rem;
 }
 
+.sc-error-info {
+   color: #B00000;
+    margin-left: 10px;
+}
 .sc-search-field {
     max-width: 14rem;
 }

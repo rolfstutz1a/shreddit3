@@ -6,15 +6,17 @@
       </div>
       <div class="panel-body sc-content-text container">
         <div class="col-md-4"></div>
-        <form class="form col-md-4">
+        <form class="form col-md-4" name="loginForm" novalidate>
           <div class="form-group">
-            <input type="text" class="form-control input-lg" ng-model="user.username" ng-init="volcano" placeholder="Username" required>
+            <label for="si-login-username">Username&colon;</label><span class="error sc-error-info" ng-show="loginForm.username.$invalid">At least three characters!</span>
+            <input type="text" id="si-login-username" name="username" class="form-control input-lg" ng-model="user.username" ng-minlength="3" placeholder="Username" required>
           </div>
           <div class="form-group">
-            <input type="password" class="form-control input-lg" ng-model="user.password" ng-init="1234567" placeholder="Password" required>
+            <label for="si-login-password">Password&colon;</label><span class="error sc-error-info" ng-show="loginForm.password.$invalid">At least six characters!</span>
+            <input type="password" id="si-login-password" name="password" class="form-control input-lg" ng-model="user.password" ng-minlength="6" placeholder="Password" required>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="isInvalidCred()">Sign In</button>
+            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="loginForm.$invalid">Sign In</button>
             <button type="button" class="btn btn-link btn-sm" ng-click="register()">Register</button>
             <button class="btn btn-link btn-sm" ng-click="fake('bie')">(bie)</button>
             <button class="btn btn-link btn-sm" ng-click="fake('suz')">(suz)</button>

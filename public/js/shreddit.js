@@ -101,17 +101,10 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
     $scope.user.username = name;
     $scope.user.password = "123456";
   };
-  $scope.isValidCred = function() {
-    var flag = ($scope.user.username !== undefined) && ($scope.user.username.length > 2) && ($scope.user.password !== undefined) && ($scope.user.password.length > 5);
-    return flag;
-  };
-  $scope.isInvalidCred = function() {
-    return !$scope.isValidCred();
-  };
 
   $scope.login = function() {
     $scope.user.loggedin = false;
-    if (($scope.isValidCred() === true) && (sessionService.login(userService, $scope.user.username, $scope.user.password) === true)) {
+    if (($scope.loginForm.$valid) && (sessionService.login(userService, $scope.user.username, $scope.user.password) === true)) {
       $cookieStore.put("sss-username", $scope.user.username);
       $scope.user.loggedin = true;
       $location.path("/postings");
