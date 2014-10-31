@@ -20,7 +20,7 @@ function respondError(res, message) {
 }
 
 var ShredditDB = require("../db/shreddit-db");
-var DB = new ShredditDB("../server/db/");
+var DB = new ShredditDB("../server/db/","postings.dat","comments.dat","ratings.dat","users.dat");
 
 /**
  * Loading all postings from the database.

@@ -13,14 +13,16 @@ QUnit.test("Test function updateRating ", function( assert ) {
      *
      * @return <code>true</code> if the data has to be saved.
      */
-    var ratingscr = { _id: '1', _count: 1, _average: 3.0, _version: 1,"user1":3 };
+    var ratingscrNoUser = { _id: '1', _count: 1, _average: 3.0, _version: 1};
+    var ratingscr =       { _id: '1', _count: 1, _average: 3.0, _version: 1, user1:3};
 
-    var postingscr = {"title": "Testing post", "user": "check", "version": 1, "time": "2014-08-22T10:20:22.000Z",
+    var postingscr = {"title": "Testing post", "user": "user1", "version": 1, "time": "2014-08-22T10:20:22.000Z",
         "rating": "3.0", "people": "1", "link": "HSR", "url": "http://www.hsr.ch", "commentCount": 0,
         "tags": "", "content": "Thats only a test" };
 
-    assert.equal(updateRating(postingscr, ratingscr, "user1", 3), false  );// Test with same user and same rating
+    assert.equal(updateRating(postingscr, ratingscrNoUser, "user1", 3), true  );// Test with no user
+    assert.equal(updateRating(postingscr, ratingscr, "user1", 3), false );// Test with same user and same rating
     assert.equal(updateRating(postingscr, ratingscr, "user1", 1), true  );// Test with same user and same rating
-    assert.equal(updateRating(postingscr, ratingscr, "user2", 3), true  ); // Test with new user
+    assert.equal(updateRating(postingscr, ratingscr, "user2", 3), true  );// Test with new user
 
 });
