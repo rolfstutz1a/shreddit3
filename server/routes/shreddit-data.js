@@ -34,7 +34,13 @@ var DB = new ShredditDB("../server/db/","postings.dat","comments.dat","ratings.d
  *
  * @returns a sorted array of the requested postings or undefined.
  */
-router.get("/postings", function(req, res) {
+router.get("/postings", function(req, res, nxt){
+  console.log(" >>> A cookie=" + req.cookies["sss-username"]);
+  //respondError(res, "kgkgkjgkhgjkg");
+  //res.send(404, "Not found what you're looking for!");
+  nxt();
+},function(req, res) {
+  console.log(" >>> B cookie=" + req.cookies["sss-username"]);
   DB.getPostings(req.param("user"), req.param("order"), req.param("search"), function(err, docs) {
     if (err) {
       console.log(errorMessage("load postings", req, err));
@@ -59,7 +65,6 @@ router.get("/postings", function(req, res) {
  * @param tags a list tags for grouping the postings.
  */
 router.post("/postings", function(req, res) {
-
   var posting = {"title": req.body.title, "user": req.body.user, "version": 1, "time": new Date().toJSON(),
     "rating": "0.00", "people": "0", "link": req.body.link, "url": req.body.url, "commentCount": 0,
     "tags": req.body.tags, "content": req.body.content };
