@@ -1,18 +1,22 @@
-var shredditApplication = angular.module("shreddit", ["ngCookies"]);
+"use strict";
 
-/**
- *
- */
-shredditApplication.config(function($routeProvider) {
+angular.module("shreddit", ["ngRoute", "ngCookies"]);
+
+
+// -------------------------------------------------------------------------
+// ROUTING CONFIGURATION
+// -------------------------------------------------------------------------
+angular.module("shreddit").config(function($routeProvider) {
   $routeProvider.
-    when("/", {controller: SessionController, templateUrl: "tpl/login.html", hiddenMenu: true, hiddenPostingsMenu: true}).
-    when("/postings", {controller: PostingsController, templateUrl: "tpl/postings.html"}).
-    when("/new", {controller: NewController, templateUrl: "tpl/new.html", hiddenPostingsMenu: true}).
-    when("/about", {controller: AboutController, templateUrl: "tpl/about.html", hiddenPostingsMenu: true}).
-    when("/settings", {controller: SettingsController, templateUrl: "tpl/settings.html", hiddenPostingsMenu: true}).
-    when("/register", {controller: RegisterController, templateUrl: "tpl/register.html", hiddenMenu: true, hiddenPostingsMenu: true}).
-    when("/comments/:pid", {controller: CommentsController, templateUrl: "tpl/comments.html", hiddenPostingsMenu: true}).
-    when("/newcomment/:pid", {controller: NewCommentController, templateUrl: "tpl/new-comment.html", hiddenPostingsMenu: true}).
+    when("/", {controller: "SessionController", templateUrl: "tpl/login.html", hiddenMenu: true, hiddenPostingsMenu: true}).
+    when("/postings", {controller: "PostingsController", templateUrl: "tpl/postings.html", hiddenMenu: false, hiddenPostingsMenu: false}).
+    when("/new", {controller: "NewController", templateUrl: "tpl/new.html", hiddenMenu: false, hiddenPostingsMenu: true}).
+    when("/about", {controller: "AboutController", templateUrl: "tpl/about.html", hiddenMenu: false, hiddenPostingsMenu: true}).
+    when("/settings", {controller: "SettingsController", templateUrl: "tpl/settings.html", hiddenMenu: false, hiddenPostingsMenu: true}).
+    when("/register", {controller: "RegisterController", templateUrl: "tpl/register.html", hiddenMenu: true, hiddenPostingsMenu: true}).
+    when("/comments/:pid", {controller: "CommentsController", templateUrl: "tpl/comments.html", hiddenMenu: false, hiddenPostingsMenu: true}).
+    when("/newcomment/:pid", {controller: "NewCommentController", templateUrl: "tpl/new-comment.html", hiddenMenu: false, hiddenPostingsMenu: true}).
+    when("/error", {controller: "ErrorController", templateUrl: "tpl/error.html", hiddenMenu: true, hiddenPostingsMenu: true}).
     otherwise({redirectTo: "/", hiddenMenu: true});
 });
 
@@ -54,12 +58,12 @@ function selectSortOrder(order) {
 function onUpdateDate(data) {
   if (Array.isArray(data)) {
     for (var index = 0; index < data.length; ++index) {
-      data[index].date = new Date(Date.parse(data[index].time)).toLocaleString();
+      data[index].date = new Date(Date.parse(data[index].time));
     }
     return data;
   }
   if (data) {
-    data.date = new Date(Date.parse(data.time)).toLocaleString();
+    data.date = new Date(Date.parse(data.time));
   }
   return data;
 }
@@ -75,6 +79,20 @@ function findPostingByID(id, postings) {
   return null;
 }
 
+// -------------------------------------------------------------------------
+// CONTROLLERS
+// -------------------------------------------------------------------------
+
+angular.module("shreddit").controller("ErrorController",
+  function($scope, $location, errorService) {
+
+    $scope.error = errorService.getError();
+
+    $scope.home = function() {
+      $location.path("/");
+    };
+  });
+
 /**
  *
  * @param $scope
@@ -86,7 +104,8 @@ function findPostingByID(id, postings) {
  * @param sessionService
  * @constructor
  */
-function SessionController($scope, $location, $routeParams, $cookieStore, $rootScope, userService, sessionService) {
+angular.module("shreddit").controller("SessionController",
+  function($scope, $location, $routeParams, $cookieStore, $rootScope, userService, sessionService) {
 
   $scope.user = {
     username: sessionService.getUsername(),
@@ -95,7 +114,7 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
   };
 
   $scope.$on("$routeChangeStart", function(event, dest) {
-    showMainMenu(dest.$route.hiddenMenu !== true, dest.$route.hiddenPostingsMenu !== true);
+    showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
   });
   $scope.fake = function(name) {
     $scope.user.username = name;
@@ -173,7 +192,7 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
   $scope.close = function() {
     $location.path("/postings");
   };
-}
+});
 
 /**
  *
@@ -184,7 +203,7 @@ function SessionController($scope, $location, $routeParams, $cookieStore, $rootS
  * @param sessionService
  * @constructor
  */
-function RegisterController($scope, $location, $routeParams, userService, sessionService) {
+angular.module("shreddit").controller("RegisterController", function($scope, $location, $routeParams, userService, sessionService) {
   $scope.registerInfo = {};
 
   $scope.register = function() {
@@ -197,7 +216,7 @@ function RegisterController($scope, $location, $routeParams, userService, sessio
   $scope.close = function() {
     $location.path("/");
   };
-}
+});
 
 /**
  *
@@ -208,7 +227,7 @@ function RegisterController($scope, $location, $routeParams, userService, sessio
  * @param sessionService
  * @constructor
  */
-function SettingsController($scope, $location, $routeParams, userService, sessionService) {
+angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, userService, sessionService) {
   $scope.settings = {};
   $scope.languages = userService.getLanguages();
 
@@ -232,42 +251,50 @@ function SettingsController($scope, $location, $routeParams, userService, sessio
   $scope.close = function() {
     $location.path("/postings");
   };
-}
+});
 
-function NewCommentController($scope, $location, $routeParams, $cookieStore, postingService) {
+angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookieStore, postingService, errorService) {
 
   $scope.posting = {};
   $scope.comment = {"user": $cookieStore.get("sss-username")};
 
+  var onError = function(data, status, headers, config) {
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
   var onLoadPosting = function(data, status, headers, config) {
     $scope.posting = onUpdateDate(data);
   };
 
-  postingService.loadPosting($routeParams.pid, onLoadPosting);
+  postingService.loadPosting($routeParams.pid, onLoadPosting, onError);
 
   $scope.createComment = function(pid) {
-    postingService.createComment(pid, $scope.comment);
+    postingService.createComment(pid, $scope.comment, onError);
     $location.path("/comments/" + pid);
   };
   $scope.close = function(pid) {
     $location.path("/comments/" + pid);
   };
-}
+});
 
-function CommentsController($scope, $location, $routeParams, postingService) {
+angular.module("shreddit").controller("CommentsController", function($scope, $location, $routeParams, postingService, errorService) {
 
   $scope.posting = {};
   $scope.comments = {};
 
+  var onError = function(data, status, headers, config) {
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
   var onLoadComments = function(data, status, headers, config) {
     $scope.comments = onUpdateDate(data);
   };
   var onLoadPosting = function(data, status, headers, config) {
     $scope.posting = onUpdateDate(data);
-    postingService.loadComments($routeParams.pid, onLoadComments);
+    postingService.loadComments($routeParams.pid, onLoadComments, onError);
   };
 
-  postingService.loadPosting($routeParams.pid, onLoadPosting);
+  postingService.loadPosting($routeParams.pid, onLoadPosting, onError);
 
   $scope.addComment = function(pid) {
     $location.path("/newcomment/" + pid);
@@ -275,9 +302,9 @@ function CommentsController($scope, $location, $routeParams, postingService) {
   $scope.close = function() {
     $location.path("/postings");
   };
-}
+});
 
-function NewController($scope, $location, $routeParams, $cookieStore, postingService) {
+angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookieStore, postingService, errorService) {
   $scope.posting =
   { "title": "Morologie",
     "user": $cookieStore.get("sss-username"),
@@ -286,30 +313,28 @@ function NewController($scope, $location, $routeParams, $cookieStore, postingSer
     "tags": "Wissenschaft",
     "content": "Die Wissenschaft von der Dummheit heisst Morologie." };
 
+  var onError = function(data, status, headers, config) {
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
+
   $scope.createPosting = function() {
-    postingService.createPosting($scope.posting);
+    postingService.createPosting($scope.posting, onError);
     $location.path("/postings");
   };
 
   $scope.close = function() {
     $location.path("/postings");
   };
-}
+});
 
-function AboutController($scope, $location, $routeParams) {
+angular.module("shreddit").controller("AboutController", function($scope, $location, $routeParams) {
   $scope.close = function() {
     $location.path("/postings");
   };
-}
+});
 
-function RatingController($scope, $location, $routeParams, $cookieStore, postingService) {
-
-  $scope.rate = function() {
-    console.log(JSON.stringify($scope.rating));
-  };
-}
-
-function PostingsController($scope, $location, $routeParams, $cookieStore, postingService) {
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookieStore, postingService, errorService) {
 
   jQuery("#si-rating-dialog").dialog({
     autoOpen: false,
@@ -335,7 +360,7 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
     return function(event) {
       jQuery("#si-rating-dialog").dialog("close");
       console.log("Rating: id=" + id + " rate=" + rate);
-      postingService.ratePosting(id, $cookieStore.get("sss-username"), rate, onRate);
+      postingService.ratePosting(id, $cookieStore.get("sss-username"), rate, onRate, onError);
       event.preventDefault();     };
   }
 
@@ -355,61 +380,66 @@ function PostingsController($scope, $location, $routeParams, $cookieStore, posti
   $scope.username = $cookieStore.get("sss-username");
   $scope.postings = [];
 
-  var callback = function(data, status, headers, config) {
+  var onError = function(data, status, headers, config) {
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
+  var onLoad = function(data, status, headers, config) {
     $scope.postings = onUpdateDate(data);
   };
-  var reload = function(data, status, headers, config) {
-    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+  var onReload = function(data, status, headers, config) {
+    postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
   };
 
-  postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+  postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
 
   $scope.getUser = function() {
     return $cookieStore.get("sss-username");
   };
   $scope.deletePosting = function(id) {
-    postingService.deletePosting(id, reload);
+    postingService.deletePosting(id, onReload, onError);
   };
   $scope.showComments = function(id) {
     $location.path("/comments/" + id);
   };
-  $scope.$on("onReloadPostings", function(event, dest) {
-    postingService.loadPostings(callback, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+  $scope.$on("onReloadPostings", function(event) {
+    postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
   });
-}
+});
+
 
 // -------------------------------------------------------------------------
 // SERVICES
 // -------------------------------------------------------------------------
-shredditApplication.factory("postingService", function($http) {
+angular.module("shreddit").factory("postingService", function($http) {
 
   return {
-    deletePosting: function(id, onDelete) {
-      $http.delete("/data/postings/" + id).success(onDelete);
+    deletePosting: function(id, onDelete, onError) {
+      $http.delete("/data/postings/" + id).success(onDelete).error(onError);
     },
-    ratePosting: function(id, user, stars, onRate) {
-      $http.put("data/ratings/"+id+"/"+user+"/" + stars).success(onRate);
+    ratePosting: function(id, user, stars, onRate, onError) {
+      $http.put("data/ratings/"+id+"/"+user+"/" + stars).success(onRate).error(onError);
     },
-    createPosting: function(posting) {
-      $http({url: "/data/postings", method: "POST", data: posting});
+    createPosting: function(posting, onError) {
+      $http({url: "/data/postings", method: "POST", data: posting}).error(onError);
     },
-    loadPosting: function(pid, onLoad) {
-      $http.get("/data/postings/" + pid).success(onLoad);
+    loadPosting: function(pid, onLoad, onError) {
+      $http.get("/data/postings/" + pid).success(onLoad).error(onError);
     },
-    loadComments: function(pid, onLoad) {
-      $http.get("/data/comments/" + pid).success(onLoad);
+    loadComments: function(pid, onLoad, onError) {
+      $http.get("/data/comments/" + pid).success(onLoad).error(onError);
     },
-    createComment: function(pid, comment) {
-      $http({url: "/data/comments/" + pid, method: "POST", data: comment});
+    createComment: function(pid, comment, onError) {
+      $http({url: "/data/comments/" + pid, method: "POST", data: comment}).error(onError);
     },
-    loadPostings: function(onLoad, order, username, search) {
-      $http.get("/data/postings?order=" + order + "&user=" + username + "&search=" + search).success(onLoad);
+    loadPostings: function(onLoad, onError, order, username, search) {
+      $http.get("/data/postings?order=" + order + "&user=" + username + "&search=" + search).success(onLoad).error(onError);
     }
   };
 
 });
 
-shredditApplication.factory("userService", function() {
+angular.module("shreddit").factory("userService", function() {
 
   var users = {};
   var languages = [
@@ -478,7 +508,7 @@ shredditApplication.factory("userService", function() {
   };
 });
 
-shredditApplication.factory("sessionService", function() {
+angular.module("shreddit").factory("sessionService", function() {
 
   var currentUser = {};
 
@@ -515,6 +545,21 @@ shredditApplication.factory("sessionService", function() {
     },
     logout: function() {
       this.currentUser = {};
+    }
+  };
+});
+
+angular.module("shreddit").factory("errorService", function() {
+
+  var error = { code: 400, message: "Bad Request!" };
+
+  return {
+    getError: function() {
+      return error;
+    },
+    setError: function(code, message) {
+      error.code = code;
+      error.message = message;
     }
   };
 });

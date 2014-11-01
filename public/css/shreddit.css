@@ -157,7 +157,10 @@ label {
   margin: 9px auto;
 }
 .sc-login {
-  margin: 9px 0;
+    margin: 9px 0;
+}
+.sc-error {
+    margin: 9px 0;
 }
 .sc-comments {
   margin: 9px 0;

@@ -16,7 +16,7 @@
             <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
           </div>
           <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
-            <small>{{posting.date}}</small>
+            <small>{{posting.date | date: 'dd.MM.yyyy HH:mm'}}</small>
           </div>
         </div>
       </div>
