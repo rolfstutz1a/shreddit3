@@ -1,24 +1,6 @@
 var express = require("express");
+var session = require("../shreddit-session");
 var router = express.Router();
-
-function errorMessage(msg, req, err) {
-  return "  *** ERROR [" + req.method + ": " + req.originalUrl + "] " + msg + ": " + err;
-}
-
-function debugMessage(msg, req, data) {
-  if (Array.isArray(data)) {
-    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": size=" + data.length;
-  }
-  if (data) {
-    return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": effected=" + data;
-  }
-  return "  --- DEBUG [" + req.method + ": " + req.originalUrl + "] " + msg + ": (no data)";
-}
-
-function respondError(res, message) {
-  res.send(500, {error: message});
-}
-
 var ShredditDB = require("../db/shreddit-db");
 var DB = new ShredditDB("../server/db/","postings.dat","comments.dat","ratings.dat","users.dat");
 
@@ -34,20 +16,13 @@ var DB = new ShredditDB("../server/db/","postings.dat","comments.dat","ratings.d
  *
  * @returns a sorted array of the requested postings or undefined.
  */
-router.get("/postings", function(req, res, nxt){
-  console.log(" >>> A cookie=" + req.cookies["sss-username"]);
-  //respondError(res, "kgkgkjgkhgjkg");
-  //res.send(404, "Not found what you're looking for!");
-  nxt();
-},function(req, res) {
-  console.log(" >>> B cookie=" + req.cookies["sss-username"]);
+router.get("/postings", session.checkSession, function(req, res) {
   DB.getPostings(req.param("user"), req.param("order"), req.param("search"), function(err, docs) {
     if (err) {
-      console.log(errorMessage("load postings", req, err));
-    } else {
-      console.log(debugMessage("load postings", req, docs));
-      res.json(docs);
+      res.send(500, JSON.stringify(err));
+      return;
     }
+    res.json(docs);
   });
 });
 
@@ -64,18 +39,17 @@ router.get("/postings", function(req, res, nxt){
  * @param content the content of the new posting.
  * @param tags a list tags for grouping the postings.
  */
-router.post("/postings", function(req, res) {
+router.post("/postings", session.checkSession, function(req, res) {
   var posting = {"title": req.body.title, "user": req.body.user, "version": 1, "time": new Date().toJSON(),
     "rating": "0.00", "people": "0", "link": req.body.link, "url": req.body.url, "commentCount": 0,
     "tags": req.body.tags, "content": req.body.content };
 
   DB.savePosting(posting, function(err, newDoc) {
     if (err) {
-      console.log(errorMessage("create postings", req, err));
-    } else {
-      console.log(debugMessage("create postings", req, newDoc));
-      res.json(newDoc);
+      res.send(500, JSON.stringify(err));
+      return;
     }
+    res.json(newDoc);
   });
 });
 
@@ -87,15 +61,14 @@ router.post("/postings", function(req, res) {
  *
  * @param PID the ID of the requested posting.
  */
-router.get("/postings/:PID", function(req, res) {
+router.get("/postings/:PID", session.checkSession, function(req, res) {
 
   DB.getPosting(req.params.PID, function(err, doc) {
     if (err) {
-      console.log(errorMessage("load posting[" + req.params.PID + "]", req, err));
-    } else {
-      console.log(debugMessage("load posting[" + req.params.PID + "]", req, doc));
-      res.json(doc);
+      res.send(500, JSON.stringify(err));
+      return;
     }
+    res.json(doc);
   });
 });
 
@@ -107,12 +80,11 @@ router.get("/postings/:PID", function(req, res) {
  *
  * @param PID the ID of the posting to delete.
  */
-router.delete("/postings/:PID", function(req, res) {
+router.delete("/postings/:PID", session.checkSession, function(req, res) {
   DB.deletePosting(req.params.PID, function(err, numRemoved) {
     if (err) {
-      console.log(errorMessage("delete posting[" + req.params.PID + "]", req, err));
-    } else {
-      console.log(debugMessage("delete posting[" + req.params.PID + "]", req, numRemoved));
+      res.send(500, JSON.stringify(err));
+      return;
     }
     res.json({"removed": numRemoved});
   });
@@ -127,12 +99,11 @@ router.delete("/postings/:PID", function(req, res) {
  *
  * @param PID the ID of the posting for which the comments are requested.
  */
-router.get("/comments/:PID", function(req, res) {
+router.get("/comments/:PID", session.checkSession, function(req, res) {
   DB.getComments(req.params.PID, function(err, docs) {
     if (err) {
-      console.log(errorMessage("load comments[" + req.params.PID + "]", req, err));
-    } else {
-      console.log(debugMessage("load comments[" + req.params.PID + "]", req, docs));
+      res.send(500, JSON.stringify(err));
+      return;
     }
     res.json(docs);
   });
@@ -149,7 +120,7 @@ router.get("/comments/:PID", function(req, res) {
  * @param comment the content of the new comment.
  * @param response an username or another reference to an already existing comment.
  */
-router.post("/comments/:PID", function(req, res) {
+router.post("/comments/:PID", session.checkSession, function(req, res) {
   var comment = {"pid": req.params.PID,
     "user": req.body.user,
     "time": new Date().toJSON(),
@@ -158,11 +129,10 @@ router.post("/comments/:PID", function(req, res) {
 
   DB.createComment(comment, function(err, newDoc) {
     if (err) {
-      console.log(errorMessage("create comment[" + req.params.PID + "]", req, err));
-    } else {
-      console.log(debugMessage("create comment[" + req.params.PID + "]", req, newDoc));
-      res.json(newDoc);
+      res.send(500, JSON.stringify(err));
+      return;
     }
+    res.json(newDoc);
   });
 });
 
@@ -174,12 +144,11 @@ router.post("/comments/:PID", function(req, res) {
  *
  * @param CID the ID of the comment to delete.
  */
-router.delete("/comments/:CID", function(req, res) {
+router.delete("/comments/:CID", session.checkSession, function(req, res) {
   DB.deleteComment(req.params.CID, function(err, numRemoved) {
     if (err) {
-      console.log(errorMessage("delete comment[" + req.params.CID + "]", req, err));
-    } else {
-      console.log(debugMessage("delete comment[" + req.params.CID + "]", req, numRemoved));
+      res.send(500, JSON.stringify(err));
+      return;
     }
     res.json(numRemoved);
   });
@@ -195,12 +164,11 @@ router.delete("/comments/:CID", function(req, res) {
  * @param USER  the user who do the rating.
  * @param STARS the new rating.
  */
-router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
+router.put("/ratings/:PID/:USER/:STARS", session.checkSession, function(req, res) {
 
   DB.createRating(req.params.PID, req.params.USER, req.params.STARS, function(err, posting) {
     if (err) {
-      console.log(errorMessage("rating update[" + req.params.PID + "]", req, err));
-      respondError(res, err);
+      res.send(500, JSON.stringify(err));
       return;
     }
     res.json({ _id: req.params.PID, "rating": posting.rating, "people": posting.people });
@@ -215,14 +183,13 @@ router.put("/ratings/:PID/:USER/:STARS", function(req, res) {
  *
  * @param USERNAME the username of the requested user.
  */
-router.get("/session/:USERNAME", function(req, res) {
+router.get("/session/:USERNAME", session.checkSession, function(req, res) {
 
   DB.getUserData(req.params.USERNAME, function(err, doc) {
     if (err) {
-      respondError(res, err);
+      res.send(500, JSON.stringify(err));
       return;
     }
-    console.log(debugMessage("load user[" + req.params.USERNAME + "]", req, doc));
     res.json(doc);
   });
 });
@@ -241,27 +208,53 @@ router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
 
   DB.registerUser(req.params.USERNAME, req.params.PASSWORD, req.body.email, function(err, newDoc) {
     if (err) {
-      console.log(errorMessage("register user", req, err));
-    } else {
-      console.log(debugMessage("register user", req, newDoc));
-      res.json(newDoc);
+      res.send(500, JSON.stringify(err));
+      return;
     }
+    res.json(newDoc);
   });
 });
 
 // PUT     /session/:USER                 // update user-setting for USER
-router.put("/session/:USER", function(req, res) {
+router.put("/session/:USER", session.checkSession, function(req, res) {
   // res.json(DB.updateSetting(req.params.USER, req.body.password, req.body.email, req.body.notify, req.body.locale));
 });
 
-// POST    /login/:USER/:PWD              // login user with USER (username) and PWD (password)
+/**
+ * login user with USER (username) and PWD (password).
+ *
+ * Method: POST
+ * Route: /login/:USER/:PWD
+ *
+ * @param USER the username of the new user.
+ * @param PWD the password.
+ */
 router.post("/login/:USER/:PWD", function(req, res) {
-  res.json(); // TODO
+  DB.getUserData(req.params.USER, function(err, user) {
+    if (err) {
+      res.send(500, "Wrong username or password!");
+      return;
+    }
+    if (req.params.PWD === user.password) {
+      session.createSession(req.params.USER, res);
+      res.send(200, req.params.USER + " logged in");
+      return;
+    }
+    res.send(500, "Wrong username or password!");
+  });
 });
 
-// POST    /logout/:USER                  // logout user with USER (username)
+/**
+ * Logout of the user.
+ *
+ * Method: POST
+ * Route: /logout/:USER
+ *
+ * @param USER the username of the new user.
+ */
 router.post("/logout/:USER", function(req, res) {
-  res.json(); // TODO
+  session.deleteSession(req, res);
+  res.send(200, req.params.USER + " logged out");
 });
 
 module.exports = router;

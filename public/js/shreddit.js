@@ -2,7 +2,6 @@
 
 angular.module("shreddit", ["ngRoute", "ngCookies"]);
 
-
 // -------------------------------------------------------------------------
 // ROUTING CONFIGURATION
 // -------------------------------------------------------------------------
@@ -47,14 +46,6 @@ function selectSortOrder(order) {
   }
 }
 
-/*
- (function(){
- }());
- jQuery(function(){
-
- });
- */
-
 function onUpdateDate(data) {
   if (Array.isArray(data)) {
     for (var index = 0; index < data.length; ++index) {
@@ -98,120 +89,117 @@ angular.module("shreddit").controller("ErrorController",
  * @param $scope
  * @param $location
  * @param $routeParams
- * @param $cookieStore
+ * @param $cookies
  * @param $rootScope
- * @param userService
- * @param sessionService
+ * @param adminService
  * @constructor
  */
 angular.module("shreddit").controller("SessionController",
-  function($scope, $location, $routeParams, $cookieStore, $rootScope, userService, sessionService) {
+  function($scope, $location, $routeParams, $cookies, $rootScope, adminService, errorService) {
 
-  $scope.user = {
-    username: sessionService.getUsername(),
-    password: sessionService.getPassword(),
-    loggedin: (sessionService.getUsername() !== undefined)
-  };
+    // $cookies["shreddit-usr"]
+    $scope.user = { username: "", password: "" };
 
-  $scope.$on("$routeChangeStart", function(event, dest) {
-    showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
-  });
-  $scope.fake = function(name) {
-    $scope.user.username = name;
-    $scope.user.password = "123456";
-  };
+    $scope.$on("$routeChangeStart", function(event, dest) {
+      showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
+    });
 
-  $scope.login = function() {
-    $scope.user.loggedin = false;
-    if (($scope.loginForm.$valid) && (sessionService.login(userService, $scope.user.username, $scope.user.password) === true)) {
-      $cookieStore.put("sss-username", $scope.user.username);
-      $scope.user.loggedin = true;
+    $scope.fake = function(name) {
+      $scope.user.username = name;
+      $scope.user.password = "123456";
+    };
+
+    var onError = function(data, status, headers, config) {
+      errorService.setError(status, data);
+      $location.path("/error");
+    };
+
+    var onLogin = function(data, status, headers, config) {
       $location.path("/postings");
-      selectSortOrder($cookieStore.get("sss-sort-order"));
-    } else {
-      sessionService.logout();
-      $scope.user.loggedin = false;
+      selectSortOrder($cookies["sss-sort-order"]);
+    };
+    var onLogout = function(data, status, headers, config) {
       $location.path("/");
-    }
-    console.log("login: username=<" + $scope.user.username + "> password=<" + $scope.user.password + "> (" + $scope.user.loggedin + ")");
-  };
+    };
 
-  $scope.logout = function() {
-    sessionService.logout();
-    $scope.user.loggedin = false;
-    $location.path("/");
-    console.log("logout: username=<" + $scope.user.username + "> password=<" + $scope.user.password + "> (" + $scope.user.loggedin + ")");
-  };
-
-  $scope.onSearch = function(key) {
-    if (key === 13) {
-      $rootScope.$broadcast("onReloadPostings");
-    } else if (key === 0) {
-      var srch = jQuery("#srch-term").val();
-      if ((srch) && (srch.length > 0)) {
-        jQuery("#srch-term").val("");
-        $rootScope.$broadcast("onReloadPostings");
+    $scope.login = function() {
+      if ($scope.loginForm.$valid) {
+        adminService.login($scope.user.username, $scope.user.password, onLogin, onError);
       }
+    };
+
+    $scope.logout = function() {
+      adminService.logout($cookies["shreddit-usr"], onLogout, onError);
+    };
+
+    $scope.onSearch = function(key) {
+      if (key === 13) {
+        $rootScope.$broadcast("onReloadPostings");
+      } else if (key === 0) {
+        var srch = jQuery("#srch-term").val();
+        if ((srch) && (srch.length > 0)) {
+          jQuery("#srch-term").val("");
+          $rootScope.$broadcast("onReloadPostings");
+        }
+      }
+      jQuery("#srch-term").focus();
+    };
+
+    $scope.showSettings = function() {
+      $location.path("/settings");
+    };
+
+    $scope.showAbout = function() {
+      $location.path("/about");
+    };
+
+    $scope.register = function() {
+      $location.path("/register");
+    };
+
+    function setSortOrder(order) {
+      $scope.user.sortOrder = order;
+      selectSortOrder(order);
+      $cookies["sss-sort-order"] = order;
+      $rootScope.$broadcast("onReloadPostings");
+      $location.path("/postings");
     }
-    jQuery("#srch-term").focus();
-  };
 
-  $scope.showSettings = function() {
-    $location.path("/settings");
-  };
+    $scope.setSortOrderLatest = function() {
+      setSortOrder("LATEST");
+    };
+    $scope.setSortOrderTopRated = function() {
+      setSortOrder("TOP");
+    };
+    $scope.setSortOrderMyPostings = function() {
+      setSortOrder("MY");
+    };
 
-  $scope.showAbout = function() {
-    $location.path("/about");
-  };
-
-  $scope.register = function() {
-    $location.path("/register");
-  };
-
-  function setSortOrder(order) {
-    $scope.user.sortOrder = order;
-    selectSortOrder(order);
-    $cookieStore.put("sss-sort-order", order);
-    $rootScope.$broadcast("onReloadPostings");
-    $location.path("/postings");
-  }
-
-  $scope.setSortOrderLatest = function() {
-    setSortOrder("LATEST");
-  };
-  $scope.setSortOrderTopRated = function() {
-    setSortOrder("TOP");
-  };
-  $scope.setSortOrderMyPostings = function() {
-    setSortOrder("MY");
-  };
-
-  $scope.addNewPosting = function() {
-    $location.path("/new");
-  };
-  $scope.close = function() {
-    $location.path("/postings");
-  };
-});
+    $scope.addNewPosting = function() {
+      $location.path("/new");
+    };
+    $scope.close = function() {
+      $location.path("/postings");
+    };
+  });
 
 /**
  *
  * @param $scope
  * @param $location
  * @param $routeParams
- * @param userService
- * @param sessionService
+ * @param adminService
  * @constructor
  */
-angular.module("shreddit").controller("RegisterController", function($scope, $location, $routeParams, userService, sessionService) {
+angular.module("shreddit").controller("RegisterController", function($scope, $location, $routeParams, adminService) {
   $scope.registerInfo = {};
 
   $scope.register = function() {
-    var user = $scope.registerInfo;
-    if (userService.register(user.username, user.password, user.email)) {
-      sessionService.login(userService.getUser(user.username));
-      $location.path("/");
-    }
+    //    var user = $scope.registerInfo;
+    //    if (userServiceXXX.register(user.username, user.password, user.email)) {
+    //      sessionServiceXXX.login(userServiceXXX.get User(user.username));
+    //      $location.path("/");
+    //    }
   };
   $scope.close = function() {
     $location.path("/");
@@ -223,29 +211,29 @@ angular.module("shreddit").controller("RegisterController", function($scope, $lo
  * @param $scope
  * @param $location
  * @param $routeParams
- * @param userService
- * @param sessionService
+ * @param adminService
  * @constructor
  */
-angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, userService, sessionService) {
+angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, $cookies, adminService) {
   $scope.settings = {};
-  $scope.languages = userService.getLanguages();
+  $scope.languages = adminService.getLanguages();
 
-  (function(stngs) {
-    var user = userService.getUserRef(sessionService.getUsername());
-    stngs.language = userService.getLanguage(user.locale);
-    stngs.email = user.email;
-    stngs.notify = user.notify === "true";
-    console.log("init settings!");
-  }($scope.settings));
+  //  (function(stngs) {
+  //    var user = userServiceXXX.get User Ref(sessionServiceXXX.getUsername());
+  //    stngs.language = userServiceXXX.getLanguage(user.locale);
+  //    stngs.email = user.email;
+  //    stngs.notify = user.notify === "true";
+  //    console.log("init settings!");
+  //  }($scope.settings));
 
   $scope.save = function() {
-    var user = userService.getUserRef(sessionService.getUsername());
-    user.email = $scope.settings.email;
-    user.locale = $scope.settings.language.locale;
-    user.notify = $scope.settings.notify.toString();
+    var userdata;
+    //    var user = userServiceXXX.get User Ref(sessionServiceXXX.getUsername());
+    //    user.email = $scope.settings.email;
+    //    user.locale = $scope.settings.language.locale;
+    //    user.notify = $scope.settings.notify.toString();
     console.log("notify: " + user.notify);
-    userService.save(user);
+    adminService.saveSettings(userdata);
     $scope.close();
   };
   $scope.close = function() {
@@ -253,10 +241,10 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookieStore, postingService, errorService) {
+angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookies, postingService, errorService) {
 
   $scope.posting = {};
-  $scope.comment = {"user": $cookieStore.get("sss-username")};
+  $scope.comment = { "user": $cookies["shreddit-usr"] };
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
@@ -304,10 +292,10 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookieStore, postingService, errorService) {
+angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookies, postingService, errorService) {
   $scope.posting =
   { "title": "Morologie",
-    "user": $cookieStore.get("sss-username"),
+    "user": $cookies["shreddit-usr"],
     "link": "Wiki: Morologie",
     "url": "http://de.wikipedia.org/wiki/Morologie",
     "tags": "Wissenschaft",
@@ -334,17 +322,19 @@ angular.module("shreddit").controller("AboutController", function($scope, $locat
   };
 });
 
-angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookieStore, postingService, errorService) {
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, postingService, errorService) {
 
   jQuery("#si-rating-dialog").dialog({
     autoOpen: false,
     width: 300,
     modal: true,
-    buttons: [{ text: "Close",
+    buttons: [
+      { text: "Close",
         click: function() {
           jQuery(this).dialog("close");
         }
-      }]
+      }
+    ]
   });
 
   var onRate = function(data, status, headers, config) {
@@ -360,12 +350,13 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     return function(event) {
       jQuery("#si-rating-dialog").dialog("close");
       console.log("Rating: id=" + id + " rate=" + rate);
-      postingService.ratePosting(id, $cookieStore.get("sss-username"), rate, onRate, onError);
-      event.preventDefault();     };
+      postingService.ratePosting(id, $cookies["shreddit-usr"], rate, onRate, onError);
+      event.preventDefault();
+    };
   }
 
   $scope.openRatingDialog = function(id, user, title) {
-    if (user !== $cookieStore.get("sss-username")) {
+    if (user !== $cookies["shreddit-usr"]) {
       var dlg = jQuery("#si-rating-dialog");
       for (var rate = 0; rate <= 5; ++rate) {
         var stars = jQuery("#si-select-stars-" + rate);
@@ -377,7 +368,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     }
   };
 
-  $scope.username = $cookieStore.get("sss-username");
+  $scope.username = $cookies["shreddit-usr"];
   $scope.postings = [];
 
   var onError = function(data, status, headers, config) {
@@ -388,13 +379,13 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $scope.postings = onUpdateDate(data);
   };
   var onReload = function(data, status, headers, config) {
-    postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
   };
 
-  postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+  postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
 
   $scope.getUser = function() {
-    return $cookieStore.get("sss-username");
+    return $cookies["shreddit-usr"];
   };
   $scope.deletePosting = function(id) {
     postingService.deletePosting(id, onReload, onError);
@@ -403,10 +394,9 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $location.path("/comments/" + id);
   };
   $scope.$on("onReloadPostings", function(event) {
-    postingService.loadPostings(onLoad, onError, $cookieStore.get("sss-sort-order"), $cookieStore.get("sss-username"), jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
   });
 });
-
 
 // -------------------------------------------------------------------------
 // SERVICES
@@ -418,7 +408,7 @@ angular.module("shreddit").factory("postingService", function($http) {
       $http.delete("/data/postings/" + id).success(onDelete).error(onError);
     },
     ratePosting: function(id, user, stars, onRate, onError) {
-      $http.put("data/ratings/"+id+"/"+user+"/" + stars).success(onRate).error(onError);
+      $http.put("data/ratings/" + id + "/" + user + "/" + stars).success(onRate).error(onError);
     },
     createPosting: function(posting, onError) {
       $http({url: "/data/postings", method: "POST", data: posting}).error(onError);
@@ -439,61 +429,33 @@ angular.module("shreddit").factory("postingService", function($http) {
 
 });
 
-angular.module("shreddit").factory("userService", function() {
+angular.module("shreddit").factory("adminService", function($http) {
 
-  var users = {};
   var languages = [
     {name: "English", locale: "EN"},
-    {name: "Deutsch", locale: "DE"},
-    {name: "Français", locale: "FR"},
-    {name: "Italiano", locale: "IT"},
-    {name: "Polski", locale: "PL"},
-    {name: "Svenska", locale: "SE"},
-    {name: "Español", locale: "ES"}
+    {name: "Deutsch", locale: "DE"}
   ];
 
-  (function(map) {
-    map["suz"] = { "username": "suz", "password": "123456", "email": "suz@example.com", "since": "2014/09/09", "locale": "PL", "notify": "false", "admin": "true"};
-    map["bie"] = { "username": "bie", "password": "123456", "email": "r1bieri@hsr.ch", "since": "2014/09/09", "locale": "PL", "notify": "false"};
-    map["moorwor"] = { "username": "moorwor", "password": "123456", "email": "moorwor@example.com", "since": "2014/09/09", "locale": "PL", "notify": "false"};
-    map["saycbel"] = { "username": "saycbel", "password": "123456", "email": "saycbel@example.com", "since": "2014/09/09", "locale": "DE", "notify": "true"};
-    map["cyrano"] = { "username": "cyrano", "password": "123456", "email": "cyrano@example.com", "since": "2014/09/09", "locale": "PL", "notify": "true"};
-    map["lycina"] = { "username": "lycina", "password": "123456", "email": "lycina@example.com", "since": "2014/09/09", "locale": "PL", "notify": "true"};
-    map["woillpol"] = { "username": "woillpol", "password": "123456", "email": "woillpol@example.com", "since": "2014/09/09", "locale": "PL", "notify": "true"};
-    map["levesale"] = { "username": "levesale", "password": "123456", "email": "levesale@example.com", "since": "2014/09/09", "locale": "ES", "notify": "true"};
-    map["fridge"] = { "username": "fridge", "password": "123456", "email": "fridge@example.com", "since": "2014/09/09", "locale": "DE", "notify": "false"};
-    map["snassnal"] = { "username": "snassnal", "password": "123456", "email": "snassnal@example.com", "since": "2014/09/09", "locale": "FR", "notify": "false"};
-    map["volcano"] = { "username": "volcano", "password": "123456", "email": "volcano@example.com", "since": "2014/09/09", "locale": "ES", "notify": "true"};
-    map["yeringem"] = { "username": "yeringem", "password": "123456", "email": "yeringem@example.com", "since": "2014/09/09", "locale": "PL", "notify": "true"};
-    map["ceanage"] = { "username": "ceanage", "password": "123456", "email": "ceanage@example.com", "since": "2014/09/09", "locale": "SE", "notify": "true"};
-  }(users));
-
   return {
-    getUser: function(username) {
-      var user = users[username];
-      if (user !== undefined) {
-        return angular.copy(user);
-      }
-      return null;
+
+    login: function(username, password, onLogin, onError) {
+      $http.post("data/login/" + username + "/" + password).success(onLogin).error(onError);
     },
-    getUserRef: function(username) {
-      return users[username];
+
+    logout: function(username, onLogout, onError) {
+      $http.post("data/logout/" + username).success(onLogout).error(onError);
     },
-    save: function(user) {
-      console.log("save user: " + user);
+
+    saveSettings: function(userdata) {
+      console.log("save user: " + userdata);
     },
+
     register: function(username, password, email) {
-      if (this.isValidForRegister(username)) {
-        var newUser = {"username": username, "password": password, "email": email, "since": "2014/09/09", "settings": {"locale": "EN", "notify": "true"}};
-        console.log(newUser);
-        users.push(newUser);
-        return true;
-      }
-      return false;
+      var newUser = {"username": username, "password": password, "email": email, "since": "2014/09/09", "settings": {"locale": "EN", "notify": "true"}};
+      console.log(JSON.stringify(newUser));
+      //users.push(newUser);
     },
-    isValidForRegister: function(username) {
-      return users[username] === undefined;
-    },
+
     getLanguage: function(locale) {
       for (var index = 0; index < languages.length; ++index) {
         if (languages[index].locale === locale) {
@@ -502,53 +464,55 @@ angular.module("shreddit").factory("userService", function() {
       }
       return languages[0];
     },
+
     getLanguages: function() {
       return languages;
     }
   };
 });
 
-angular.module("shreddit").factory("sessionService", function() {
+/*
+ angular.module("shreddit").factory("sessionServiceXXX", function() {
 
-  var currentUser = {};
+ var currentUser = {};
 
-  return {
-    getUsername: function() {
-      if (currentUser.username) {
-        return currentUser.username;
-      }
-      return undefined;
-    },
-    getPassword: function() {
-      if (currentUser.password) {
-        return currentUser.password;
-      }
-      return undefined;
-    },
-    getEMail: function() {
-      return currentUser.email;
-    },
-    login: function(service, username, password) {
-      if ((!username) || (!password)) {
-        this.currentUser = {};
-        return false;
-      }
-      var user = service.getUser(username);
-      if ((user === null) || (user.password !== password)) {
-        this.currentUser = {};
-        return false;
-      }
-      currentUser.username = username;
-      currentUser.password = password;
-      currentUser.sortOrder = "LATEST";
-      return true;
-    },
-    logout: function() {
-      this.currentUser = {};
-    }
-  };
-});
-
+ return {
+ getUsername: function() {
+ if (currentUser.username) {
+ return currentUser.username;
+ }
+ return undefined;
+ },
+ getPassword: function() {
+ if (currentUser.password) {
+ return currentUser.password;
+ }
+ return undefined;
+ },
+ getEMail: function() {
+ return currentUser.email;
+ },
+ login: function(service, username, password) {
+ if ((!username) || (!password)) {
+ this.currentUser = {};
+ return false;
+ }
+ var user = service.get User(username);
+ if ((user === null) || (user.password !== password)) {
+ this.currentUser = {};
+ return false;
+ }
+ currentUser.username = username;
+ currentUser.password = password;
+ currentUser.sortOrder = "LATEST";
+ return true;
+ },
+ logout: function() {
+ this.currentUser = {};
+ }
+ };
+ });
+ */
 angular.module("shreddit").factory("errorService", function() {
 
   var error = { code: 400, message: "Bad Request!" };

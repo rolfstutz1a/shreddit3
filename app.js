@@ -3,6 +3,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var session = require("./server/shreddit-session");
 
 var routes = require('./server/routes/index');
 var data = require('./server/routes/shreddit-data');
