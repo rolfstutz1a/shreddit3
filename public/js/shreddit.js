@@ -441,7 +441,8 @@ angular.module("shreddit").factory("adminService", function($http) {
     login: function(user, password, onLogin, onError) {
       $http.post("data/login/" + user + "/" + password)
         .success(function(data, status, headers, config) {
-          username = data;
+          username = data.user;
+          console.log("loggin=" + username);
           onLogin(data, status, headers, config);
         })
         .error(function(data, status, headers, config) {
