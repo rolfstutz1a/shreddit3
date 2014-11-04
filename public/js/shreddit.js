@@ -97,7 +97,6 @@ angular.module("shreddit").controller("ErrorController",
 angular.module("shreddit").controller("SessionController",
   function($scope, $location, $routeParams, $cookies, $rootScope, adminService, errorService) {
 
-    // $cookies["shreddit-usr"]
     $scope.user = { username: "", password: "" };
 
     $scope.$on("$routeChangeStart", function(event, dest) {
@@ -129,7 +128,7 @@ angular.module("shreddit").controller("SessionController",
     };
 
     $scope.logout = function() {
-      adminService.logout($cookies["shreddit-usr"], onLogout, onError);
+      adminService.logout(onLogout, onError);
     };
 
     $scope.onSearch = function(key) {
@@ -241,10 +240,10 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookies, postingService, errorService) {
+angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookies, postingService, adminService, errorService) {
 
   $scope.posting = {};
-  $scope.comment = { "user": $cookies["shreddit-usr"] };
+  $scope.comment = { "user": adminService.getUser() };
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
@@ -292,10 +291,10 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookies, postingService, errorService) {
+angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookies, postingService, adminService, errorService) {
   $scope.posting =
   { "title": "Morologie",
-    "user": $cookies["shreddit-usr"],
+    "user": adminService.getUser(),
     "link": "Wiki: Morologie",
     "url": "http://de.wikipedia.org/wiki/Morologie",
     "tags": "Wissenschaft",
@@ -322,7 +321,7 @@ angular.module("shreddit").controller("AboutController", function($scope, $locat
   };
 });
 
-angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, postingService, errorService) {
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, postingService, adminService, errorService) {
 
   jQuery("#si-rating-dialog").dialog({
     autoOpen: false,
@@ -350,13 +349,13 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     return function(event) {
       jQuery("#si-rating-dialog").dialog("close");
       console.log("Rating: id=" + id + " rate=" + rate);
-      postingService.ratePosting(id, $cookies["shreddit-usr"], rate, onRate, onError);
+      postingService.ratePosting(id, adminService.getUser(), rate, onRate, onError);
       event.preventDefault();
     };
   }
 
   $scope.openRatingDialog = function(id, user, title) {
-    if (user !== $cookies["shreddit-usr"]) {
+    if (!adminService.isUser(user)) {
       var dlg = jQuery("#si-rating-dialog");
       for (var rate = 0; rate <= 5; ++rate) {
         var stars = jQuery("#si-select-stars-" + rate);
@@ -368,7 +367,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     }
   };
 
-  $scope.username = $cookies["shreddit-usr"];
+  $scope.username = adminService.getUser();
   $scope.postings = [];
 
   var onError = function(data, status, headers, config) {
@@ -379,13 +378,13 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $scope.postings = onUpdateDate(data);
   };
   var onReload = function(data, status, headers, config) {
-    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   };
 
-  postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
+  postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
 
   $scope.getUser = function() {
-    return $cookies["shreddit-usr"];
+    return adminService.getUser();
   };
   $scope.deletePosting = function(id) {
     postingService.deletePosting(id, onReload, onError);
@@ -394,7 +393,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $location.path("/comments/" + id);
   };
   $scope.$on("onReloadPostings", function(event) {
-    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], $cookies["shreddit-usr"], jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   });
 });
 
@@ -435,19 +434,37 @@ angular.module("shreddit").factory("adminService", function($http) {
     {name: "English", locale: "EN"},
     {name: "Deutsch", locale: "DE"}
   ];
+  var username = undefined;
 
   return {
 
-    login: function(username, password, onLogin, onError) {
-      $http.post("data/login/" + username + "/" + password).success(onLogin).error(onError);
+    login: function(user, password, onLogin, onError) {
+      $http.post("data/login/" + user + "/" + password)
+        .success(function(data, status, headers, config) {
+          username = data;
+          onLogin(data, status, headers, config);
+        })
+        .error(function(data, status, headers, config) {
+          username = undefined;
+          onError(data, status, headers, config);
+        });
     },
 
-    logout: function(username, onLogout, onError) {
+    logout: function(onLogout, onError) {
       $http.post("data/logout/" + username).success(onLogout).error(onError);
+      username = undefined;
     },
 
     saveSettings: function(userdata) {
       console.log("save user: " + userdata);
+    },
+
+    getUser: function() {
+      return username;
+    },
+
+    isUser: function(user) {
+      return (username !== undefined) && (user === username);
     },
 
     register: function(username, password, email) {
