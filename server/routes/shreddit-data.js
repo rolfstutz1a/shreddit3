@@ -231,7 +231,7 @@ router.put("/session/:USER", session.checkSession, function(req, res) {
  */
 router.post("/login/:USER/:PWD", function(req, res) {
   DB.getUserData(req.params.USER, function(err, user) {
-    if (err) {
+    if ((err) || (user === null)) {
       res.send(500, "Wrong username or password!");
       return;
     }

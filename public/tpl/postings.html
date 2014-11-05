@@ -23,13 +23,22 @@
       <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
         <p>{{posting.content}}</p>
         <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)" class="btn btn-default btn-sm pull-right sc-margin-left">Delete</button>
-        <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">No comments</button>
+        <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Add first comment</button>
         <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comment ({{posting.commentCount}})</button>
         <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})</button>
       </div>
     </div>
     <div class="sc-info-no-postings" ng-show="postings.length == 0">
-      No postings found ... !
+
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <div class="sc-header-title">No postings found ...!</div>
+        </div>
+        <div class="panel-body sc-content-text">
+          <button type="button" class="btn btn-default btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">Create Posting</button>
+        </div>
+      </div>
+
     </div>
 
     <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
