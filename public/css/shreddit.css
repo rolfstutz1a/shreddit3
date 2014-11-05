@@ -82,6 +82,10 @@ h1, h2, h3, h4, h5, h6 {
   color: #AAAAAA;
 }
 
+.sc-main-menu-item {
+    margin: 0px 15px;
+}
+
 .sc-stars:hover, .sc-no-stars:hover + .sc-stars {
     color: #B674AF;
 }

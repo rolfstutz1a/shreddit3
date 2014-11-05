@@ -30,7 +30,7 @@
   <div class="collapse navbar-collapse" ng-controller="SessionController">
 
     <ul class="nav navbar-nav sc-show-if-loggedin">
-      <li><a href="" ng-click="addNewPosting()" title="Create a new posting">New Posting</a></li>
+      <li><a class="sc-main-menu-item" href="" ng-click="addNewPosting()" title="Create a new posting">New Posting</a></li>
       <li><a href="" ng-click="showSettings()" title="Shoe my account settings">Settings</a></li>
       <li><a href="" ng-click="showAbout()" title="Show the about page">About</a></li>
       <li><a href="" ng-click="logout()" title="Logout from Shreddit">Logout</a></li>
@@ -56,7 +56,7 @@
           <input type="text" title="Enter a search text.Start the search by pressing enter or clicking  the search button on the right." class="form-control sc-search-field" placeholder="Search" name="srch-term" id="srch-term" ng-keyup="onSearch($event.keyCode)">
           <!--<div class="input-group-btn">-->
           <button class="btn btn-default" title="Start searching." type="submit"  ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
-          <button class="btn btn-default" title="Clear the search field." type="submit"  ng-click="onSearch(0)"><i class="glyphicon glyphicon-remove"></i></button>
+          <button class="btn btn-default" title="Clear the search field." type="submit"  ng-click="onSearch(0)"><i class="glyphicon glyphicon-trash"></i></button>
           <!--</div>-->
         </div>
       </form>
