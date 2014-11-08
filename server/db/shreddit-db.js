@@ -8,35 +8,34 @@
  */
 var Nedb = require("nedb");
 
-/**
- * Updates the <code>rating</code> and <code>posting</code> with the new vote.
- *
- * @param posting the posting for which the voting was.
- * @param rating the data of the previous votings.
- * @param user  the user who do the rating.
- * @param stars how many stars were given.
- *
- * @return <code>true</code> if the data has to be saved.
- */
-function updateRating(posting, rating, user, stars) {
-    if (rating.hasOwnProperty(user)) {
-        var lastStars = rating[user];
-        if (lastStars === stars) {
-            return false; // no change in the voting
-        }
-        rating[user] = stars;
-        rating._average = ((rating._count * rating._average) - lastStars + stars) / rating._count;
-        posting.rating = "" + rating._average.toFixed(2);
-    } else {
-        rating[user] = stars;
-        rating._average = ((rating._count * rating._average) + stars) / (rating._count + 1);
-        rating._count += 1;
-        posting.people = rating._count;
-        posting.rating = "" + rating._average.toFixed(2);
-    }
-    return true;
-}
-
+///**
+// * Updates the <code>rating</code> and <code>posting</code> with the new vote.
+// *
+// * @param posting the posting for which the voting was.
+// * @param rating the data of the previous votings.
+// * @param user  the user who do the rating.
+// * @param stars how many stars were given.
+// *
+// * @return <code>true</code> if the data has to be saved.
+// */
+//function updateRating(posting, rating, user, stars) {
+//    if (rating.hasOwnProperty(user)) {
+//        var lastStars = rating[user];
+//        if (lastStars === stars) {
+//            return false; // no change in the voting
+//        }
+//        rating[user] = stars;
+//        rating._average = ((rating._count * rating._average) - lastStars + stars) / rating._count;
+//        posting.rating = "" + rating._average.toFixed(2);
+//    } else {
+//        rating[user] = stars;
+//        rating._average = ((rating._count * rating._average) + stars) / (rating._count + 1);
+//        rating._count += 1;
+//        posting.people = rating._count;
+//        posting.rating = "" + rating._average.toFixed(2);
+//    }
+//    return true;
+//}
 
 module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
 
@@ -44,6 +43,38 @@ module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
   this.commentsDB = new Nedb({filename: path + commentDB, autoload: true});
   this.ratingsDB = new Nedb({filename: path + ratingDB, autoload: true});
   this.usersDB = new Nedb({filename: path + userDB, autoload: true});
+
+
+  /**
+   * Updates the <code>rating</code> and <code>posting</code> with the new vote.
+   *
+   * @param posting the posting for which the voting was.
+   * @param rating the data of the previous votings.
+   * @param user  the user who do the rating.
+   * @param stars how many stars were given.
+   *
+   * @return <code>true</code> if the data has to be saved.
+   */
+  function updateRating(posting, rating, user, stars) {
+    if (rating.hasOwnProperty(user)) {
+      var lastStars = rating[user];
+      if (lastStars === stars) {
+        return false; // no change in the voting
+      }
+      rating[user] = stars;
+      rating._average = ((rating._count * rating._average) - lastStars + stars) / rating._count;
+      posting.rating = "" + rating._average.toFixed(2);
+    } else {
+      rating[user] = stars;
+      rating._average = ((rating._count * rating._average) + stars) / (rating._count + 1);
+      rating._count += 1;
+      posting.people = rating._count;
+      posting.rating = "" + rating._average.toFixed(2);
+    }
+    return true;
+  }
+
+  this.updateUserRating = updateRating;
 
   /**
    * Loading all postings from the database.
