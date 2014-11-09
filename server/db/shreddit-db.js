@@ -113,12 +113,13 @@ module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
    * @param callback(err, data) the callback-method (first argument error [null if no error], second argument the new posting).
    */
   this.deletePosting = function(PID, callback) {
-    this.commentsDB.remove({pid: PID}, {multi: true}, function(err, numRemoved) {
+    var self = this;
+    self.commentsDB.remove({pid: PID}, {multi: true}, function(err, numRemoved) {
       if (err) {
         callback(err, null);
         return;
       }
-      this.postingsDB.remove({_id: PID}, {multi: true}, callback);
+      self.postingsDB.remove({_id: PID}, {multi: true}, callback);
     });
   };
 

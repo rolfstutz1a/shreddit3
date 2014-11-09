@@ -1,13 +1,13 @@
 <div class="container sc-comments">
-  <div class="panel panel-default">
+  <div class="panel panel-default" ng-show="loadingState > -1">
     <div class="panel-heading">
       <div class="sc-header-title">Comments for&colon; {{posting.title}}</div>
     </div>
     <div class="panel-body sc-content-text">
-      <button type="button" class="btn btn-default btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">Add comment</button>
+      <button type="button" class="btn btn-link btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">Add comment</button>
       <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Close</button>
 
-      <div ng-repeat="comment in comments">
+      <div ng-repeat="comment in comments" ng-show="loadingState > 0">
 
         <blockquote class="sc-posting-comment">
           <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}
@@ -17,9 +17,12 @@
           </footer>
         </blockquote>
       </div>
-      <div class="sc-info-no-comments" ng-show="comments.length == 0">
-        No comments (yet)!
+      <div class="sc-info-no-comments" ng-show="loadingState === 0">
+        <p>No comments (yet)!</p>
       </div>
     </div>
+  </div>
+  <div class="sc-info-loading" ng-show="loadingState === -1">
+    <img src="files/shreddit-loader.gif">
   </div>
 </div>

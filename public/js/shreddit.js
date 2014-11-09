@@ -184,16 +184,17 @@ angular.module("shreddit").controller("SessionController",
     };
 
     $scope.onSearch = function(key) {
+      var field = jQuery("#srch-term");
       if (key === 13) {
         $rootScope.$broadcast("onReloadPostings");
       } else if (key === 0) {
-        var srch = jQuery("#srch-term").val();
+        var srch = field.val();
         if ((srch) && (srch.length > 0)) {
-          jQuery("#srch-term").val("");
+          field.val("");
           $rootScope.$broadcast("onReloadPostings");
         }
       }
-      jQuery("#srch-term").focus();
+      field.focus();
     };
 
     $scope.showSettings = function() {
@@ -316,17 +317,29 @@ angular.module("shreddit").controller("NewCommentController", function($scope, $
   };
 });
 
-angular.module("shreddit").controller("CommentsController", function($scope, $location, $routeParams, postingService, errorService) {
+/**
+ * The CommentsController ensures that the requested comments are presented to the user.
+ *
+ * @content posting the posting for which the comments shall be loaded.
+ * @content comments contains an array (can be empty) with shown comments.
+ * @content loadingState 0: no comments visible,  >0: visible comments,  -1: currently loading
+ */
+angular.module("shreddit").controller("CommentsController", function($scope, $location, $routeParams, $timeout, postingService, errorService) {
 
   $scope.posting = {};
-  $scope.comments = {};
+  $scope.comments = [];
+  $scope.loadingState = -1;
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
     $location.path("/error");
   };
   var onLoadComments = function(data, status, headers, config) {
-    $scope.comments = onUpdateDate(data);
+    // a fake timeout simulating a longer loading time
+    $timeout(function() {
+      $scope.comments = onUpdateDate(data);
+      $scope.loadingState = $scope.comments.length;
+    }, 555);
   };
   var onLoadPosting = function(data, status, headers, config) {
     $scope.posting = onUpdateDate(data);
@@ -380,13 +393,13 @@ angular.module("shreddit").controller("AboutController", function($scope, $locat
  *
  * @content username this contains the name of the currently logged-in user.
  * @content postings contains an array (can be empty) with shown postings.
- * @content status 0: no postings visible,  >0: visible postings,  -1: currently loading
+ * @content loadingState 0: no postings visible,  >0: visible postings,  -1: currently loading
  */
 angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, $timeout, postingService, adminService, errorService) {
 
   $scope.username = adminService.getUser();
   $scope.postings = [];
-  $scope.status = -1;
+  $scope.loadingState = -1;
 
   jQuery("#si-rating-dialog").dialog({
     autoOpen: false,
@@ -434,23 +447,23 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   };
 
   var onError = function(data, status, headers, config) {
-    $scope.status = 0;
+    $scope.loadingState = 0;
     errorService.setError(status, data);
     $location.path("/error");
   };
   var onLoad = function(data, status, headers, config) {
+    // a fake timeout simulating a longer loading time
     $timeout(function() {
       $scope.postings = onUpdateDate(data);
-      $scope.status = $scope.postings.length;
-      console.log("status: " + $scope.status);
-      if ($scope.status === 0) {
+      $scope.loadingState = $scope.postings.length;
+      if ($scope.loadingState === 0) {
         jQuery("#si-add-new-posting").effect("highlight", {times: 5, easing: "easeOutQuart"}, 2500);
       }
     }, 1111);
   };
   var onReload = function(data, status, headers, config) {
     $scope.posting = [];
-    $scope.status = -1;
+    $scope.loadingState = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   };
 
@@ -467,7 +480,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   };
   $scope.$on("onReloadPostings", function(event) {
     $scope.posting = [];
-    $scope.status = -1;
+    $scope.loadingState = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   });
 });

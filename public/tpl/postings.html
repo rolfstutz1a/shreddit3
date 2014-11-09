@@ -2,7 +2,7 @@
   <div class="container sc-posting-list">
 
 
-    <div class="panel panel-default" ng-show="status > 0" ng-repeat="posting in postings">
+    <div class="panel panel-default" ng-show="loadingState > 0" ng-repeat="posting in postings">
       <div class="panel-heading">
         <div class="sc-posting-header-box">
           <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <div class="sc-info-no-postings" ng-show="status === 0">
+    <div class="sc-info-no-postings" ng-show="loadingState === 0">
 
       <div class="panel panel-warning">
         <div class="panel-heading">
@@ -44,7 +44,7 @@
       </div>
 
     </div>
-    <div class="sc-info-loading-postings" ng-show="status === -1">
+    <div class="sc-info-loading" ng-show="loadingState === -1">
       <img src="files/shreddit-loader.gif">
     </div>
 
