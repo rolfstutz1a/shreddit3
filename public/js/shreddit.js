@@ -7,15 +7,60 @@ angular.module("shreddit", ["ngRoute", "ngCookies"]);
 // -------------------------------------------------------------------------
 angular.module("shreddit").config(function($routeProvider) {
   $routeProvider.
-    when("/", {controller: "SessionController", templateUrl: "tpl/login.html", hiddenMenu: true, hiddenPostingsMenu: true}).
-    when("/postings", {controller: "PostingsController", templateUrl: "tpl/postings.html", hiddenMenu: false, hiddenPostingsMenu: false}).
-    when("/new", {controller: "NewController", templateUrl: "tpl/new.html", hiddenMenu: false, hiddenPostingsMenu: true}).
-    when("/about", {controller: "AboutController", templateUrl: "tpl/about.html", hiddenMenu: false, hiddenPostingsMenu: true}).
-    when("/settings", {controller: "SettingsController", templateUrl: "tpl/settings.html", hiddenMenu: false, hiddenPostingsMenu: true}).
-    when("/register", {controller: "RegisterController", templateUrl: "tpl/register.html", hiddenMenu: true, hiddenPostingsMenu: true}).
-    when("/comments/:pid", {controller: "CommentsController", templateUrl: "tpl/comments.html", hiddenMenu: false, hiddenPostingsMenu: true}).
-    when("/newcomment/:pid", {controller: "NewCommentController", templateUrl: "tpl/new-comment.html", hiddenMenu: false, hiddenPostingsMenu: true}).
-    when("/error", {controller: "ErrorController", templateUrl: "tpl/error.html", hiddenMenu: true, hiddenPostingsMenu: true}).
+    when("/", {
+      controller: "SessionController",
+      templateUrl: "tpl/login.html",
+      hiddenMenu: true,
+      hiddenPostingsMenu: true
+    }).
+    when("/postings", {
+      controller: "PostingsController",
+      templateUrl: "tpl/postings.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: false
+    }).
+    when("/new", {
+      controller: "NewController",
+      templateUrl: "tpl/new.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: true
+    }).
+    when("/about", {
+      controller: "AboutController",
+      templateUrl: "tpl/about.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: true
+    }).
+    when("/settings", {
+      controller: "SettingsController",
+      templateUrl: "tpl/settings.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: true
+    }).
+    when("/register", {
+      controller: "RegisterController",
+      templateUrl: "tpl/register.html",
+      hiddenMenu: true,
+      hiddenPostingsMenu: true
+    }).
+    when("/comments/:pid", {
+      controller: "CommentsController",
+      templateUrl: "tpl/comments.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: true
+    }).
+    when("/newcomment/:pid", {
+      controller: "NewCommentController",
+      templateUrl: "tpl/new-comment.html",
+      hiddenMenu: false,
+      hiddenPostingsMenu: true
+    }).
+    when("/error", {
+      controller: "ErrorController",
+      templateUrl: "tpl/error.html",
+      hiddenMenu: true,
+      hiddenPostingsMenu: true
+    }).
     otherwise({redirectTo: "/", hiddenMenu: true});
 });
 
@@ -46,15 +91,22 @@ function selectSortOrder(order) {
   }
 }
 
+function correctDateAndLink(posting) {
+  posting.date = new Date(Date.parse(posting.time));
+  if ((!posting.link) && (posting.url)) {
+    posting.link = posting.url;
+  }
+}
+
 function onUpdateDate(data) {
   if (Array.isArray(data)) {
     for (var index = 0; index < data.length; ++index) {
-      data[index].date = new Date(Date.parse(data[index].time));
+      correctDateAndLink(data[index]);
     }
     return data;
   }
   if (data) {
-    data.date = new Date(Date.parse(data.time));
+    correctDateAndLink(data);
   }
   return data;
 }
@@ -97,7 +149,7 @@ angular.module("shreddit").controller("ErrorController",
 angular.module("shreddit").controller("SessionController",
   function($scope, $location, $routeParams, $cookies, $rootScope, adminService, errorService) {
 
-    $scope.user = { username: "", password: "" };
+    $scope.user = {username: "", password: ""};
 
     $scope.$on("$routeChangeStart", function(event, dest) {
       showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
@@ -243,7 +295,7 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
 angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookies, postingService, adminService, errorService) {
 
   $scope.posting = {};
-  $scope.comment = { "user": adminService.getUser() };
+  $scope.comment = {"user": adminService.getUser()};
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
@@ -293,12 +345,14 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
 
 angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookies, postingService, adminService, errorService) {
   $scope.posting =
-  { "title": "Morologie",
+  {
+    "title": "Morologie",
     "user": adminService.getUser(),
     "link": "Wiki: Morologie",
     "url": "http://de.wikipedia.org/wiki/Morologie",
     "tags": "Wissenschaft",
-    "content": "Die Wissenschaft von der Dummheit heisst Morologie." };
+    "content": "Die Wissenschaft von der Dummheit heisst Morologie."
+  };
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
@@ -321,14 +375,26 @@ angular.module("shreddit").controller("AboutController", function($scope, $locat
   };
 });
 
-angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, postingService, adminService, errorService) {
+/**
+ * The PostingsController ensures that the requested postings are presented to the user.
+ *
+ * @content username this contains the name of the currently logged-in user.
+ * @content postings contains an array (can be empty) with shown postings.
+ * @content status 0: no postings visible,  >0: visible postings,  -1: currently loading
+ */
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, $timeout, postingService, adminService, errorService) {
+
+  $scope.username = adminService.getUser();
+  $scope.postings = [];
+  $scope.status = -1;
 
   jQuery("#si-rating-dialog").dialog({
     autoOpen: false,
     width: 300,
     modal: true,
     buttons: [
-      { text: "Close",
+      {
+        text: "Close",
         click: function() {
           jQuery(this).dialog("close");
         }
@@ -367,17 +433,24 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     }
   };
 
-  $scope.username = adminService.getUser();
-  $scope.postings = [];
-
   var onError = function(data, status, headers, config) {
+    $scope.status = 0;
     errorService.setError(status, data);
     $location.path("/error");
   };
   var onLoad = function(data, status, headers, config) {
-    $scope.postings = onUpdateDate(data);
+    $timeout(function() {
+      $scope.postings = onUpdateDate(data);
+      $scope.status = $scope.postings.length;
+      console.log("status: " + $scope.status);
+      if ($scope.status === 0) {
+        jQuery("#si-add-new-posting").effect("highlight", {times: 5, easing: "easeOutQuart"}, 2500);
+      }
+    }, 1111);
   };
   var onReload = function(data, status, headers, config) {
+    $scope.posting = [];
+    $scope.status = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   };
 
@@ -393,6 +466,8 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $location.path("/comments/" + id);
   };
   $scope.$on("onReloadPostings", function(event) {
+    $scope.posting = [];
+    $scope.status = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   });
 });
@@ -469,7 +544,13 @@ angular.module("shreddit").factory("adminService", function($http) {
     },
 
     register: function(username, password, email) {
-      var newUser = {"username": username, "password": password, "email": email, "since": "2014/09/09", "settings": {"locale": "EN", "notify": "true"}};
+      var newUser = {
+        "username": username,
+        "password": password,
+        "email": email,
+        "since": "2014/09/09",
+        "settings": {"locale": "EN", "notify": "true"}
+      };
       console.log(JSON.stringify(newUser));
       //users.push(newUser);
     },
@@ -533,7 +614,7 @@ angular.module("shreddit").factory("adminService", function($http) {
  */
 angular.module("shreddit").factory("errorService", function() {
 
-  var error = { code: 400, message: "Bad Request!" };
+  var error = {code: 400, message: "Bad Request!"};
 
   return {
     getError: function() {
