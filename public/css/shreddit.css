@@ -71,10 +71,13 @@ h1, h2, h3, h4, h5, h6 {
 .sc-btn-add-comment {
   margin-bottom: 1.5rem;
 }
+.sc-external-link {
+    font-family:'Glyphicons Halflings';
+}
 .sc-stars {
-  font-family:'Glyphicons Halflings';
-  font-weight: bold;
-  color: #9d5b96;
+    font-family:'Glyphicons Halflings';
+    font-weight: bold;
+    color: #9d5b96;
 }
 .sc-no-stars {
   font-family:'Glyphicons Halflings';
