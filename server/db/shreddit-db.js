@@ -249,6 +249,16 @@ module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
   };
 
   /**
+   * Delete the user-data of the user with the USERNAME.
+   *
+   * @param USERNAME the username of the user to delet.
+   * @param callback(err, data) the callback-method (first argument error [null if no error], second argument the new posting).
+   */
+  this.deleteUserData = function(USERNAME, callback) {
+      this.usersDB.remove({_id: USERNAME}, {multi: false}, callback);
+  };
+
+  /**
    * Register a new user for shreddit.
    *
    * @param USERNAME the username of the new user.
@@ -257,17 +267,19 @@ module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
    * @param callback(err, data) the callback-method (first argument error [null if no error], second argument the new posting).
    */
   this.registerUser = function(USERNAME, PASSWORD, EMAIL, callback) {
-    var register = { "username": USERNAME,
+    var register = { "_id": USERNAME,
       "password": PASSWORD,
       "email": EMAIL,
-      "since": new Date().toJSON(),
       "_version": 1,
+      "since": new Date().toJSON(),
       "locale": "EN",
       "notify": "true",
       "admin": "false" };
+    var uDB = this.usersDB;
 
-    this.usersDB.findOne({_id: USERNAME}).exec(function(err, doc) {
+      uDB.findOne({_id: USERNAME}).exec(function(err, doc) {
       if (err) {
+          console.log(err);
         callback({message: "error while checking user!"}, null);
         return;
       }
@@ -275,9 +287,8 @@ module.exports = function(path, postingDB, commentDB, ratingDB, userDB) {
         callback({message: "the user <" + USERNAME + "> already exists!"}, null);
         return;
       }
-      this.usersDB.insert(register, callback);
+      uDB.insert(register, callback);
     });
   };
-
 };
 

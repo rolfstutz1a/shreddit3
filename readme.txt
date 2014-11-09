@@ -32,6 +32,7 @@ C. Tests
   1. install nodeunit >>> npm -g install nodeunit
   
   2. nodeunit server/test/shreddit-tests.js
-  
+     or
+     nodeunit server/test/shreddit-tests.js --reporter html  > c:/temp/abc.html
   
   
