@@ -382,7 +382,7 @@ angular.module("shreddit").controller("AboutController", function($scope, $locat
  * @content postings contains an array (can be empty) with shown postings.
  * @content status 0: no postings visible,  >0: visible postings,  -1: currently loading
  */
-angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, postingService, adminService, errorService) {
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, $timeout, postingService, adminService, errorService) {
 
   $scope.username = adminService.getUser();
   $scope.postings = [];
@@ -439,14 +439,17 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $location.path("/error");
   };
   var onLoad = function(data, status, headers, config) {
-    $scope.postings = onUpdateDate(data);
-    $scope.status = $scope.postings.length;
-    console.log("status: " + $scope.status);
-    if ($scope.status === 0) {
-      jQuery("#si-add-new-posting").effect("highlight", {times: 5, easing: "easeOutQuart"}, 2500);
-    }
+    $timeout(function() {
+      $scope.postings = onUpdateDate(data);
+      $scope.status = $scope.postings.length;
+      console.log("status: " + $scope.status);
+      if ($scope.status === 0) {
+        jQuery("#si-add-new-posting").effect("highlight", {times: 5, easing: "easeOutQuart"}, 2500);
+      }
+    }, 1111);
   };
   var onReload = function(data, status, headers, config) {
+    $scope.posting = [];
     $scope.status = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   };
@@ -463,6 +466,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     $location.path("/comments/" + id);
   };
   $scope.$on("onReloadPostings", function(event) {
+    $scope.posting = [];
     $scope.status = -1;
     postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
   });

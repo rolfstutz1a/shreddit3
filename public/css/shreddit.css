@@ -193,6 +193,14 @@ label {
     padding-right: 30px;
 }
 
+.sc-info-loading-postings {
+    text-align: center;
+}
+
+.sc-info-loading-postings img {
+    margin: 50px auto;
+}
+
 @media screen and (max-width: 767px) {
   .sc-sub-menu-dropdown > li > a {
     color: white;

@@ -1,19 +1,20 @@
 
   <div class="container sc-posting-list">
 
-    <div class="panel panel-default" ng-repeat="posting in postings">
+
+    <div class="panel panel-default" ng-show="status > 0" ng-repeat="posting in postings">
       <div class="panel-heading">
         <div class="sc-posting-header-box">
           <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
           <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">{{posting.user}}</div>
           <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
             <a class="sc-select-stars" ng-diabled="posting.user == getUser()" ng-click="openRatingDialog(posting._id,posting.user,posting.title)">
-            <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
-            <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
-            <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
-            <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
+              <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
+              <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
+              <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
+              <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
+              <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
+              <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
           </div>
           <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
             <small>{{posting.date | date: 'dd.MM.yyyy HH:mm'}}</small>
@@ -29,6 +30,7 @@
         <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})</button>
       </div>
     </div>
+
     <div class="sc-info-no-postings" ng-show="status === 0">
 
       <div class="panel panel-warning">
@@ -42,8 +44,8 @@
       </div>
 
     </div>
-    <div class="sc-info-no-postings" ng-show="status === -1">
-          <p>loading . . .</p>
+    <div class="sc-info-loading-postings" ng-show="status === -1">
+      <img src="files/shreddit-loader.gif">
     </div>
 
     <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
