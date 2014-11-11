@@ -136,6 +136,18 @@ angular.module("shreddit").controller("ErrorController",
     };
   });
 
+
+angular.module("shreddit").controller("LanguageController",
+  function($scope, languageService) {
+
+    $scope.TXT = languageService.getText();
+
+    $scope.changeLanguage = function(locale) {
+      languageService.changeLanguage(locale);
+      $scope.TXT = languageService.getText();
+    };
+  });
+
 /**
  *
  * @param $scope
@@ -566,6 +578,68 @@ angular.module("shreddit").factory("adminService", function($http) {
       };
       console.log(JSON.stringify(newUser));
       //users.push(newUser);
+    },
+
+    getLanguage: function(locale) {
+      for (var index = 0; index < languages.length; ++index) {
+        if (languages[index].locale === locale) {
+          return languages[index];
+        }
+      }
+      return languages[0];
+    },
+
+    getLanguages: function() {
+      return languages;
+    }
+  };
+});
+
+angular.module("shreddit").factory("languageService", function() {
+
+  var languages = [
+    {name: "English", locale: "EN"},
+    {name: "Deutsch", locale: "DE"}
+  ];
+
+  var EN = {
+    LOGIN_TO: "Login to: S H R E D D I T ³",
+    PASSWORD: "Password",
+    PASSWORD_VALID: "At least six characters!",
+    REGISTER: "Register",
+    SIGN_IN: "Login",
+    TITLE: "S H R E D D I T ³ - absolutely useless postings",
+    USERNAME: "Username",
+    USERNAME_VALID: "At least three characters!",
+    ZZZ: "Zzzzz"
+  };
+  var DE = {
+    LOGIN_TO: "Einloggen zu: S H R E D D I T ³",
+    TITLE: "S H R E D D I T ³ - absolut sinnlose Postings",
+    PASSWORD: "Passwort",
+    PASSWORD_VALID: "Mindestens sechs Zeichen!",
+    REGISTER: "Registrieren",
+    SIGN_IN: "Einloggen",
+    USERNAME: "Benutzername",
+    USERNAME_VALID: "Mindestens drei Zeichen!",
+    ZZZ: "Zzzzz"
+  };
+
+
+  var TXT = DE;
+
+  return {
+
+    getText: function() {
+      return TXT;
+    },
+
+    changeLanguage: function(locale) {
+      if (locale === "DE") {
+        TXT = DE;
+      } else {
+        TXT = EN;
+      }
     },
 
     getLanguage: function(locale) {

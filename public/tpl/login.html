@@ -2,22 +2,22 @@
   <div class="container sc-login">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">Login to&colon; S H R E D D I T &sup3;</div>
+        <div class="sc-header-title">{{TXT.LOGIN_TO}}</div>
       </div>
       <div class="panel-body sc-content-text container">
         <div class="col-md-4"></div>
         <form class="form col-md-4" name="loginForm" novalidate>
           <div class="form-group">
-            <label for="si-login-username">Username&colon;</label><span class="error sc-error-info" ng-show="loginForm.username.$invalid">At least three characters!</span>
-            <input type="text" id="si-login-username" name="username" class="form-control input-lg" ng-model="user.username" ng-minlength="3" placeholder="Username" required>
+            <label for="si-login-username">{{TXT.USERNAME}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.username.$invalid && loginForm.username.$dirty">{{TXT.USERNAME_VALID}}</span>
+            <input type="text" id="si-login-username" name="username" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg" ng-model="user.username" ng-minlength="3" placeholder="Username" required>
           </div>
           <div class="form-group">
-            <label for="si-login-password">Password&colon;</label><span class="error sc-error-info" ng-show="loginForm.password.$invalid">At least six characters!</span>
-            <input type="password" id="si-login-password" name="password" class="form-control input-lg" ng-model="user.password" ng-minlength="6" placeholder="Password" required>
+            <label for="si-login-password">{{TXT.PASSWORD}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.password.$invalid && loginForm.password.$dirty">{{TXT.PASSWORD_VALID}}</span>
+            <input type="password" id="si-login-password" name="password" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg" ng-model="user.password" ng-minlength="6" placeholder="Password" required>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="loginForm.$invalid">Sign In</button>
-            <button type="button" class="btn btn-link btn-sm" ng-click="register()">Register</button>
+            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="loginForm.$invalid">{{TXT.SIGN_IN}}</button>
+            <button type="button" class="btn btn-link btn-sm" ng-click="register()">{{TXT.REGISTER}}</button>
             <button class="btn btn-link btn-sm" ng-click="fake('bie')">(bie)</button>
             <button class="btn btn-link btn-sm" ng-click="fake('suz')">(suz)</button>
             <button class="btn btn-link btn-sm" ng-click="fake('woillpol')">(woillpol)</button>
