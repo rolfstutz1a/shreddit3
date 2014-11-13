@@ -91,6 +91,17 @@ function selectSortOrder(order) {
   }
 }
 
+function selectLanguageLocale(locale) {
+  var button = jQuery(".sc-language-button");
+  button.removeClass("sc-language-button-checked");
+  button.removeClass("sc-language-button-unchecked");
+  if (locale === "DE") {
+    jQuery("#si-language-de").addClass("sc-language-button-checked");
+  } else {
+    jQuery("#si-language-en").addClass("sc-language-button-checked");
+  }
+}
+
 function correctDateAndLink(posting) {
   posting.date = new Date(Date.parse(posting.time));
   if ((!posting.link) && (posting.url)) {
@@ -136,15 +147,20 @@ angular.module("shreddit").controller("ErrorController",
     };
   });
 
-
 angular.module("shreddit").controller("LanguageController",
-  function($scope, languageService) {
+  function($scope, adminService, languageService) {
 
     $scope.TXT = languageService.getText();
+    selectLanguageLocale(languageService.getLocale());
+
+    $scope.$on("onChangeLocale", function(event) {
+      $scope.changeLanguage(adminService.getUserLocale());
+    });
 
     $scope.changeLanguage = function(locale) {
       languageService.changeLanguage(locale);
       $scope.TXT = languageService.getText();
+      selectLanguageLocale(locale);
     };
   });
 
@@ -178,8 +194,10 @@ angular.module("shreddit").controller("SessionController",
     };
 
     var onLogin = function(data, status, headers, config) {
+      console.log(JSON.stringify(data));
       $location.path("/postings");
       selectSortOrder($cookies["sss-sort-order"]);
+      $rootScope.$broadcast("onChangeLocale");
     };
     var onLogout = function(data, status, headers, config) {
       $location.path("/");
@@ -207,6 +225,14 @@ angular.module("shreddit").controller("SessionController",
         }
       }
       field.focus();
+    };
+
+    $scope.showShreddit = function() {
+      if (adminService.isLoggedIn()) {
+        $location.path("/postings");
+      } else {
+        $location.path("/");
+      }
     };
 
     $scope.showSettings = function() {
@@ -535,18 +561,20 @@ angular.module("shreddit").factory("adminService", function($http) {
     {name: "Deutsch", locale: "DE"}
   ];
   var username = undefined;
+  var userdata = null;
 
   return {
 
     login: function(user, password, onLogin, onError) {
       $http.post("data/login/" + user + "/" + password)
         .success(function(data, status, headers, config) {
-          username = data.user;
-          console.log("loggin=" + username);
+          username = data._id;
+          userdata = user;
           onLogin(data, status, headers, config);
         })
         .error(function(data, status, headers, config) {
           username = undefined;
+          userdata = null;
           onError(data, status, headers, config);
         });
     },
@@ -554,18 +582,27 @@ angular.module("shreddit").factory("adminService", function($http) {
     logout: function(onLogout, onError) {
       $http.post("data/logout/" + username).success(onLogout).error(onError);
       username = undefined;
+      userdata = null;
     },
 
-    saveSettings: function(userdata) {
-      console.log("save user: " + userdata);
+    saveSettings: function(newuserdata) {
+      console.log("save user: " + newuserdata);
     },
 
     getUser: function() {
       return username;
     },
 
+    getUserLocale: function() {
+      return userdata === null ? "EN" : userdata.locale;
+    },
+
     isUser: function(user) {
       return (username !== undefined) && (user === username);
+    },
+
+    isLoggedIn: function() {
+      return username !== undefined;
     },
 
     register: function(username, password, email) {
@@ -595,6 +632,21 @@ angular.module("shreddit").factory("adminService", function($http) {
   };
 });
 
+angular.module("shreddit").factory("errorService", function() {
+
+  var error = {code: 400, message: "Bad Request!"};
+
+  return {
+    getError: function() {
+      return error;
+    },
+    setError: function(code, message) {
+      error.code = code;
+      error.message = message;
+    }
+  };
+});
+
 angular.module("shreddit").factory("languageService", function() {
 
   var languages = [
@@ -602,31 +654,12 @@ angular.module("shreddit").factory("languageService", function() {
     {name: "Deutsch", locale: "DE"}
   ];
 
-  var EN = {
-    LOGIN_TO: "Login to: S H R E D D I T ³",
-    PASSWORD: "Password",
-    PASSWORD_VALID: "At least six characters!",
-    REGISTER: "Register",
-    SIGN_IN: "Login",
-    TITLE: "S H R E D D I T ³ - absolutely useless postings",
-    USERNAME: "Username",
-    USERNAME_VALID: "At least three characters!",
-    ZZZ: "Zzzzz"
-  };
-  var DE = {
-    LOGIN_TO: "Einloggen zu: S H R E D D I T ³",
-    TITLE: "S H R E D D I T ³ - absolut sinnlose Postings",
-    PASSWORD: "Passwort",
-    PASSWORD_VALID: "Mindestens sechs Zeichen!",
-    REGISTER: "Registrieren",
-    SIGN_IN: "Einloggen",
-    USERNAME: "Benutzername",
-    USERNAME_VALID: "Mindestens drei Zeichen!",
-    ZZZ: "Zzzzz"
-  };
-
+  var res = resource();
+  var EN = res.getEN();
+  var DE = res.getDE();
 
   var TXT = DE;
+  var locale = "DE";
 
   return {
 
@@ -634,11 +667,17 @@ angular.module("shreddit").factory("languageService", function() {
       return TXT;
     },
 
+    getLocale: function() {
+      return locale;
+    },
+
     changeLanguage: function(locale) {
       if (locale === "DE") {
         TXT = DE;
+        locale = "DE";
       } else {
         TXT = EN;
+        locale = "EN";
       }
     },
 
@@ -653,63 +692,6 @@ angular.module("shreddit").factory("languageService", function() {
 
     getLanguages: function() {
       return languages;
-    }
-  };
-});
-
-/*
- angular.module("shreddit").factory("sessionServiceXXX", function() {
-
- var currentUser = {};
-
- return {
- getUsername: function() {
- if (currentUser.username) {
- return currentUser.username;
- }
- return undefined;
- },
- getPassword: function() {
- if (currentUser.password) {
- return currentUser.password;
- }
- return undefined;
- },
- getEMail: function() {
- return currentUser.email;
- },
- login: function(service, username, password) {
- if ((!username) || (!password)) {
- this.currentUser = {};
- return false;
- }
- var user = service.get User(username);
- if ((user === null) || (user.password !== password)) {
- this.currentUser = {};
- return false;
- }
- currentUser.username = username;
- currentUser.password = password;
- currentUser.sortOrder = "LATEST";
- return true;
- },
- logout: function() {
- this.currentUser = {};
- }
- };
- });
- */
-angular.module("shreddit").factory("errorService", function() {
-
-  var error = {code: 400, message: "Bad Request!"};
-
-  return {
-    getError: function() {
-      return error;
-    },
-    setError: function(code, message) {
-      error.code = code;
-      error.message = message;
     }
   };
 });

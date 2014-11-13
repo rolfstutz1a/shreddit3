@@ -57,8 +57,24 @@ h1, h2, h3, h4, h5, h6 {
   border-color: #9d5b96;
   background-color: white;
 }
+
+
+.sc-language-button-unchecked, .sc-language-button-unchecked:hover, .sc-language-button-unchecked:focus {
+    color: white;
+    border-color: #9d5b96;
+    background-color: #9d5b96;
+}
+.sc-language-button-checked, .sc-language-button-checked:hover, .sc-language-button-checked:focus {
+    color: #9d5b96;
+    border-color: #9d5b96;
+    background-color: white;
+}
+
 #si-sort-order-my-postings {
     margin-left: 1rem;
+}
+#si-language-en {
+    margin-left: 3rem;
 }
 .sc-posting-comment p {
   font-size: 1.5rem;

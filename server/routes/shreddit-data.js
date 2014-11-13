@@ -237,7 +237,8 @@ router.post("/login/:USER/:PWD", function(req, res) {
     }
     if (req.params.PWD === user.password) {
       session.createSession(req.params.USER, res);
-      res.json({"user": req.params.USER});
+      user.password = "HaHaHa";
+      res.json(user);
       return;
     }
     res.send(500, "Wrong username or password!");

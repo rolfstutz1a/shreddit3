@@ -2,22 +2,24 @@
   <div class="container sc-login">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">{{TXT.LOGIN_TO}}</div>
+        <div class="sc-header-title">{{TXT.LOGIN.LOGIN_TO}}</div>
       </div>
       <div class="panel-body sc-content-text container">
         <div class="col-md-4"></div>
         <form class="form col-md-4" name="loginForm" novalidate>
           <div class="form-group">
-            <label for="si-login-username">{{TXT.USERNAME}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.username.$invalid && loginForm.username.$dirty">{{TXT.USERNAME_VALID}}</span>
-            <input type="text" id="si-login-username" name="username" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg" ng-model="user.username" ng-minlength="3" placeholder="Username" required>
+            <label for="si-login-username">{{TXT.LOGIN.USERNAME}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.username.$invalid && loginForm.username.$dirty">{{TXT.LOGIN.USERNAME_VALID}}</span>
+            <input type="text" id="si-login-username" name="username" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg"
+                   ng-model="user.username" ng-minlength="3" placeholder="{{TXT.LOGIN.USERNAME}}" required>
           </div>
           <div class="form-group">
-            <label for="si-login-password">{{TXT.PASSWORD}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.password.$invalid && loginForm.password.$dirty">{{TXT.PASSWORD_VALID}}</span>
-            <input type="password" id="si-login-password" name="password" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg" ng-model="user.password" ng-minlength="6" placeholder="Password" required>
+            <label for="si-login-password">{{TXT.LOGIN.PASSWORD}}&colon;</label><span class="error sc-error-info" ng-show="loginForm.password.$invalid && loginForm.password.$dirty">{{TXT.LOGIN.PASSWORD_VALID}}</span>
+            <input type="password" id="si-login-password" name="password" ng-model-options="{updateOn: 'blur mousemove'}" class="form-control input-lg"
+                   ng-model="user.password" ng-minlength="6" placeholder="{{TXT.LOGIN.PASSWORD}}" required>
           </div>
           <div class="form-group">
-            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="loginForm.$invalid">{{TXT.SIGN_IN}}</button>
-            <button type="button" class="btn btn-link btn-sm" ng-click="register()">{{TXT.REGISTER}}</button>
+            <button class="btn btn-primary btn-sm" ng-click="login()" ng-disabled="loginForm.$invalid">{{TXT.LOGIN.SIGN_IN}}</button>
+            <button type="button" class="btn btn-link btn-sm" ng-click="register()">{{TXT.LOGIN.REGISTER}}</button>
             <button class="btn btn-link btn-sm" ng-click="fake('bie')">(bie)</button>
             <button class="btn btn-link btn-sm" ng-click="fake('suz')">(suz)</button>
             <button class="btn btn-link btn-sm" ng-click="fake('woillpol')">(woillpol)</button>
