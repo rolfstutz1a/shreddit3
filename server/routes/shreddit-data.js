@@ -232,7 +232,7 @@ router.put("/session/:USER", session.checkSession, function(req, res) {
 router.post("/login/:USER/:PWD", function(req, res) {
   DB.getUserData(req.params.USER, function(err, user) {
     if ((err) || (user === null)) {
-      res.send(500, "Wrong username or password!");
+      res.send(500, "MSG_WRONG_USR_PWD");
       return;
     }
     if (req.params.PWD === user.password) {
@@ -241,7 +241,7 @@ router.post("/login/:USER/:PWD", function(req, res) {
       res.json(user);
       return;
     }
-    res.send(500, "Wrong username or password!");
+    res.send(500, "MSG_WRONG_USR_PWD");
   });
 });
 

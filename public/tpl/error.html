@@ -2,12 +2,12 @@
   <div class="container sc-error">
     <div class="panel panel-danger">
       <div class="panel-heading">
-        <div class="sc-header-title">ERROR S H R E D D I T &sup3; ({{error.code}})</div>
+        <div class="sc-header-title">{{TXT.ERROR.TITLE}} &mdash; S H R E D D I T &sup3; ({{error.code}})</div>
       </div>
       <div class="panel-body sc-content-text container">
-        <p class="sc-posting-header-title" title="Error: {{error.message}}">An error occurred: </p>
+        <p class="sc-posting-header-title" title="Error: {{error.message}}">{{TXT.ERROR.LABEL}}: </p>
         <p>{{error.message}}</p>
-        <button type="button" class="sc-goto-button btn btn-link btn-sm pull-right" ng-click="home()">Goto Login</button>
+        <button type="button" class="sc-goto-button btn btn-link btn-sm pull-right" ng-click="home()">{{TXT.ERROR.GOTO}}</button>
       </div>
     </div>
   </div>

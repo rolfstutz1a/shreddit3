@@ -36,6 +36,13 @@ function resource() {
       SEARCH_START_TITLE: "Start searching.",
       SEARCH_CLEAR_TITLE: "Clear the search field."
     },
+    ERROR: {
+      TITLE: "ERROR",
+      LABEL: "An error occurred",
+      GOTO: "Goto Login",
+      MSG_WRONG_USR_PWD: "Wrong username or password!",
+      MSG_BAD_REQUEST: "Bad Request!"
+    },
     ZZZ: "Zzzzz"
   };
 
@@ -69,6 +76,13 @@ function resource() {
       SEARCH_LABEL: "Suche",
       SEARCH_START_TITLE: "Starte Suche.",
       SEARCH_CLEAR_TITLE: "Lösche das Suchfeld."
+    },
+    ERROR: {
+      TITLE: "FEHLER",
+      LABEL: "Es ist ein Fehler aufgetreten",
+      GOTO: "Zum Einloggen",
+      MSG_WRONG_USR_PWD: "Falscher Benutzername oder falsches Passwort!",
+      MSG_BAD_REQUEST: "Ungültige Anfrage!"
     },
     ZZZ: "Zzzzz"
   };

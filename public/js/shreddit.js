@@ -140,7 +140,21 @@ function findPostingByID(id, postings) {
 angular.module("shreddit").controller("ErrorController",
   function($scope, $location, errorService) {
 
-    $scope.error = errorService.getError();
+    function translate(error) {
+      var e = {code:error.code};
+
+      e.message = $scope.TXT.ERROR[error.message];
+      if (!e.message) {
+        e.message = error.message;
+      }
+      return e;
+    }
+
+    $scope.error = translate(errorService.getError());
+
+    $scope.$on("onChangeLocaleComplete", function(event) {
+      $scope.error = translate(errorService.getError());
+    });
 
     $scope.home = function() {
       $location.path("/");
@@ -148,7 +162,7 @@ angular.module("shreddit").controller("ErrorController",
   });
 
 angular.module("shreddit").controller("LanguageController",
-  function($scope, adminService, languageService) {
+  function($scope, $rootScope, adminService, languageService) {
 
     $scope.TXT = languageService.getText();
     selectLanguageLocale(languageService.getLocale());
@@ -161,6 +175,7 @@ angular.module("shreddit").controller("LanguageController",
       languageService.changeLanguage(locale);
       $scope.TXT = languageService.getText();
       selectLanguageLocale(locale);
+      $rootScope.$broadcast("onChangeLocaleComplete");
     };
   });
 
@@ -634,7 +649,7 @@ angular.module("shreddit").factory("adminService", function($http) {
 
 angular.module("shreddit").factory("errorService", function() {
 
-  var error = {code: 400, message: "Bad Request!"};
+  var error = {code: 400, message: "MSG_BAD_REQUEST"};
 
   return {
     getError: function() {
