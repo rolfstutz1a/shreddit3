@@ -78,19 +78,6 @@ function showMainMenu(visibleMenu, visiblePostingsMenu) {
   }
 }
 
-function selectSortOrder(order) {
-  var button = jQuery(".sc-sort-button");
-  button.removeClass("sc-sort-button-checked");
-  button.removeClass("sc-sort-button-unchecked");
-  if (order === "TOP") {
-    jQuery("#si-sort-order-top-rated").addClass("sc-sort-button-checked");
-  } else if (order === "MY") {
-    jQuery("#si-sort-order-my-postings").addClass("sc-sort-button-checked");
-  } else {
-    jQuery("#si-sort-order-latest").addClass("sc-sort-button-checked");
-  }
-}
-
 function selectLanguageLocale(locale) {
   var button = jQuery(".sc-language-button");
   button.removeClass("sc-language-button-checked");
@@ -162,7 +149,7 @@ angular.module("shreddit").controller("ErrorController",
   });
 
 angular.module("shreddit").controller("LanguageController",
-  function($scope, $rootScope, adminService, languageService) {
+  function($scope, $rootScope, $cookies, adminService, languageService) {
 
     $scope.TXT = languageService.getText();
     selectLanguageLocale(languageService.getLocale());
@@ -193,9 +180,14 @@ angular.module("shreddit").controller("SessionController",
   function($scope, $location, $routeParams, $cookies, $rootScope, adminService, errorService) {
 
     $scope.user = {username: "", password: ""};
+    $scope.currentSortOrder = "XYZ";
 
     $scope.$on("$routeChangeStart", function(event, dest) {
       showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
+    });
+
+    $scope.$on("onChangeLocaleComplete", function(event, dest) {
+      updateSortOrderMenu($cookies["sss-sort-order"]);
     });
 
     $scope.fake = function(name) {
@@ -211,7 +203,7 @@ angular.module("shreddit").controller("SessionController",
     var onLogin = function(data, status, headers, config) {
       console.log(JSON.stringify(data));
       $location.path("/postings");
-      selectSortOrder($cookies["sss-sort-order"]);
+      updateSortOrderMenu($cookies["sss-sort-order"]);
       $rootScope.$broadcast("onChangeLocale");
     };
     var onLogout = function(data, status, headers, config) {
@@ -228,19 +220,19 @@ angular.module("shreddit").controller("SessionController",
       adminService.logout(onLogout, onError);
     };
 
-    $scope.onSearch = function(key) {
-      var field = jQuery("#srch-term");
-      if (key === 13) {
-        $rootScope.$broadcast("onReloadPostings");
-      } else if (key === 0) {
-        var srch = field.val();
-        if ((srch) && (srch.length > 0)) {
-          field.val("");
-          $rootScope.$broadcast("onReloadPostings");
-        }
-      }
-      field.focus();
-    };
+    //$scope.onSearch = function(key) {
+    //  var field = jQuery("#si-search-term");
+    //  if (key === 13) {
+    //    $rootScope.$broadcast("onReloadPostings");
+    //  } else if (key === 0) {
+    //    var srch = field.val();
+    //    if ((srch) && (srch.length > 0)) {
+    //      field.val("");
+    //      $rootScope.$broadcast("onReloadPostings");
+    //    }
+    //  }
+    //  field.focus();
+    //};
 
     $scope.showShreddit = function() {
       if (adminService.isLoggedIn()) {
@@ -262,9 +254,19 @@ angular.module("shreddit").controller("SessionController",
       $location.path("/register");
     };
 
+    function updateSortOrderMenu(order) {
+      if (order === "TOP") {
+        $scope.currentSortOrder = $scope.TXT.MENU.SORT_TOP_SHORT_LABEL;
+      } else if (order === "MY") {
+        $scope.currentSortOrder = $scope.TXT.MENU.SORT_MY_SHORT_LABEL;
+      } else {
+        $scope.currentSortOrder = $scope.TXT.MENU.SORT_LATEST_SHORT_LABEL;
+      }
+    }
+
     function setSortOrder(order) {
       $scope.user.sortOrder = order;
-      selectSortOrder(order);
+      updateSortOrderMenu(order);
       $cookies["sss-sort-order"] = order;
       $rootScope.$broadcast("onReloadPostings");
       $location.path("/postings");
@@ -468,6 +470,20 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     ]
   });
 
+  $scope.onSearch = function(key) {
+    var field = jQuery("#si-search-term");
+    if (key === 13) {
+      $rootScope.$broadcast("onReloadPostings");
+    } else if (key === 0) {
+      var srch = field.val();
+      if ((srch) && (srch.length > 0)) {
+        field.val("");
+        $rootScope.$broadcast("onReloadPostings");
+      }
+    }
+    field.focus();
+  };
+
   var onRate = function(data, status, headers, config) {
     console.log(" >>> Rating: " + JSON.stringify(data));
     var posting = findPostingByID(data._id, $scope.postings);
@@ -517,10 +533,10 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   var onReload = function(data, status, headers, config) {
     $scope.posting = [];
     $scope.loadingState = -1;
-    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#si-search-term").val());
   };
 
-  postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
+  postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#si-search-term").val());
 
   $scope.getUser = function() {
     return adminService.getUser();
@@ -534,7 +550,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   $scope.$on("onReloadPostings", function(event) {
     $scope.posting = [];
     $scope.loadingState = -1;
-    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#srch-term").val());
+    postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#si-search-term").val());
   });
 });
 

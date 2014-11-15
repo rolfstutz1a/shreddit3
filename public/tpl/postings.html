@@ -1,61 +1,97 @@
+<div class="container sc-posting-list">
 
-  <div class="container sc-posting-list">
+  <div class="sc-search-container">
+    <div class="input-group sc-search-input-group">
 
-
-    <div class="panel panel-default" ng-show="loadingState > 0" ng-repeat="posting in postings">
-      <div class="panel-heading">
-        <div class="sc-posting-header-box">
-          <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
-          <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">{{posting.user}}</div>
-          <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
-            <a class="sc-select-stars" ng-diabled="posting.user == getUser()" ng-click="openRatingDialog(posting._id,posting.user,posting.title)">
-              <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
-              <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
-              <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-stars">&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
-              <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
-              <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
-              <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
-          </div>
-          <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
-            <small>{{posting.date | date: 'dd.MM.yyyy HH:mm'}}</small>
-          </div>
-        </div>
-      </div>
-      <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
-        <p>{{posting.content}}</p>
-        <p ng-show="posting.link"><a target="_blank" href="{{posting.url}}"><span class="sc-external-link">&#xe164;</span> {{posting.link}}</a></p>
-        <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)" class="btn btn-link btn-sm pull-right sc-margin-left">Delete</button>
-        <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Add first comment</button>
-        <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comment ({{posting.commentCount}})</button>
-        <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right" ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})</button>
-      </div>
-    </div>
-
-    <div class="sc-info-no-postings" ng-show="loadingState === 0">
-
-      <div class="panel panel-warning">
-        <div class="panel-heading">
-          <div class="sc-header-title">No postings found ...!</div>
-        </div>
-        <div class="panel-body sc-content-text">
-          <p>There are no postings visible! Either none were found matching the search expression or no posting meet the current view configuration.</p>
-          <p>But feel free to create a new posting yourself.</p>
-        </div>
-      </div>
-
-    </div>
-    <div class="sc-info-loading" ng-show="loadingState === -1">
-      <img src="files/shreddit-loader.gif">
-    </div>
-
-    <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
-      <p>Rate the Posting</p>
-      <a href="#" class="sc-select-stars" id="si-select-stars-0"><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
-      <a href="#" class="sc-select-stars" id="si-select-stars-1"><span class="sc-stars">&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
-      <a href="#" class="sc-select-stars" id="si-select-stars-2"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
-      <a href="#" class="sc-select-stars" id="si-select-stars-3"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
-      <a href="#" class="sc-select-stars" id="si-select-stars-4"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;</span></a><br>
-      <a href="#" class="sc-select-stars" id="si-select-stars-5"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span></a><br>
+      <input id="si-search-term" type="text" class="form-control input-sm" placeholder="{{TXT.MENU.SEARCH_LABEL}}" title="{{TXT.MENU.SEARCH_TITLE}}" ng-keyup="onSearch($event.keyCode)">
+      <span class="input-group-btn">
+        <button class="btn btn-default btn-sm" type="button" title="{{TXT.MENU.SEARCH_START_TITLE}}" ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
+        <button class="btn btn-default btn-sm" type="button" title="{{TXT.MENU.SEARCH_CLEAR_TITLE}}" ng-click="onSearch(0)"><i class="glyphicon glyphicon-trash"></i></button>
+      </span>
     </div>
 
   </div>
+
+  <div class="panel panel-default" ng-show="loadingState > 0" ng-repeat="posting in postings">
+    <div class="panel-heading">
+      <div class="sc-posting-header-box">
+        <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
+        <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">
+          {{posting.user}}
+        </div>
+        <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
+          <a class="sc-select-stars" ng-diabled="posting.user == getUser()"
+             ng-click="openRatingDialog(posting._id,posting.user,posting.title)">
+            <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-stars">&#xe006;</span><span
+              ng-show="(posting.rating >= 0.5) && (posting.rating < 1.5)" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)"
+                  class="sc-stars">&#xe006;&#xe006;</span><span
+              ng-show="(posting.rating >= 1.5) && (posting.rating < 2.5)"
+              class="sc-no-stars">&#xe007;&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)"
+                  class="sc-stars">&#xe006;&#xe006;&#xe006;</span><span
+              ng-show="(posting.rating >= 2.5) && (posting.rating < 3.5)" class="sc-no-stars">&#xe007;&#xe007;</span>
+            <span ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;</span><span
+              ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
+            <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
+        </div>
+        <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
+          <small>{{posting.date | date: 'dd.MM.yyyy HH:mm'}}</small>
+        </div>
+      </div>
+    </div>
+    <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
+      <p>{{posting.content}}</p>
+
+      <p ng-show="posting.link"><a target="_blank" href="{{posting.url}}"><span class="sc-external-link">&#xe164;</span>
+        {{posting.link}}</a></p>
+      <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)"
+              class="btn btn-link btn-sm pull-right sc-margin-left">Delete
+      </button>
+      <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right"
+              ng-click="showComments(posting._id)">Add first comment
+      </button>
+      <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right"
+              ng-click="showComments(posting._id)">Show comment ({{posting.commentCount}})
+      </button>
+      <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right"
+              ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})
+      </button>
+    </div>
+  </div>
+
+  <div class="sc-info-no-postings" ng-show="loadingState === 0">
+
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <div class="sc-header-title">No postings found ...!</div>
+      </div>
+      <div class="panel-body sc-content-text">
+        <p>There are no postings visible! Either none were found matching the search expression or no posting meet the
+          current view configuration.</p>
+
+        <p>But feel free to create a new posting yourself.</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="sc-info-loading" ng-show="loadingState === -1">
+    <img src="files/shreddit-loader.gif">
+  </div>
+
+  <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
+    <p>Rate the Posting</p>
+    <a href="#" class="sc-select-stars" id="si-select-stars-0"><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+    <a href="#" class="sc-select-stars" id="si-select-stars-1"><span class="sc-stars">&#xe006;&nbsp;</span><span
+        class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+    <a href="#" class="sc-select-stars" id="si-select-stars-2"><span
+        class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;</span><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+    <a href="#" class="sc-select-stars" id="si-select-stars-3"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span
+        class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
+    <a href="#" class="sc-select-stars" id="si-select-stars-4"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span><span
+        class="sc-no-stars">&#xe007;&nbsp;</span></a><br>
+    <a href="#" class="sc-select-stars" id="si-select-stars-5"><span class="sc-stars">&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;&#xe006;&nbsp;</span></a><br>
+  </div>
+
+</div>

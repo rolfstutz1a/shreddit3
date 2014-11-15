@@ -14,6 +14,10 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: 1px;
 }
 
+#si-main-view {
+  /*margin-top: 0px;*/
+}
+
 .navbar-inverse {
   background-color: #B674AF;
 }
@@ -137,6 +141,18 @@ label {
    color: #B00000;
     margin-left: 10px;
 }
+
+.sc-search-container {
+  margin: 3px 0px 10px 0px;
+}
+
+.sc-search-input-group {
+  margin: 0 0 0 auto;
+  width: 25%;
+  max-width: 200px;
+}
+
+
 .sc-search-field {
     max-width: 14rem;
 }
