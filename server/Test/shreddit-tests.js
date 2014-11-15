@@ -33,10 +33,13 @@ exports.testUserDB = {
     },
     getUser: function (test) {
         var userExist = "test";
-        DB.getUserData(userExist, function (err, user) {
-            test.expect(4);
+        var passw = "123456";
+
+        DB.getUserData(userExist, passw, function (err, user) {
+            test.expect(5);
             test.deepEqual(err, null, "check user DB, no err");
             test.deepEqual(user._id, userExist, "check user DB, user name");
+            test.deepEqual(user.password, true, "check user DB, user password is ok");
             test.deepEqual(user.email, "test@example.com", "check user DB, user's email-address");
             test.deepEqual(user.admin, "true", "check user DB, user is admin");
             test.done();
@@ -45,7 +48,7 @@ exports.testUserDB = {
     regExistUser: function (test) {
         var userExist = "test";
         var email = "newUser@hsr.ch";
-        var passw = "q1w2e3r4";
+        var passw = "123456";
 
         DB.registerUser(userExist, email, passw, function (err, docs) {
 
@@ -63,13 +66,14 @@ exports.testUserDB = {
 
         DB.registerUser(userNew, passw, email, function (err, newDoc) {
 
-            DB.getUserData(userNew, function (error, user) {
-                test.expect(5);
+            DB.getUserData(userNew, passw, function (error, user) {
+                test.expect(6);
                 test.deepEqual(err, null, 'check user DB, user exist in DB');
                 test.notEqual(newDoc, null, 'check user DB, no user data');
                 test.deepEqual(error, null, 'check user DB, no error');
                 test.deepEqual(user._id, userNew, 'check user DB, new user found');
                 test.deepEqual(user.admin, 'false', 'check user DB, new user is not admin');
+                test.deepEqual(user.password,true,'check user password')
                 test.done();
             });
         })

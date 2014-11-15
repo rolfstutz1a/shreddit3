@@ -230,12 +230,12 @@ router.put("/session/:USER", session.checkSession, function(req, res) {
  * @param PWD the password.
  */
 router.post("/login/:USER/:PWD", function(req, res) {
-  DB.getUserData(req.params.USER, function(err, user) {
+  DB.getUserData(req.params.USER,req.params.PWD, function(err, user) {
     if ((err) || (user === null)) {
       res.send(500, "MSG_WRONG_USR_PWD");
       return;
     }
-    if (req.params.PWD === user.password) {
+    if (user.password === true) {
       session.createSession(req.params.USER, res);
       user.password = "HaHaHa";
       res.json(user);

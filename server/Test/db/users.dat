@@ -1,1 +1,3 @@
-{"_id":"test","password":"123456","email":"test@example.com","_version":1,"since":"2014-07-04T10:44:00.000Z","locale":"EN","notify":"true","admin":"true"}
+{"_id":"test","password":"7c4a8d09ca3762af61e59520943dc26494f8941b","email":"test@example.com","_version":1,"since":"2014-07-04T10:44:00.000Z","locale":"EN","notify":"true","admin":"true"}
+{"_id":"newUser","password":"1fc854110e5532480000542834f453de31936c2f","email":"newUser@hsr.ch","_version":1,"since":"2014-11-15T20:49:10.296Z","locale":"EN","notify":"true","admin":"false"}
+{"$$deleted":true,"_id":"newUser"}
