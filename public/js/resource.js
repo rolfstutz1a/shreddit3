@@ -41,12 +41,25 @@ function resource() {
       SEARCH_START_TITLE: "Start searching.",
       SEARCH_CLEAR_TITLE: "Clear the search field."
     },
+    SETTINGS: {
+      FOR: "Settings for",
+      EMAIL: "E-Mail",
+      EMAIL_INVALID: "The e-mail address is invalid!",
+      LANGUAGE: "Language",
+      NOTIFY: "Notify me when a comment on one of my postings has been added"
+    },
+    GENERAL: {
+      SAVE: "Save",
+      CANCEL: "Cancel"
+    },
     ERROR: {
       TITLE: "ERROR",
       LABEL: "An error occurred",
-      GOTO: "Goto Login",
-      MSG_WRONG_USR_PWD: "Wrong username or password!",
-      MSG_BAD_REQUEST: "Bad Request!"
+      GOTO: "Goto Login"
+    },
+    MESSAGE: {
+      WRONG_USR_PWD: "Wrong username or password!",
+      BAD_REQUEST: "Bad Request!"
     },
     ZZZ: "Zzzzz"
   };
@@ -87,12 +100,25 @@ function resource() {
       SEARCH_START_TITLE: "Starte Suche.",
       SEARCH_CLEAR_TITLE: "Lösche das Suchfeld."
     },
+    SETTINGS: {
+      FOR: "Einstellungen für",
+      EMAIL: "E-Mail",
+      EMAIL_INVALID: "Die E-Mail Adresse ist ungültig!",
+      LANGUAGE: "Sprache",
+      NOTIFY: "Benachrichtige mich, wenn ein Kommentar zu einem meiner Postings erfasst wurde"
+    },
+    GENERAL: {
+      SAVE: "Speichern",
+      CANCEL: "Abbrechen"
+    },
     ERROR: {
       TITLE: "FEHLER",
       LABEL: "Es ist ein Fehler aufgetreten",
-      GOTO: "Zum Einloggen",
-      MSG_WRONG_USR_PWD: "Falscher Benutzername oder falsches Passwort!",
-      MSG_BAD_REQUEST: "Ungültige Anfrage!"
+      GOTO: "Zum Einloggen"
+    },
+    MESSAGE: {
+      WRONG_USR_PWD: "Falscher Benutzername oder falsches Passwort!",
+      BAD_REQUEST: "Ungültige Anfrage!"
     },
     ZZZ: "Zzzzz"
   };

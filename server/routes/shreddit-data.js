@@ -217,7 +217,14 @@ router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
 
 // PUT     /session/:USER                 // update user-setting for USER
 router.put("/session/:USER", session.checkSession, function(req, res) {
-  // res.json(DB.updateSetting(req.params.USER, req.body.password, req.body.email, req.body.notify, req.body.locale));
+
+  DB.updateUser(req.params.USER, req.body.email, req.body.locale, req.body.notify, function(err, posting) {
+    if (err) {
+      res.send(500, JSON.stringify(err));
+      return;
+    }
+    res.json({ _id: req.params.USER });
+  });
 });
 
 /**
@@ -232,7 +239,7 @@ router.put("/session/:USER", session.checkSession, function(req, res) {
 router.post("/login/:USER/:PWD", function(req, res) {
   DB.getUserData(req.params.USER,req.params.PWD, function(err, user) {
     if ((err) || (user === null)) {
-      res.send(500, "MSG_WRONG_USR_PWD");
+      res.send(500, "WRONG_USR_PWD");
       return;
     }
     if (user.password === true) {
@@ -241,7 +248,7 @@ router.post("/login/:USER/:PWD", function(req, res) {
       res.json(user);
       return;
     }
-    res.send(500, "MSG_WRONG_USR_PWD");
+    res.send(500, "WRONG_USR_PWD");
   });
 });
 

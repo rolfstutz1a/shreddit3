@@ -249,7 +249,7 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
         var shasum = crypto.createHash('sha1'); //hash
 
         this.usersDB.findOne({_id: USERNAME}, function (err, doc) {
-            if (err){
+            if ((err) || (!doc)) {
                 callback(err, null);
                 return;
             } else {
@@ -259,7 +259,7 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
                 } else {
                     doc.password = false;
                 }
-                callback(err, doc);
+                callback(null, doc);
             }
         })
     };
@@ -272,6 +272,35 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
      */
     this.deleteUserData = function (USERNAME, callback) {
         this.usersDB.remove({_id: USERNAME}, {multi: false}, callback);
+    };
+
+    /**
+     * Update the setting of a user for shreddit.
+     *
+     * @param USERNAME the username of the  user.
+     * @param email the e-mail address of the user.
+     * @param locale the locale for the language of the user.
+     * @param notify e-mail notification when a new comment has been created.
+     * @param callback(err, data) the callback-method (first argument error [null if no error], second argument the new posting).
+     */
+    this.updateUser = function (USERNAME, email, locale, notify, callback) {
+        var query = { _id: USERNAME };
+        var uDB = this.usersDB;
+        var shasum = crypto.createHash('sha1'); //hash
+
+        uDB.findOne(query).exec(function (err, user) {
+            if (err) {
+                console.log(err);
+                callback({message: "error while checking user!"}, null);
+                return;
+            }
+            if (!user) {
+                callback({message: "the user <" + USERNAME + "> does not exists!"}, null);
+                return;
+            }
+
+            uDB.update(query, { $set: { "email": email, "locale": locale, "notify": notify }, $inc: {_version: 1} }, {}, callback);
+        });
     };
 
     /**

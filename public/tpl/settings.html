@@ -2,27 +2,26 @@
   <div class="container sc-user-settings">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">Settings for: <span ng-bind="username"></span></div>
+        <div class="sc-header-title">{{TXT.SETTINGS.FOR}}: {{settings.username}}</div>
       </div>
       <div class="panel-body sc-content-text">
 
-        <form role="form" class="">
+        <form role="form" class="" name="settingsForm" novalidate>
           <div class="form-group">
-            <label for="si-user-settings-email">E-Mail</label>
-            <input type="text" class="form-control" id="si-user-settings-email" placeholder="volcano@shreddit.com" ng-model="settings.email">
+            <label for="si-user-settings-email">{{TXT.SETTINGS.EMAIL}}</label>
+            <span class="error sc-error-info" ng-show="settingsForm.email.$invalid">{{TXT.SETTINGS.EMAIL_INVALID}}</span>
+            <input type="email" name="email" class="form-control" id="si-user-settings-email" ng-model-options="{updateOn: 'blur'}" required placeholder="info@example.com" ng-model="settings.email">
           </div>
           <div class="form-group">
-            <label for="si-user-settings-language">Language</label>
+            <label for="si-user-settings-language">{{TXT.SETTINGS.LANGUAGE}}</label>
             <select id="si-user-settings-language" class="form-control" ng-model="settings.language" ng-options="language.name for language in languages"></select>
           </div>
 
           <div class="checkbox">
-            <label>
-              &nbsp;<input if="si-user-settings-notify" type="checkbox" value="" ng-model="settings.notify">Notify me when a comment on one of my postings has been added
-            </label>
+            <label>&nbsp;<input if="si-user-settings-notify" type="checkbox" value="" ng-model="settings.notify">{{TXT.SETTINGS.NOTIFY}}</label>
           </div>
-          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
-          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="save()">Save Settings</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">{{TXT.GENERAL.CANCEL}}</button>
+          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="save()" ng-disabled="settingsForm.$invalid">{{TXT.GENERAL.SAVE}}</button>
         </form>
       </div>
     </div>

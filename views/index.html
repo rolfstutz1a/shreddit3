@@ -38,22 +38,22 @@
       <li class="dropdown">
         <a href="" class="dropdown-toggle" data-toggle="dropdown">Menu &hellip; <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="" ng-click="showShreddit()" title="{{TXT.MENU.POSTINGS_TITLE}}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;{{TXT.MENU.POSTINGS_LABEL}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="showShreddit()" title="{{TXT.MENU.POSTINGS_TITLE}}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;{{TXT.MENU.POSTINGS_LABEL}}</a></li>
           <li class="divider"></li>
-          <li><a href="" ng-click="showSettings()" title="{{TXT.MENU.SETTINGS_TITLE}}"><span class="glyphicon glyphicon-cog"></span>&nbsp;{{TXT.MENU.SETTINGS_LABEL}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="showSettings()" title="{{TXT.MENU.SETTINGS_TITLE}}"><span class="glyphicon glyphicon-cog"></span>&nbsp;{{TXT.MENU.SETTINGS_LABEL}}</a></li>
           <li class="divider"></li>
-          <li><a href="" ng-click="logout()" title="{{TXT.MENU.LOGOUT_TITLE}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.LOGOUT_LABEL}}: {{user.username}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="logout()" title="{{TXT.MENU.LOGOUT_TITLE}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.LOGOUT_LABEL}}: {{user.username}}</a></li>
           <li class="divider"></li>
-          <li><a href="" ng-click="showAbout()" title="{{TXT.MENU.ABOUT_TITLE}}"><span class="glyphicon glyphicon-leaf"></span>&nbsp;{{TXT.MENU.ABOUT_LABEL}} &nbsp;SHREDDIT&sup3;</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="showAbout()" title="{{TXT.MENU.ABOUT_TITLE}}"><span class="glyphicon glyphicon-leaf"></span>&nbsp;{{TXT.MENU.ABOUT_LABEL}} &nbsp;SHREDDIT&sup3;</a></li>
         </ul>
       </li>
       <li class="dropdown sc-show-if-posting">
         <a href="" class="dropdown-toggle" data-toggle="dropdown">{{currentSortOrder}} <b class="caret"></b></a>
         <ul class="dropdown-menu">
-          <li><a href="" ng-click="setSortOrderLatest()"><span class="glyphicon glyphicon-time"></span>&nbsp;{{TXT.MENU.SORT_LATEST_LABEL}}</a></li>
-          <li><a href="" ng-click="setSortOrderTopRated()"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;{{TXT.MENU.SORT_TOP_LABEL}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="setSortOrderLatest()"><span class="glyphicon glyphicon-time"></span>&nbsp;{{TXT.MENU.SORT_LATEST_LABEL}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="setSortOrderTopRated()"><span class="glyphicon glyphicon-thumbs-up"></span>&nbsp;{{TXT.MENU.SORT_TOP_LABEL}}</a></li>
           <li class="divider"></li>
-          <li><a href="" ng-click="setSortOrderMyPostings()"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.SORT_MY_LABEL}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="setSortOrderMyPostings()"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.SORT_MY_LABEL}}</a></li>
         </ul>
       </li>
     </ul>
@@ -67,18 +67,6 @@
             ng-click="changeLanguage('DE')">DE
     </button>
 
-    <!--
-    <div class="col-sm-3 col-md-3 pull-right">
-      <div class="navbar-text">&nbsp;</div>
-      <form class="navbar-form" role="search">
-        <div class="input-group">
-          <input type="text" title="{{TXT.MENU.SEARCH_TITLE}}" class="form-control sc-search-field" placeholder="{{TXT.MENU.SEARCH_LABEL}}" name="srch-term" id="srch-term" ng-keyup="onSearch($event.keyCode)">
-            <button class="btn btn-default" title="{{TXT.MENU.SEARCH_START_TITLE}}" type="submit" ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
-            <button class="btn btn-default" title="{{TXT.MENU.SEARCH_CLEAR_TITLE}}" type="submit" ng-click="onSearch(0)"><i class="glyphicon glyphicon-trash"></i></button>
-        </div>
-      </form>
-    </div>
--->
   </div>
 </div>
 

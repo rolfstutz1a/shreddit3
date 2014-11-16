@@ -2,14 +2,12 @@
 
   <div class="sc-search-container">
     <div class="input-group sc-search-input-group">
-
       <input id="si-search-term" type="text" class="form-control input-sm" placeholder="{{TXT.MENU.SEARCH_LABEL}}" title="{{TXT.MENU.SEARCH_TITLE}}" ng-keyup="onSearch($event.keyCode)">
       <span class="input-group-btn">
         <button class="btn btn-default btn-sm" type="button" title="{{TXT.MENU.SEARCH_START_TITLE}}" ng-click="onSearch(13)"><i class="glyphicon glyphicon-search"></i></button>
         <button class="btn btn-default btn-sm" type="button" title="{{TXT.MENU.SEARCH_CLEAR_TITLE}}" ng-click="onSearch(0)"><i class="glyphicon glyphicon-trash"></i></button>
       </span>
     </div>
-
   </div>
 
   <div class="panel panel-default" ng-show="loadingState > 0" ng-repeat="posting in postings">

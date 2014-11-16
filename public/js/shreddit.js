@@ -128,9 +128,9 @@ angular.module("shreddit").controller("ErrorController",
   function($scope, $location, errorService) {
 
     function translate(error) {
-      var e = {code:error.code};
+      var e = {code: error.code};
 
-      e.message = $scope.TXT.ERROR[error.message];
+      e.message = $scope.TXT.MESSAGE[error.message];
       if (!e.message) {
         e.message = error.message;
       }
@@ -201,7 +201,7 @@ angular.module("shreddit").controller("SessionController",
     };
 
     var onLogin = function(data, status, headers, config) {
-      console.log(JSON.stringify(data));
+      console.log("Logged in: " + JSON.stringify(data));
       $location.path("/postings");
       updateSortOrderMenu($cookies["sss-sort-order"]);
       $rootScope.$broadcast("onChangeLocale");
@@ -219,20 +219,6 @@ angular.module("shreddit").controller("SessionController",
     $scope.logout = function() {
       adminService.logout(onLogout, onError);
     };
-
-    //$scope.onSearch = function(key) {
-    //  var field = jQuery("#si-search-term");
-    //  if (key === 13) {
-    //    $rootScope.$broadcast("onReloadPostings");
-    //  } else if (key === 0) {
-    //    var srch = field.val();
-    //    if ((srch) && (srch.length > 0)) {
-    //      field.val("");
-    //      $rootScope.$broadcast("onReloadPostings");
-    //    }
-    //  }
-    //  field.focus();
-    //};
 
     $scope.showShreddit = function() {
       if (adminService.isLoggedIn()) {
@@ -321,27 +307,45 @@ angular.module("shreddit").controller("RegisterController", function($scope, $lo
  * @param adminService
  * @constructor
  */
-angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, $cookies, adminService) {
-  $scope.settings = {};
-  $scope.languages = adminService.getLanguages();
+angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, $rootScope, $cookies, adminService, errorService) {
 
-  //  (function(stngs) {
-  //    var user = userServiceXXX.get User Ref(sessionServiceXXX.getUsername());
-  //    stngs.language = userServiceXXX.getLanguage(user.locale);
-  //    stngs.email = user.email;
-  //    stngs.notify = user.notify === "true";
-  //    console.log("init settings!");
-  //  }($scope.settings));
+  $scope.languages = adminService.getLanguages();
+  $scope.settings = {};
+
+  (function(values) {
+    var user = adminService.getUserData();
+    values.username = user._id;
+    values.language = adminService.getLanguage(user.locale);
+    values.email = user.email;
+    values.notify = user.notify === "true";
+    console.log("init settings: " + JSON.stringify(values));
+  }($scope.settings));
+
+  $scope.$on('$locationChangeStart', function(event) {
+    if ($scope.settingsForm.$dirty) {
+      var answer = confirm("Are you sure you want to leave this page?")
+      if (!answer) {
+        event.preventDefault();
+      }
+    }
+  });
+
+  var onError = function(data, status, headers, config) {
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
+
+  var onUpdateUser = function(data, status, headers, config) {
+    $rootScope.$broadcast("onChangeLocale");
+    $scope.close();
+  };
 
   $scope.save = function() {
-    var userdata;
-    //    var user = userServiceXXX.get User Ref(sessionServiceXXX.getUsername());
-    //    user.email = $scope.settings.email;
-    //    user.locale = $scope.settings.language.locale;
-    //    user.notify = $scope.settings.notify.toString();
-    console.log("notify: " + user.notify);
-    adminService.saveSettings(userdata);
-    $scope.close();
+    var user = adminService.getUserData();
+    user.email = $scope.settings.email;
+    user.locale = $scope.settings.language.locale;
+    user.notify = $scope.settings.notify.toString();
+    adminService.updateUser(user, onUpdateUser, onError);
   };
   $scope.close = function() {
     $location.path("/postings");
@@ -600,7 +604,7 @@ angular.module("shreddit").factory("adminService", function($http) {
       $http.post("data/login/" + user + "/" + password)
         .success(function(data, status, headers, config) {
           username = data._id;
-          userdata = user;
+          userdata = data;
           onLogin(data, status, headers, config);
         })
         .error(function(data, status, headers, config) {
@@ -616,12 +620,16 @@ angular.module("shreddit").factory("adminService", function($http) {
       userdata = null;
     },
 
-    saveSettings: function(newuserdata) {
-      console.log("save user: " + newuserdata);
+    updateUser: function(user, onUpdateUser, onError) {
+      $http({url: "/data/session/" + user._id, method: "PUT", data: user}).success(onUpdateUser).error(onError);
     },
 
     getUser: function() {
       return username;
+    },
+
+    getUserData: function() {
+      return userdata;
     },
 
     getUserLocale: function() {

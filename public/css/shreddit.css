@@ -148,10 +148,9 @@ label {
 
 .sc-search-input-group {
   margin: 0 0 0 auto;
-  width: 25%;
-  max-width: 200px;
-}
 
+  max-width: 250px;
+}
 
 .sc-search-field {
     max-width: 14rem;
@@ -234,18 +233,25 @@ label {
 }
 
 @media screen and (max-width: 767px) {
-  .sc-sub-menu-dropdown > li > a {
-    color: white;
-  }
+    .sc-sub-menu-item {
+        color: lightyellow !important; /* not sure why important is necessary! */
+    }
+    .sc-sub-menu-item:hover {
+        color: #ffffff !important; /* not sure why important is necessary! */
+    }
+    .sc-main-menu-item {
+        margin: 0;
+    }
+    #si-language-en {
+        margin-left: 0;
+    }
 }
 
 @media screen and (min-width:768px) and (max-width: 991px) {
-
 }
-@media screen and (min-width:992px) and (max-width: 1199px) {
 
+@media screen and (min-width:992px) and (max-width: 1199px) {
 }
 
 @media screen and (min-width:1200px) {
-
 }
