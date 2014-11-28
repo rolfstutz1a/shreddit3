@@ -1,24 +1,23 @@
 <div class="container sc-comments">
   <div class="panel panel-default" ng-show="loadingState > -1">
     <div class="panel-heading">
-      <div class="sc-header-title">Comments for&colon; {{posting.title}}</div>
+      <div class="sc-header-title">{{TXT.COMMENT.TITLE}}&colon; {{posting.title}}</div>
     </div>
     <div class="panel-body sc-content-text">
-      <button type="button" class="btn btn-link btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">Add comment</button>
-      <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Close</button>
+      <button type="button" class="btn btn-link btn-sm sc-btn-add-comment" ng-click="addComment(posting._id)">{{TXT.COMMENT.ADD}}</button>
+      <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">{{TXT.GENERAL.CLOSE}}</button>
 
       <div ng-repeat="comment in comments" ng-show="loadingState > 0">
 
         <blockquote class="sc-posting-comment">
-          <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}
-          </p>
-          <footer class="sc-posting-commentator">&#x2014;&nbsp;by <span
-              class="sc-user-name">{{comment.user | uppercase}}</span> ({{comment.date}})
+          <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}</p>
+          <footer class="sc-posting-commentator">&#x2014;&nbsp;{{TXT.GENERAL.BY}} <span
+              class="sc-user-name">{{comment.user | uppercase}}</span> ({{comment.date | date: 'dd.MM.yyyy HH:mm'}})
           </footer>
         </blockquote>
       </div>
       <div class="sc-info-no-comments" ng-show="loadingState === 0">
-        <p>No comments (yet)!</p>
+        <p>{{TXT.COMMENT.NONE}}</p>
       </div>
     </div>
   </div>

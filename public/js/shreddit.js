@@ -438,16 +438,19 @@ angular.module("shreddit").controller("NewCommentController", function($scope, $
   });
 
   var onError = function(data, status, headers, config) {
+    $scope.newCommentForm.$setPristine();
     errorService.setError(status, data);
     $location.path("/error");
   };
   var onLoadPosting = function(data, status, headers, config) {
+    $scope.newCommentForm.$setPristine();
     $scope.posting = onUpdateDate(data);
   };
 
   postingService.loadPosting($routeParams.pid, onLoadPosting, onError);
 
   $scope.createComment = function(pid) {
+    $scope.newCommentForm.$setPristine();
     postingService.createComment(pid, $scope.comment, onError);
     $location.path("/comments/" + pid);
   };
@@ -515,6 +518,7 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
   });
 
   var onError = function(data, status, headers, config) {
+    $scope.newForm.$setPristine();
     errorService.setError(status, data);
     $location.path("/error");
   };
@@ -524,6 +528,7 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
   };
 
   $scope.createPosting = function() {
+    $scope.newForm.$setPristine();
     postingService.createPosting($scope.posting, onError);
     $location.path("/postings");
   };

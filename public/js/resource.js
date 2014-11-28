@@ -102,11 +102,17 @@ function resource() {
       COMMENT_LABEL: "Comment",
       COMMENT_INVALID: "A comment is required!"
     },
+    COMMENT: {
+      TITLE: "Comments for",
+      ADD: "Add comment",
+      NONE: "No comments (yet)!"
+    },
     GENERAL: {
       SAVE: "Save",
       DELETE: "Delete",
       CLOSE: "Close",
       CLEAR: "Clear",
+      BY: "by",
       CANCEL: "Cancel"
     },
     ERROR: {
@@ -218,11 +224,17 @@ function resource() {
       COMMENT_LABEL: "Kommentar",
       COMMENT_INVALID: "Ein Kommentar ist nötig!"
     },
+    COMMENT: {
+      TITLE: "Kommentare zu",
+      ADD: "Neuer Kommentar",
+      NONE: "(Noch) Keine Kommentare!"
+    },
     GENERAL: {
       SAVE: "Speichern",
       DELETE: "Löschen",
       CLOSE: "Schliessen",
       CLEAR: "Zurücksetzen",
+      BY: "von",
       CANCEL: "Abbrechen"
     },
     ERROR: {
