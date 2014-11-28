@@ -1,6 +1,6 @@
 "use strict";
 
-angular.module("shreddit", ["ngRoute", "ngCookies"]);
+angular.module("shreddit", ["ngRoute", "ngCookies", "ui.bootstrap"]);
 
 // -------------------------------------------------------------------------
 // ROUTING CONFIGURATION
@@ -212,7 +212,7 @@ angular.module("shreddit").controller("SessionController",
 
     $scope.login = function() {
       if ($scope.loginForm.$valid) {
-        adminService.login($scope.user.username, $scope.user.password, onLogin, onError);
+        adminService.login(angular.lowercase($scope.user.username), $scope.user.password, onLogin, onError);
       }
     };
 
@@ -285,7 +285,63 @@ angular.module("shreddit").controller("SessionController",
  * @constructor
  */
 angular.module("shreddit").controller("RegisterController", function($scope, $location, $routeParams, adminService) {
+
   $scope.registerInfo = {};
+  $scope.valid = { used: false, mismatch: false };
+
+  var onCheckUser = function(data, status, headers, config) {
+    console.log("check: " + JSON.stringify(data));
+    if (angular.equals(angular.lowercase($scope.registerInfo.username),data.username)) {
+      $scope.valid.used = data.exists;
+    }
+  };
+
+  $scope.$on('$locationChangeStart', function(event) {
+    if ($scope.registerForm.$dirty) {
+      if (!confirm("Unsaved data!\nAre you sure you want to leave this page?")) {
+        event.preventDefault();
+      }
+    }
+  });
+
+  $scope.isValidData = function() {
+    if ($scope.valid.used === true) {
+      return false;
+    }
+    if ($scope.valid.mismatch === true) {
+      return false;
+    }
+    var info = $scope.registerInfo;
+    if ((!info.username) || (info.username.length < 3)) {
+      return false;
+    }
+    if (!info.email) {
+      return false;
+    }
+    if ((!info.password) || (info.password.length < 6)) {
+      return false;
+    }
+    if ((!info.password2) || (info.password2.length < 6)) {
+      return false;
+    }
+    return true;
+  };
+
+  $scope.checkUsername = function() {
+    var user = $scope.registerInfo.username;
+    if ((!user) || (user.length < 3)) {
+      $scope.valid.used = false;
+    } else {
+      adminService.checkUser(angular.lowercase(user), onCheckUser);
+    }
+  };
+  $scope.checkPassword = function() {
+    if ($scope.registerInfo.password2) {
+      $scope.valid.mismatch = !angular.equals($scope.registerInfo.password, $scope.registerInfo.password2);
+    } else {
+      $scope.valid.mismatch = false;
+    }
+  };
 
   $scope.register = function() {
     //    var user = $scope.registerInfo;
@@ -323,19 +379,20 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
 
   $scope.$on('$locationChangeStart', function(event) {
     if ($scope.settingsForm.$dirty) {
-      var answer = confirm("Are you sure you want to leave this page?")
-      if (!answer) {
+      if (!confirm("Unsaved data!\nAre you sure you want to leave this page?")) {
         event.preventDefault();
       }
     }
   });
 
   var onError = function(data, status, headers, config) {
+    $scope.settingsForm.$setPristine();
     errorService.setError(status, data);
     $location.path("/error");
   };
 
   var onUpdateUser = function(data, status, headers, config) {
+    $scope.settingsForm.$setPristine();
     $rootScope.$broadcast("onChangeLocale");
     $scope.close();
   };
@@ -466,7 +523,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
     modal: true,
     buttons: [
       {
-        text: "Close",
+        text: $scope.TXT.GENERAL.CLOSE,
         click: function() {
           jQuery(this).dialog("close");
         }
@@ -509,13 +566,23 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   $scope.openRatingDialog = function(id, user, title) {
     if (!adminService.isUser(user)) {
       var dlg = jQuery("#si-rating-dialog");
+
+      dlg.dialog({autoOpen: false, width: 300, modal: true,
+        buttons: [{text: $scope.TXT.GENERAL.CLOSE,
+            click: function() {
+              jQuery(this).dialog("close");
+            }
+          }]
+      });
+
       for (var rate = 0; rate <= 5; ++rate) {
         var stars = jQuery("#si-select-stars-" + rate);
         stars.unbind("click"); // remove possible previous listeners
         stars.bind("click", processRating(id, rate));
       }
-      dlg.dialog("option", "title", title);
+      dlg.dialog("option", "title", $scope.TXT.POSTING.RATE + ": " + title);
       dlg.dialog("open");
+      jQuery("#si-rating-dialog-title").html($scope.TXT.POSTING.RATE);
     }
   };
 
@@ -642,6 +709,11 @@ angular.module("shreddit").factory("adminService", function($http) {
 
     isLoggedIn: function() {
       return username !== undefined;
+    },
+
+    checkUser: function(username, onCheckUser) {
+      $http.get("data/check/" + username).success(onCheckUser).error(onCheckUser);
+
     },
 
     register: function(username, password, email) {

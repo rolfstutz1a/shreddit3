@@ -243,6 +243,7 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
      * Loads the user-data of the user with the USERNAME.
      *
      * @param USERNAME the username of the requested user.
+     * @param PWD the password.
      * @param callback(err, data) the callback-method (first argument error [null if no error], second argument the new posting).
      */
     this.getUserData = function (USERNAME, PWD, callback){
@@ -260,6 +261,22 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
                     doc.password = false;
                 }
                 callback(null, doc);
+            }
+        })
+    };
+
+    /**
+     * Checks whether the USERNAME already exists.
+     *
+     * @param USERNAME the username to check.
+     * @param callback(exists) the callback-method (true the user exists).
+     */
+    this.checkUser = function (USERNAME, callback){
+        this.usersDB.findOne({_id: USERNAME}, function (err, doc) {
+            if ((err) || (!doc)) {
+                callback(false);
+            } else {
+                callback(true);
             }
         })
     };

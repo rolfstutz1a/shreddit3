@@ -2,29 +2,34 @@
   <div class="container sc-user-settings">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">Register for SHREDDIT&sup3;</div>
+        <div class="sc-header-title">{{TXT.REGISTER.FOR}} SHREDDIT&sup3;</div>
       </div>
       <div class="panel-body sc-content-text">
 
-        <form role="form" class="">
+        <form role="form" name="registerForm" novalidate>
           <div class="form-group">
-            <label for="si-register-username">Username</label>
-            <input type="text" class="form-control" id="si-register-username" placeholder="username" ng-model="registerInfo.username">
+            <label for="si-register-username">{{TXT.REGISTER.USERNAME}}</label>
+            <span class="error sc-error-info" ng-show="registerForm.username.$invalid">{{TXT.REGISTER.USERNAME_INVALID}}</span>
+            <span class="error sc-error-info" ng-show="valid.used">{{TXT.REGISTER.USERNAME_USED}}</span>
+            <input type="text" name="username" ng-model-options="{debounce: 500}" ng-minlength="3" ng-keyup="checkUsername()" ng-change="checkUsername()" class="form-control" id="si-register-username" placeholder="{{TXT.REGISTER.USERNAME}}" ng-model="registerInfo.username">
           </div>
           <div class="form-group">
-            <label for="si-register-email">E-Mail</label>
-            <input type="text" class="form-control" id="si-register-email" placeholder="volcano@shreddit.com" ng-model="registerInfo.email">
+            <label for="si-register-email">{{TXT.REGISTER.EMAIL}}</label>
+            <span class="error sc-error-info" ng-show="registerForm.email.$invalid">{{TXT.REGISTER.EMAIL_INVALID}}</span>
+            <input type="email" name="email" class="form-control" id="si-register-email" placeholder="example@shreddit.com" ng-model="registerInfo.email">
           </div>
           <div class="form-group">
-            <label for="si-register-password">Password</label>
-            <input type="password" class="form-control" id="si-register-password" placeholder="Select a password" ng-model="registerInfo.password">
+            <label for="si-register-password">{{TXT.REGISTER.PASSWORD}}</label>
+            <span class="error sc-error-info" ng-show="registerForm.password.$invalid">{{TXT.REGISTER.PASSWORD_INVALID}}</span>
+            <input type="password" name="password" ng-minlength="6" class="form-control" id="si-register-password" placeholder="{{TXT.REGISTER.PASSWORD_PLACEHOLDER}}" ng-model="registerInfo.password">
           </div>
           <div class="form-group">
-            <label for="si-register-retype-password">Retype Password</label>
-            <input type="password" class="form-control" id="si-register-retype-password" placeholder="Enter your password again" ng-model="registerInfo.password2">
+            <label for="si-register-retype-password">{{TXT.REGISTER.PASSWORD_RETYPE}}</label>
+            <span class="error sc-error-info" ng-show="valid.mismatch">{{TXT.REGISTER.PASSWORD_MISMATCH}}</span>
+            <input type="password" name="retype" ng-keyup="checkPassword()" ng-change="checkPassword()" class="form-control" id="si-register-retype-password" placeholder="{{TXT.REGISTER.PASSWORD_PLACEHOLDER_RETYPE}}" ng-model="registerInfo.password2">
           </div>
-          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
-          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="register()">Register</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">{{TXT.GENERAL.CANCEL}}</button>
+          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="register()" ng-disabled="registerForm.$invalid || !isValidData()">{{TXT.REGISTER.REGISTER}}</button>
         </form>
       </div>
     </div>

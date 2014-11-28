@@ -13,11 +13,11 @@
   <div class="panel panel-default" ng-show="loadingState > 0" ng-repeat="posting in postings">
     <div class="panel-heading">
       <div class="sc-posting-header-box">
-        <div class="sc-posting-header-title" title="Posting: {{posting.title}}">{{posting.title}}</div>
-        <div class="sc-posting-header-info sp-user-name" title="Posting added by user: {{posting.user}}">
+        <div class="sc-posting-header-title" title="{{TXT.POSTING.POSTING}}: {{posting.title}}">{{posting.title}}</div>
+        <div class="sc-posting-header-info sp-user-name" title="{{TXT.POSTING.ADDED_BY}}: {{posting.user}}">
           {{posting.user}}
         </div>
-        <div class="sc-posting-header-info" title="{{posting.rating}} stars average by {{posting.people}} users">
+        <div class="sc-posting-header-info" title="{{posting.rating}} {{TXT.POSTING.AVG}} {{posting.people}} {{TXT.POSTING.AVG2}}">
           <a class="sc-select-stars" ng-diabled="posting.user == getUser()"
              ng-click="openRatingDialog(posting._id,posting.user,posting.title)">
             <span ng-show="posting.rating < 0.5" class="sc-no-stars">&#xe007;&#xe007;&#xe007;&#xe007;&#xe007;</span>
@@ -34,27 +34,27 @@
               ng-show="(posting.rating >= 3.5) && (posting.rating < 4.5)" class="sc-no-stars">&#xe007;</span>
             <span ng-show="(posting.rating >= 4.5)" class="sc-stars">&#xe006;&#xe006;&#xe006;&#xe006;&#xe006;</span></a>
         </div>
-        <div class="sc-posting-header-info" title="Posting added on {{posting.date}}">
+        <div class="sc-posting-header-info" title="{{TXT.POSTING.ADDED_ON}} {{posting.date}}">
           <small>{{posting.date | date: 'dd.MM.yyyy HH:mm'}}</small>
         </div>
       </div>
     </div>
-    <div class="panel-body sc-content-text" title="Content of {{posting.title}}">
+    <div class="panel-body sc-content-text" title="{{TXT.POSTING.CONTENT}} {{posting.title}}">
       <p>{{posting.content}}</p>
 
       <p ng-show="posting.link"><a target="_blank" href="{{posting.url}}"><span class="sc-external-link">&#xe164;</span>
         {{posting.link}}</a></p>
       <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)"
-              class="btn btn-link btn-sm pull-right sc-margin-left">Delete
+              class="btn btn-link btn-sm pull-right sc-margin-left">{{TXT.GENERAL.DELETE}}
       </button>
       <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right"
-              ng-click="showComments(posting._id)">Add first comment
+              ng-click="showComments(posting._id)">{{TXT.POSTING.SHOW_COMMENT_0}}
       </button>
       <button ng-show="posting.commentCount == '1'" type="button" class="btn btn-link btn-sm pull-right"
-              ng-click="showComments(posting._id)">Show comment ({{posting.commentCount}})
+              ng-click="showComments(posting._id)">{{TXT.POSTING.SHOW_COMMENT_1}} ({{posting.commentCount}})
       </button>
       <button ng-show="posting.commentCount > 1" type="button" class="btn btn-link btn-sm pull-right"
-              ng-click="showComments(posting._id)">Show comments ({{posting.commentCount}})
+              ng-click="showComments(posting._id)">{{TXT.POSTING.SHOW_COMMENT_2}} ({{posting.commentCount}})
       </button>
     </div>
   </div>
@@ -63,13 +63,11 @@
 
     <div class="panel panel-warning">
       <div class="panel-heading">
-        <div class="sc-header-title">No postings found ...!</div>
+        <div class="sc-header-title">{{TXT.POSTING.NO_POSTINGS_TITLE}}</div>
       </div>
       <div class="panel-body sc-content-text">
-        <p>There are no postings visible! Either none were found matching the search expression or no posting meet the
-          current view configuration.</p>
-
-        <p>But feel free to create a new posting yourself.</p>
+        <p>{{TXT.POSTING.NO_POSTINGS}}</p>
+        <p>{{TXT.POSTING.NEW_POSTING}}</p>
       </div>
     </div>
 
@@ -78,8 +76,8 @@
     <img src="files/shreddit-loader.gif">
   </div>
 
-  <div id="si-rating-dialog" title="Rate the Posting:" style="text-align: center;">
-    <p>Rate the Posting</p>
+  <div id="si-rating-dialog" class="sc-rating-dialog">
+    <p id="si-rating-dialog-title"></p>
     <a href="#" class="sc-select-stars" id="si-select-stars-0"><span class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>
     <a href="#" class="sc-select-stars" id="si-select-stars-1"><span class="sc-stars">&#xe006;&nbsp;</span><span
         class="sc-no-stars">&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;&#xe007;&nbsp;</span></a><br>

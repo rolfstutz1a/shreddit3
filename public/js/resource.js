@@ -7,6 +7,7 @@ function resource() {
 
   var EN = {
     LOGIN: {
+      LOGIN_TO: "Login to: S H R E D D I T ³",
       PASSWORD: "Password",
       PASSWORD_VALID: "At least six characters!",
       REGISTER: "Register",
@@ -48,8 +49,41 @@ function resource() {
       LANGUAGE: "Language",
       NOTIFY: "Notify me when a comment on one of my postings has been added"
     },
+    REGISTER: {
+      REGISTER: "Register",
+      FOR: "Register for",
+      USERNAME: "Username",
+      USERNAME_USED: "The chosen username is already taken!",
+      USERNAME_INVALID: "The username must be at least three characters long!",
+      PASSWORD: "Password",
+      PASSWORD_RETYPE: "Retype password",
+      PASSWORD_PLACEHOLDER: "Select a password",
+      PASSWORD_PLACEHOLDER_RETYPE: "Retype the selected password",
+      PASSWORD_MISMATCH: "The two password are not equal!",
+      PASSWORD_INVALID: "The password must be at least six characters long!",
+      EMAIL: "E-Mail",
+      EMAIL_INVALID: "The e-mail address is invalid!"
+    },
+    POSTING: {
+      POSTING: "Posting",
+      ADDED_BY: "Posting added by user",
+      AVG: "stars average by",
+      AVG2: "users",
+      ADDED_ON: "Posting added on",
+      CONTENT: "Content on",
+      SHOW_COMMENT_0: "Add first comment",
+      SHOW_COMMENT_1: "Show comment",
+      SHOW_COMMENT_2: "Show comments",
+      RATE: "Rate the posting",
+      NO_POSTINGS_TITLE: "No postings found ...!",
+      NO_POSTINGS: "There are no postings visible! Either none were found matching the search expression or no posting meet the current view configuration.",
+      NEW_POSTING: "But feel free to create a new posting yourself.",
+      DATE_FORMAT: "MM/dd/yyyy HH:mm"
+    },
     GENERAL: {
       SAVE: "Save",
+      DELETE: "Delete",
+      CLOSE: "Close",
       CANCEL: "Cancel"
     },
     ERROR: {
@@ -107,8 +141,41 @@ function resource() {
       LANGUAGE: "Sprache",
       NOTIFY: "Benachrichtige mich, wenn ein Kommentar zu einem meiner Postings erfasst wurde"
     },
+    REGISTER: {
+      REGISTER: "Registrieren",
+      FOR: "Registrieren für",
+      USERNAME: "Benutzername",
+      USERNAME_USED: "Der gewählte Benutzername ist vergeben!",
+      USERNAME_INVALID: "Der Benutzername muss mindestens drei Zeichen enthalten!",
+      PASSWORD: "Passwort",
+      PASSWORD_RETYPE: "Passwort erneut eingeben",
+      PASSWORD_PLACEHOLDER: "Ein Passwort Wählen",
+      PASSWORD_PLACEHOLDER_RETYPE: "Gewähltes Passwort erneut eingeben",
+      PASSWORD_MISMATCH: "Die beiden Passwörter sind nicht gleich!",
+      PASSWORD_INVALID: "Das Passwort muss mindestens sechs Zeichen enthalten!",
+      EMAIL: "E-Mail",
+      EMAIL_INVALID: "Die E-Mail Adresse ist ungültig!"
+    },
+    POSTING: {
+      POSTING: "Posting",
+      ADDED_BY: "Posting hinzugefügt von",
+      AVG: "Sternedurchschnitt von",
+      AVG2: "Benutzern",
+      ADDED_ON: "Posting hinzugefügt am",
+      CONTENT: "Inhalt von",
+      SHOW_COMMENT_0: "Erster Kommentar",
+      SHOW_COMMENT_1: "Zeige Kommentar",
+      SHOW_COMMENT_2: "Zeige Kommentare",
+      RATE: "Bewerte das Posting",
+      NO_POSTINGS_TITLE: "Keine Postings gefunden ...!",
+      NO_POSTINGS: "Es können keine Postings angezeigt werden! Entweder passen keine Postings zum Suchtext oder in der aktuellen Ansicht sind keine Postings sichtbar.",
+      NEW_POSTING: "Natürlich kann ein neues Posting erfasst werden.",
+      DATE_FORMAT: "dd.MM.yyyy HH:mm"
+    },
     GENERAL: {
       SAVE: "Speichern",
+      DELETE: "Löschen",
+      CLOSE: "Schliessen",
       CANCEL: "Abbrechen"
     },
     ERROR: {

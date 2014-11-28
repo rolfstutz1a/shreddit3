@@ -195,6 +195,21 @@ router.get("/session/:USERNAME", session.checkSession, function(req, res) {
 });
 
 /**
+ * Checks whether the USERNAME already exists.
+ *
+ * Method: GET
+ * Route: /session/check/:USERNAME
+ *
+ * @param USERNAME the username to check.
+ */
+router.get("/check/:USERNAME", function(req, res) {
+
+  DB.checkUser(req.params.USERNAME, function(exists) {
+    res.json({"username": req.params.USERNAME, "exists": exists});
+  });
+});
+
+/**
  * Register a new user for shreddit.
  *
  * Method: POST
