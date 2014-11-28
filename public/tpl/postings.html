@@ -14,8 +14,8 @@
     <div class="panel-heading">
       <div class="sc-posting-header-box">
         <div class="sc-posting-header-title" title="{{TXT.POSTING.POSTING}}: {{posting.title}}">{{posting.title}}</div>
-        <div class="sc-posting-header-info sp-user-name" title="{{TXT.POSTING.ADDED_BY}}: {{posting.user}}">
-          {{posting.user}}
+        <div class="sc-posting-header-info sc-user-name" title="{{TXT.POSTING.ADDED_BY}}: {{posting.user}}">
+          {{posting.user | uppercase}}
         </div>
         <div class="sc-posting-header-info" title="{{posting.rating}} {{TXT.POSTING.AVG}} {{posting.people}} {{TXT.POSTING.AVG2}}">
           <a class="sc-select-stars" ng-diabled="posting.user == getUser()"
@@ -44,7 +44,7 @@
 
       <p ng-show="posting.link"><a target="_blank" href="{{posting.url}}"><span class="sc-external-link">&#xe164;</span>
         {{posting.link}}</a></p>
-      <button ng-show="posting.user == getUser()" type="button" ng-click="deletePosting(posting._id)"
+      <button ng-show="isUser(posting.user)" type="button" ng-click="deletePosting(posting._id)"
               class="btn btn-link btn-sm pull-right sc-margin-left">{{TXT.GENERAL.DELETE}}
       </button>
       <button ng-show="posting.commentCount == '0'" type="button" class="btn btn-link btn-sm pull-right"

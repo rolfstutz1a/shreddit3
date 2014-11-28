@@ -2,41 +2,40 @@
   <div class="container sc-new">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">Create a new posting</div>
+        <div class="sc-header-title"><span class="sc-user-name">{{posting.user | uppercase}}</span>&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;{{TXT.NEW.TITLE}}</div>
       </div>
       <div class="panel-body sc-content-text">
 
-        <form name="form-new-posting" role="form" class="">
+        <form role="form" class="" name="newForm" novalidate>
           <div class="form-group">
-            <label for="si-new-posting-title">Title</label>
-            <input type="text" class="form-control" id="si-new-posting-title" name="title" ng-model="posting.title"
-                   placeholder="Required: Title of the posting">
+            <label for="si-new-posting-title">{{TXT.NEW.TITLE_LABEL}}</label>
+            <span class="error sc-error-info" ng-show="newForm.title.$invalid">{{TXT.NEW.TITLE_INVALID}}</span>
+            <input type="text" name="title" class="form-control" id="si-new-posting-title" ng-model="posting.title"
+                   placeholder="{{TXT.NEW.TITLE_PLACEHOLDER}}" required>
           </div>
           <div class="form-group">
-            <label for="si-new-posting-user">User</label>
-            <input type="text" class="form-control" id="si-new-posting-user" readonly value="{{posting.user}}">
+            <label for="si-new-posting-content">{{TXT.NEW.CONTENT_LABEL}}</label>
+            <span class="error sc-error-info" ng-show="newForm.content.$invalid">{{TXT.NEW.CONTENT_INVALID}}</span>
+            <textarea class="form-control sc-text-area" name="content" id="si-new-posting-content" ng-model="posting.content" required></textarea>
           </div>
           <div class="form-group">
-            <label for="si-new-posting-content">Posting Content</label>
-            <textarea class="form-control sp-text-area" name="content" id="si-new-posting-content" ng-model="posting.content"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="si-new-posting-link-name">Link-Name</label>
+            <label for="si-new-posting-link-name">{{TXT.NEW.LINK_LABEL}}</label>
             <input type="text" class="form-control" id="si-new-posting-link-name" name="link" ng-model="posting.link"
-                   placeholder="Optional: Name of the external link (e.g. BBC)">
+                   placeholder="{{TXT.NEW.LINK_PLACEHOLDER}}">
           </div>
           <div class="form-group">
-            <label for="si-new-posting-link-url">Link-URL</label>
+            <label for="si-new-posting-link-url">{{TXT.NEW.URL_LABEL}}</label>
             <input type="text" class="form-control" id="si-new-posting-link-url" name="url" ng-model="posting.url"
-                   placeholder="Optional: External link (e.g. http://www.bbc.co.uk)">
+                   placeholder="{{TXT.NEW.URL_PLACEHOLDER}}">
           </div>
           <div class="form-group">
-            <label for="si-new-posting-tags">Tag(s)</label>
+            <label for="si-new-posting-tags">{{TXT.NEW.TAGS_LABEL}}</label>
             <input type="text" class="form-control" id="si-new-posting-tags" name="tags" ng-model="posting.tags"
-                   placeholder="Optional: (Comma separated) Tags (e.g. Sport, Fun)">
+                   placeholder="{{TXT.NEW.TAGS_PLACEHOLDER}}">
           </div>
-          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Cancel</button>
-          <button type="button" class="btn btn-default btn-sm pull-right" ng-click="createPosting()">Save Posting</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">{{TXT.GENERAL.CLOSE}}</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="clear()">{{TXT.GENERAL.CLEAR}}</button>
+          <button type="button" class="btn btn-default btn-sm pull-right" ng-disabled="newForm.$invalid" ng-click="createPosting()">{{TXT.GENERAL.SAVE}}</button>
         </form>
       </div>
     </div>

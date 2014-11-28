@@ -13,7 +13,7 @@
           <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}
           </p>
           <footer class="sc-posting-commentator">&#x2014;&nbsp;by <span
-              class="sp-user-name">{{comment.user}}</span> ({{comment.date}})
+              class="sc-user-name">{{comment.user | uppercase}}</span> ({{comment.date}})
           </footer>
         </blockquote>
       </div>

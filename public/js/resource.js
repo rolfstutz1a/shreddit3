@@ -80,10 +80,26 @@ function resource() {
       NEW_POSTING: "But feel free to create a new posting yourself.",
       DATE_FORMAT: "MM/dd/yyyy HH:mm"
     },
+    NEW: {
+      TITLE: "Create a new posting",
+      TITLE_LABEL: "Title",
+      TITLE_PLACEHOLDER: "Required: Title of the posting",
+      TITLE_INVALID: "A title is required!",
+      CONTENT_LABEL: "Posting content",
+      CONTENT_PLACEHOLDER: "Required: Content of the posting",
+      CONTENT_INVALID: "Content is, of course, required too!",
+      LINK_LABEL: "Link-Name",
+      LINK_PLACEHOLDER: "Optional: Name of the external link (e.g. BBC)",
+      URL_LABEL: "Link-URL",
+      URL_PLACEHOLDER: "Optional: External link (e.g. http://www.bbc.co.uk)",
+      TAGS_LABEL: "Tag(s)",
+      TAGS_PLACEHOLDER: "Optional: (Comma separated) Tags (e.g. Sport, Fun)"
+    },
     GENERAL: {
       SAVE: "Save",
       DELETE: "Delete",
       CLOSE: "Close",
+      CLEAR: "Clear",
       CANCEL: "Cancel"
     },
     ERROR: {
@@ -172,10 +188,26 @@ function resource() {
       NEW_POSTING: "Natürlich kann ein neues Posting erfasst werden.",
       DATE_FORMAT: "dd.MM.yyyy HH:mm"
     },
+    NEW: {
+      TITLE: "Erstelle ein neues Posting",
+      TITLE_LABEL: "Titel",
+      TITLE_PLACEHOLDER: "Mussfeld: Titel des Posting",
+      TITLE_INVALID: "Ein Titel ist unbedingt nötig!",
+      CONTENT_INVALID: "Inhalt braucht es natürlich auch!",
+      CONTENT_LABEL: "Posting Inhalt",
+      CONTENT_PLACEHOLDER: "Mussfeld: Inhalt des Posting",
+      LINK_LABEL: "Link-Name",
+      LINK_PLACEHOLDER: "Optional: Name des externen Links (e.g. BBC)",
+      URL_LABEL: "Link-URL",
+      URL_PLACEHOLDER: "Optional: Externer Link (e.g. http://www.bbc.co.uk)",
+      TAGS_LABEL: "Tag(s)",
+      TAGS_PLACEHOLDER: "Optional: (Komma getrennte) Tags (e.g. Sport, Fun)"
+    },
     GENERAL: {
       SAVE: "Speichern",
       DELETE: "Löschen",
       CLOSE: "Schliessen",
+      CLEAR: "Zurücksetzen",
       CANCEL: "Abbrechen"
     },
     ERROR: {

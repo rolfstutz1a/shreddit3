@@ -503,6 +503,10 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
     $location.path("/error");
   };
 
+  $scope.clear = function() {
+    $scope.posting = {"user": adminService.getUser()};
+  };
+
   $scope.createPosting = function() {
     postingService.createPosting($scope.posting, onError);
     $location.path("/postings");
@@ -613,8 +617,8 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
 
   postingService.loadPostings(onLoad, onError, $cookies["sss-sort-order"], adminService.getUser(), jQuery("#si-search-term").val());
 
-  $scope.getUser = function() {
-    return adminService.getUser();
+  $scope.isUser = function(user) {
+    return angular.equals(angular.lowercase(user), angular.lowercase(adminService.getUser()));
   };
   $scope.deletePosting = function(id) {
     postingService.deletePosting(id, onReload, onError);
