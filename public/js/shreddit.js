@@ -298,7 +298,7 @@ angular.module("shreddit").controller("RegisterController", function($scope, $ro
 
   $scope.$on('$locationChangeStart', function(event) {
     if ($scope.registerForm.$dirty) {
-      if (!confirm("Unsaved data!\nAre you sure you want to leave this page?")) {
+      if (!confirm($scope.TXT.MESSAGE.UNSAVED_DATA)) {
         event.preventDefault();
       }
     }
@@ -394,7 +394,7 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
 
   $scope.$on('$locationChangeStart', function(event) {
     if ($scope.settingsForm.$dirty) {
-      if (!confirm("Unsaved data!\nAre you sure you want to leave this page?")) {
+      if (!confirm($scope.TXT.MESSAGE.UNSAVED_DATA)) {
         event.preventDefault();
       }
     }
@@ -428,6 +428,14 @@ angular.module("shreddit").controller("NewCommentController", function($scope, $
 
   $scope.posting = {};
   $scope.comment = {"user": adminService.getUser()};
+
+  $scope.$on('$locationChangeStart', function(event) {
+    if ($scope.newCommentForm.$dirty) {
+      if (!confirm($scope.TXT.MESSAGE.UNSAVED_DATA)) {
+        event.preventDefault();
+      }
+    }
+  });
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);
@@ -492,11 +500,19 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
   {
     "title": "Morologie",
     "user": adminService.getUser(),
-    "link": "Wiki: Morologie",
+    "link": "Morologie",
     "url": "http://de.wikipedia.org/wiki/Morologie",
     "tags": "Wissenschaft",
     "content": "Die Wissenschaft von der Dummheit heisst Morologie."
   };
+
+  $scope.$on('$locationChangeStart', function(event) {
+    if ($scope.newForm.$dirty) {
+      if (!confirm($scope.TXT.MESSAGE.UNSAVED_DATA)) {
+        event.preventDefault();
+      }
+    }
+  });
 
   var onError = function(data, status, headers, config) {
     errorService.setError(status, data);

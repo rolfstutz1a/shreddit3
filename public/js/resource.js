@@ -95,6 +95,13 @@ function resource() {
       TAGS_LABEL: "Tag(s)",
       TAGS_PLACEHOLDER: "Optional: (Comma separated) Tags (e.g. Sport, Fun)"
     },
+    NEW_COMMENT: {
+      TITLE: "New comment for posting",
+      RESPONSE_LABEL: "As a response",
+      RESPONSE_PLACEHOLDER: "E.g. a username",
+      COMMENT_LABEL: "Comment",
+      COMMENT_INVALID: "A comment is required!"
+    },
     GENERAL: {
       SAVE: "Save",
       DELETE: "Delete",
@@ -108,6 +115,7 @@ function resource() {
       GOTO: "Goto Login"
     },
     MESSAGE: {
+      UNSAVED_DATA: "Unsaved data!\nAre you sure you want to leave this page?",
       WRONG_USR_PWD: "Wrong username or password!",
       BAD_REQUEST: "Bad Request!"
     },
@@ -203,6 +211,13 @@ function resource() {
       TAGS_LABEL: "Tag(s)",
       TAGS_PLACEHOLDER: "Optional: (Komma getrennte) Tags (e.g. Sport, Fun)"
     },
+    NEW_COMMENT: {
+      TITLE: "Neuer Kommentar zu Posting",
+      RESPONSE_LABEL: "Als Antwort",
+      RESPONSE_PLACEHOLDER: "E.g. ein Benutzername",
+      COMMENT_LABEL: "Kommentar",
+      COMMENT_INVALID: "Ein Kommentar ist nötig!"
+    },
     GENERAL: {
       SAVE: "Speichern",
       DELETE: "Löschen",
@@ -216,6 +231,7 @@ function resource() {
       GOTO: "Zum Einloggen"
     },
     MESSAGE: {
+      UNSAVED_DATA: "Nicht gespeicherte Daten!\nSind Sie sicher diese Seite verlassen zu wollen?",
       WRONG_USR_PWD: "Falscher Benutzername oder falsches Passwort!",
       BAD_REQUEST: "Ungültige Anfrage!"
     },

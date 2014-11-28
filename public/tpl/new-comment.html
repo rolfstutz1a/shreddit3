@@ -2,25 +2,24 @@
   <div class="container sc-new-comment">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">New comment for posting: {{posting.title}}</div>
+        <div class="sc-header-title">
+          <span class="sc-user-name">{{comment.user | uppercase}}</span>&nbsp;<span class="glyphicon glyphicon-arrow-right"></span>&nbsp;
+          {{TXT.NEW_COMMENT.TITLE}}: {{posting.title}}</div>
       </div>
       <div class="panel-body sc-content-text">
 
-        <form role="form" class="">
+        <form role="form" class="" name="newCommentForm">
           <div class="form-group">
-            <label for="si-new-posting-comment-title">As a response &#64;&colon;</label>
-            <input type="text" class="form-control" id="si-new-posting-comment-title" ng-model="comment.response">
+            <label for="si-new-posting-comment-title">{{TXT.NEW_COMMENT.RESPONSE_LABEL}} &#64;&colon;</label>
+            <input type="text" class="form-control" placeholder="{{TXT.NEW_COMMENT.RESPONSE_PLACEHOLDER}}" id="si-new-posting-comment-title" ng-model="comment.response">
           </div>
           <div class="form-group">
-            <label for="si-new-posting-comment-user">User</label>
-            <input type="text" class="form-control" id="si-new-posting-comment-user" readonly value="volcano" ng-model="comment.user">
+            <label for="si-new-posting-comment-content">{{TXT.NEW_COMMENT.COMMENT_LABEL}}</label>
+            <span class="error sc-error-info" ng-show="newCommentForm.comment.$invalid">{{TXT.NEW_COMMENT.COMMENT_INVALID}}</span>
+            <textarea class="form-control sc-text-area" name="comment" id="si-new-posting-comment-content" ng-model="comment.comment" required></textarea>
           </div>
-          <div class="form-group">
-            <label for="si-new-posting-comment-content">Comment</label>
-            <textarea class="form-control sc-text-area" id="si-new-posting-comment-content" ng-model="comment.comment"></textarea>
-          </div>
-          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close(posting._id)">Cancel</button>
-          <button type="submit" class="btn btn-default btn-sm pull-right" ng-click="createComment(posting._id)">Save Comment</button>
+          <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close(posting._id)">{{TXT.GENERAL.CLOSE}}</button>
+          <button type="submit" class="btn btn-default btn-sm pull-right" ng-disabled="newCommentForm.$invalid"  ng-click="createComment(posting._id)">{{TXT.GENERAL.SAVE}}</button>
         </form>
       </div>
     </div>
