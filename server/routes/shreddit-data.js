@@ -213,25 +213,25 @@ router.get("/check/:USERNAME", function(req, res) {
  * Register a new user for shreddit.
  *
  * Method: POST
- * Route: /session/:USERNAME/:PASSWORD
+ * Route: /register
  *
- * @param USERNAME the username of the new user.
- * @param PASSWORD the password of the new user.
+ * @param username the username of the new user.
+ * @param password the password of the new user.
  * @param email the e-mail address of the new user.
  */
-router.post("/session/:USERNAME/:PASSWORD", function(req, res) {
+router.post("/register", function(req, res) {
 
-  DB.registerUser(req.params.USERNAME, req.params.PASSWORD, req.body.email, function(err, newDoc) {
+  DB.registerUser(req.body.username, req.body.password, req.body.email, function(err, data) {
     if (err) {
       res.send(500, JSON.stringify(err));
       return;
     }
-    res.json(newDoc);
+    res.json(data);
   });
 });
 
 // PUT     /session/:USER                 // update user-setting for USER
-router.put("/session/:USER", session.checkSession, function(req, res) {
+router.put("/settings/:USER", session.checkSession, function(req, res) {
 
   DB.updateUser(req.params.USER, req.body.email, req.body.locale, req.body.notify, function(err, posting) {
     if (err) {

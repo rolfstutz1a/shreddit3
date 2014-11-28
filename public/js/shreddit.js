@@ -284,7 +284,7 @@ angular.module("shreddit").controller("SessionController",
  * @param adminService
  * @constructor
  */
-angular.module("shreddit").controller("RegisterController", function($scope, $location, $routeParams, adminService) {
+angular.module("shreddit").controller("RegisterController", function($scope, $rootScope, $location, $routeParams, adminService, errorService) {
 
   $scope.registerInfo = {};
   $scope.valid = { used: false, mismatch: false };
@@ -343,12 +343,27 @@ angular.module("shreddit").controller("RegisterController", function($scope, $lo
     }
   };
 
+  var onError = function(data, status, headers, config) {
+    $scope.registerForm.$setPristine();
+    errorService.setError(status, data);
+    $location.path("/error");
+  };
+
+  var onLogin = function(data, status, headers, config) {
+    console.log("Logged in: " + JSON.stringify(data));
+    $rootScope.$broadcast("onChangeLocale");
+    $location.path("/postings");
+  };
+
   $scope.register = function() {
-    //    var user = $scope.registerInfo;
-    //    if (userServiceXXX.register(user.username, user.password, user.email)) {
-    //      sessionServiceXXX.login(userServiceXXX.get User(user.username));
-    //      $location.path("/");
-    //    }
+    var info = $scope.registerInfo;
+
+    var onRegister = function(data, status, headers, config) {
+      $scope.registerForm.$setPristine();
+      adminService.login(angular.lowercase(info.username), info.password, onLogin, onError);
+    };
+
+    adminService.register(angular.lowercase(info.username), info.password, info.email, onRegister, onError)
   };
   $scope.close = function() {
     $location.path("/");
@@ -517,19 +532,8 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   $scope.postings = [];
   $scope.loadingState = -1;
 
-  jQuery("#si-rating-dialog").dialog({
-    autoOpen: false,
-    width: 300,
-    modal: true,
-    buttons: [
-      {
-        text: $scope.TXT.GENERAL.CLOSE,
-        click: function() {
-          jQuery(this).dialog("close");
-        }
-      }
-    ]
-  });
+  jQuery("#si-rating-dialog").dialog({autoOpen: false,width: 300,modal: true,
+    buttons: [{text: $scope.TXT.GENERAL.CLOSE,click: function() {jQuery(this).dialog("close");}}]});
 
   $scope.onSearch = function(key) {
     var field = jQuery("#si-search-term");
@@ -688,7 +692,7 @@ angular.module("shreddit").factory("adminService", function($http) {
     },
 
     updateUser: function(user, onUpdateUser, onError) {
-      $http({url: "/data/session/" + user._id, method: "PUT", data: user}).success(onUpdateUser).error(onError);
+      $http({url: "/data/settings/" + user._id, method: "PUT", data: user}).success(onUpdateUser).error(onError);
     },
 
     getUser: function() {
@@ -716,16 +720,13 @@ angular.module("shreddit").factory("adminService", function($http) {
 
     },
 
-    register: function(username, password, email) {
-      var newUser = {
+    register: function(username, password, email, onRegister, onError) {
+      var user = {
         "username": username,
         "password": password,
-        "email": email,
-        "since": "2014/09/09",
-        "settings": {"locale": "EN", "notify": "true"}
+        "email": email
       };
-      console.log(JSON.stringify(newUser));
-      //users.push(newUser);
+      $http({url: "/data/register/", method: "POST", data: user}).success(onRegister).error(onError);
     },
 
     getLanguage: function(locale) {
