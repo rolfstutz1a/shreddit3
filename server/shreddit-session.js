@@ -1,6 +1,16 @@
+/**
+ * This is our own implementation of the session handling.
+ *
+ * It is just a minimal implementation for tests without special features.
+ */
 var sessions = {};
 var lastSessionId = 0;
 
+/**
+ * Generates and returns a new session ID.
+ *
+ * @returns the generated session ID.
+ */
 function generateSessionId() {
   var id = new Date().valueOf();
   if (id <= lastSessionId) {
@@ -10,6 +20,12 @@ function generateSessionId() {
   return "sid" + id;
 }
 
+/**
+ * Creates a new session fur the user <code>usr</code>.
+ *
+ * @param usr the username.
+ * @param res the http-response.
+ */
 var createSession = function(usr, res) {
   var sid = generateSessionId();
   var session = { "id": sid, "user": usr, "time": new Date().valueOf() };
@@ -22,6 +38,12 @@ var createSession = function(usr, res) {
   console.log(" >>> create-session: user=" + usr + " sid=" + sid + "   object=" + sessions[sid]);
 };
 
+/**
+ * Removes the session that comes with the request.
+ *
+ * @param req the http-request.
+ * @param res the http-response.
+ */
 var deleteSession = function(req, res) {
   var sid = req.cookies["shreddit-sid"];
   if (sid) {
@@ -33,6 +55,13 @@ var deleteSession = function(req, res) {
   }
 };
 
+/**
+ * Checks whether the session that comes with the request is (still) valid.
+ *
+ * @param req the http-request.
+ * @param res the http-response.
+ * @param nxt the next function in the call-chain.
+ */
 var checkSession = function(req, res, nxt) {
   var usr = req.cookies["shreddit-usr"];
   var sid = req.cookies["shreddit-sid"];

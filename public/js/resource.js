@@ -1,8 +1,9 @@
 /**
- * Created by ich on 13/11/2014.
+ * The function <code>resource</code> returns an object with the two functions <code>getEN</code> and
+ * <code>getDE</code>. This two functions return an object with either english or german resource-texts.
+ *
+ * Both languages have the same structure and cann be easily exchanged.
  */
-
-
 function resource() {
 
   var EN = {
@@ -267,9 +268,19 @@ function resource() {
   };
 
   return {
+    /**
+     * Returns the root of the english texts.
+     *
+     * @returns the root of the english texts.
+     */
     getEN: function() {
       return EN;
     },
+    /**
+     * Returns the root of the german texts.
+     *
+     * @returns the root of the german texts.
+     */
     getDE: function() {
       return DE;
     }

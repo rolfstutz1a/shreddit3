@@ -5,34 +5,33 @@ S H R E D D I T  3
 
 A. Installation
    ------------
-   
-  Requirements: 
+
+  Requirements:
     - node.js
-   
-  GitHub: 
+
+  GitHub:
     https://github.com/rolfstutz1a/shreddit3
 
-  
+
   npm install
-   
+
 
 B. Run
    ---
 
   cd server
-  node run.js  
+  node run.js
 
-
+  link: http://localhost:8640/
 
 
 
 C. Tests
    -----
-   
+
   1. install nodeunit >>> npm -g install nodeunit
-  
+
   2. nodeunit server/test/shreddit-tests.js
      or
      nodeunit server/test/shreddit-tests.js --reporter html  > c:/temp/abc.html
-  
-  
+
