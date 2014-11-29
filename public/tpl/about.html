@@ -2,33 +2,42 @@
   <div class="container sc-about">
     <div class="panel panel-default">
       <div class="panel-heading">
-        <div class="sc-header-title">About ... S H R E D D I T &sup3;</div>
+        <div class="sc-header-title">{{TXT.ABOUT.TITLE}} ... S H R E D D I T &sup3;</div>
       </div>
       <div class="panel-body sc-content-text">
         <table class="sc-credit-table">
           <tr>
-            <td class="sc-about-label">Authors&colon;</td>
+            <td class="sc-about-label">{{TXT.ABOUT.GROUP}}&colon;</td>
+            <td class="sc-about-info sc-about-info-group">2Rolf FmbH</td>
+          </tr>
+          <tr>
+            <td class="sc-about-label">{{TXT.ABOUT.AUTHORS}}&colon;</td>
             <td class="sc-about-info">
               <a href="http://www.fam-bieri.ch" target="_blank">Rolf</a> &amp; <a href="http://www.malindra.ch"
                                                                                   target="_blank">Rolf</a>
             </td>
           </tr>
           <tr>
-            <td class="sc-about-label">Version&colon;</td>
+            <td class="sc-about-label">{{TXT.ABOUT.VERSION}}&colon;</td>
             <td class="sc-about-info">1.0.0</td>
           </tr>
           <tr>
-            <td class="sc-about-label">For&colon;</td>
+            <td class="sc-about-label">{{TXT.ABOUT.FOR}}&colon;</td>
             <td class="sc-about-info">CAS Frontend Engineering 2014 <a
                 href="http://www.hsr.ch/Front-End-Engineering.12432.0.html" target="_blank">HSR</a></td>
           </tr>
         </table>
         <br/>
-        <h4>Description</h4>
+        <h4>{{TXT.ABOUT.DESCR}}</h4>
 
-        <p>SHREDDIT&sup3; is a satirical clone of <a href="http://www.reddit.com" target="_blank">reddit.com</a>. It has
-          been developed for practical reasons to learn and exercise HTML, CSS and JavaScript.</p>
-        <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">Close</button>
+        <p ng-show="isEN()">SHREDDIT&sup3; is a funny clone of <a href="http://www.reddit.com" target="_blank">reddit.com</a>. It has
+          been developed for practical reasons to learn and exercise HTML, CSS, JavaScript, Angular.JS and other technics.</p>
+
+        <p ng-show="isDE()">SHREDDIT&sup3; ist ein lustiger Klon von <a href="http://www.reddit.com" target="_blank">reddit.com</a>. Er wurde
+          aus praktischen Gründen entwickelt um HTML, CSS, JavaScript, Angular.JS und andere Techniken zur lernen und üben.</p>
+
+        <button type="button" class="btn btn-link btn-sm pull-right" ng-click="close()">{{TXT.GENERAL.CLOSE}}</button>
+
       </div>
     </div>
   </div>

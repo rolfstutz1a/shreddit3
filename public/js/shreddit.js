@@ -158,6 +158,13 @@ angular.module("shreddit").controller("LanguageController",
       $scope.changeLanguage(adminService.getUserLocale());
     });
 
+    $scope.isEN = function() {
+      return languageService.getLocale() === "EN";
+    };
+    $scope.isDE = function() {
+      return languageService.getLocale() === "DE";
+    };
+
     $scope.changeLanguage = function(locale) {
       languageService.changeLanguage(locale);
       $scope.TXT = languageService.getText();
@@ -808,8 +815,8 @@ angular.module("shreddit").factory("languageService", function() {
       return locale;
     },
 
-    changeLanguage: function(locale) {
-      if (locale === "DE") {
+    changeLanguage: function(language) {
+      if (language === "DE") {
         TXT = DE;
         locale = "DE";
       } else {

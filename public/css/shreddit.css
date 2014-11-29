@@ -153,6 +153,10 @@ label {
     padding-right: 2rem;
 }
 
+.sc-about-info-group {
+    color: #B674AF;
+    font-weight: bold;
+}
 .sc-error-info {
     color: #B00000;
     margin-left: 10px;

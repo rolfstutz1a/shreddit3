@@ -107,6 +107,14 @@ function resource() {
       ADD: "Add comment",
       NONE: "No comments (yet)!"
     },
+    ABOUT: {
+      TITLE: "About",
+      GROUP: "Group",
+      AUTHORS: "Authors",
+      VERSION: "Version",
+      FOR: "For",
+      DESCR: "Description"
+    },
     GENERAL: {
       SAVE: "Save",
       DELETE: "Delete",
@@ -228,6 +236,14 @@ function resource() {
       TITLE: "Kommentare zu",
       ADD: "Neuer Kommentar",
       NONE: "(Noch) Keine Kommentare!"
+    },
+    ABOUT: {
+      TITLE: "Über",
+      GROUP: "Gruppe",
+      AUTHORS: "Autoren",
+      VERSION: "Version",
+      FOR: "Für",
+      DESCR: "Beschreibung"
     },
     GENERAL: {
       SAVE: "Speichern",
