@@ -1,3 +1,6 @@
+/**
+ * This javascript code handles the index.html file.
+ */
 var express = require('express');
 var router = express.Router();
 var path = require('path');

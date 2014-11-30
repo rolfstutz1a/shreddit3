@@ -1,10 +1,20 @@
 "use strict";
 
+/**
+ * This is the client-side javascript code for the SHREDDIT application.<br>
+ * It contains:<br>
+ *   <ul>
+ *     <li>the (client-side) routing configuration</li>
+ *     <li>the angular controllers</li>
+ *     <li>the angular services</li>
+ *     <li>some additional javascript helper-functions</li>
+ *   </ul>
+ */
 angular.module("shreddit", ["ngRoute", "ngCookies", "ui.bootstrap"]);
 
-// -------------------------------------------------------------------------
+// *************************************************************************
 // ROUTING CONFIGURATION
-// -------------------------------------------------------------------------
+// *************************************************************************
 angular.module("shreddit").config(function($routeProvider) {
   $routeProvider.
     when("/", {
@@ -64,6 +74,16 @@ angular.module("shreddit").config(function($routeProvider) {
     otherwise({redirectTo: "/", hiddenMenu: true});
 });
 
+// *************************************************************************
+// HELPER FUNCTIONS
+// *************************************************************************
+
+/**
+ * Controls the visibility of the main- and posting-menu.
+ *
+ * @param visibleMenu if <code>true</code> the main-menu is visible.
+ * @param visiblePostingsMenu if <code>true</code> the posting-menu is visible.
+ */
 function showMainMenu(visibleMenu, visiblePostingsMenu) {
   if (visibleMenu) {
     jQuery(".sc-show-if-loggedin").show();
@@ -78,6 +98,11 @@ function showMainMenu(visibleMenu, visiblePostingsMenu) {
   }
 }
 
+/**
+ * Controls the presentation of the language-button in the header.
+ *
+ * @param locale the active language (EN or DE).
+ */
 function selectLanguageLocale(locale) {
   var button = jQuery(".sc-language-button");
   button.removeClass("sc-language-button-checked");
@@ -89,26 +114,45 @@ function selectLanguageLocale(locale) {
   }
 }
 
-function correctDateAndLink(posting) {
-  posting.date = new Date(Date.parse(posting.time));
+/**
+ * Makes sure that the link of a posting has a content if the URL is set.
+ *
+ * @param posting the posting to correct.
+ */
+function correctLink(posting) {
   if ((!posting.link) && (posting.url)) {
     posting.link = posting.url;
   }
 }
 
-function onUpdateDate(data) {
+/**
+ * Updates all the link-objects of passed posting(s).
+ *
+ * @param data a single posting or an array of postings.
+ *
+ * @returns the updated data.
+ */
+function onUpdateLink(data) {
   if (Array.isArray(data)) {
     for (var index = 0; index < data.length; ++index) {
-      correctDateAndLink(data[index]);
+      correctLink(data[index]);
     }
     return data;
   }
   if (data) {
-    correctDateAndLink(data);
+    correctLink(data);
   }
   return data;
 }
 
+/**
+ * Returns the posting with the <code>id</code> or <code>null</code> if none found.
+ *
+ * @param id the ID of the requested posting.
+ * @param postings the array of postings.
+ *
+ * @returns the posting with the ID.
+ */
 function findPostingByID(id, postings) {
   if (Array.isArray(postings)) {
     for (var index = 0; index < postings.length; ++index) {
@@ -120,10 +164,17 @@ function findPostingByID(id, postings) {
   return null;
 }
 
-// -------------------------------------------------------------------------
+// *************************************************************************
 // CONTROLLERS
-// -------------------------------------------------------------------------
+// *************************************************************************
 
+/**
+ * The error-controller provides the error-information for the error-view.
+ *
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param errorService the data-service for this controller.
+ */
 angular.module("shreddit").controller("ErrorController",
   function($scope, $location, errorService) {
 
@@ -148,8 +199,16 @@ angular.module("shreddit").controller("ErrorController",
     };
   });
 
+/**
+ * The language-controller provides the locale-information.
+ *
+ * @param $scope the scope of the controller.
+ * @param $rootScope for the broadcast messages.
+ * @param adminService provides data about logged-in user.
+ * @param languageService the data-service for this controller.
+ */
 angular.module("shreddit").controller("LanguageController",
-  function($scope, $rootScope, $cookies, adminService, languageService) {
+  function($scope, $rootScope, adminService, languageService) {
 
     $scope.TXT = languageService.getText();
     selectLanguageLocale(languageService.getLocale());
@@ -174,20 +233,20 @@ angular.module("shreddit").controller("LanguageController",
   });
 
 /**
+ * The session-controller provides the session-information for several views.
  *
- * @param $scope
- * @param $location
- * @param $routeParams
- * @param $cookies
- * @param $rootScope
- * @param adminService
- * @constructor
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $cookies provides access to the cookies.
+ * @param $rootScope for the broadcast messages.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
  */
 angular.module("shreddit").controller("SessionController",
-  function($scope, $location, $routeParams, $cookies, $rootScope, adminService, errorService) {
+  function($scope, $location, $cookies, $rootScope, adminService, errorService) {
 
     $scope.user = {username: "", password: ""};
-    $scope.currentSortOrder = "XYZ";
+    $scope.currentSortOrder = "Filter";
 
     $scope.$on("$routeChangeStart", function(event, dest) {
       showMainMenu(dest.$$route.hiddenMenu !== true, dest.$$route.hiddenPostingsMenu !== true);
@@ -284,14 +343,15 @@ angular.module("shreddit").controller("SessionController",
   });
 
 /**
+ * The register-controller provides the information for the register-view.
  *
- * @param $scope
- * @param $location
- * @param $routeParams
- * @param adminService
- * @constructor
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $rootScope for the broadcast messages.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
  */
-angular.module("shreddit").controller("RegisterController", function($scope, $rootScope, $location, $routeParams, adminService, errorService) {
+angular.module("shreddit").controller("RegisterController", function($scope, $location, $rootScope, adminService, errorService) {
 
   $scope.registerInfo = {};
   $scope.valid = { used: false, mismatch: false };
@@ -378,14 +438,15 @@ angular.module("shreddit").controller("RegisterController", function($scope, $ro
 });
 
 /**
+ * The settings-controller provides the information for the settings-view.
  *
- * @param $scope
- * @param $location
- * @param $routeParams
- * @param adminService
- * @constructor
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $rootScope for the broadcast messages.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
  */
-angular.module("shreddit").controller("SettingsController", function($scope, $location, $routeParams, $rootScope, $cookies, adminService, errorService) {
+angular.module("shreddit").controller("SettingsController", function($scope, $location, $rootScope, adminService, errorService) {
 
   $scope.languages = adminService.getLanguages();
   $scope.settings = {};
@@ -431,7 +492,17 @@ angular.module("shreddit").controller("SettingsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, $rootScope, $cookies, postingService, adminService, errorService) {
+/**
+ * The new comment-controller provides the information for the new comment-view.
+ *
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $routeParams for accessing posting ID.
+ * @param postingService provides access to the postings.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
+ */
+angular.module("shreddit").controller("NewCommentController", function($scope, $location, $routeParams, postingService, adminService, errorService) {
 
   $scope.posting = {};
   $scope.comment = {"user": adminService.getUser()};
@@ -451,7 +522,7 @@ angular.module("shreddit").controller("NewCommentController", function($scope, $
   };
   var onLoadPosting = function(data, status, headers, config) {
     $scope.newCommentForm.$setPristine();
-    $scope.posting = onUpdateDate(data);
+    $scope.posting = onUpdateLink(data);
   };
 
   postingService.loadPosting($routeParams.pid, onLoadPosting, onError);
@@ -467,11 +538,14 @@ angular.module("shreddit").controller("NewCommentController", function($scope, $
 });
 
 /**
- * The CommentsController ensures that the requested comments are presented to the user.
+ * The comment-controller provides the information for the comment-view.
  *
- * @content posting the posting for which the comments shall be loaded.
- * @content comments contains an array (can be empty) with shown comments.
- * @content loadingState 0: no comments visible,  >0: visible comments,  -1: currently loading
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $routeParams for accessing posting ID.
+ * @param $timeout used to deliberately delay the result of the comments.
+ * @param postingService provides access to the postings.
+ * @param errorService passing the error-information.
  */
 angular.module("shreddit").controller("CommentsController", function($scope, $location, $routeParams, $timeout, postingService, errorService) {
 
@@ -486,12 +560,12 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
   var onLoadComments = function(data, status, headers, config) {
     // a fake timeout simulating a longer loading time
     $timeout(function() {
-      $scope.comments = onUpdateDate(data);
+      $scope.comments = data;
       $scope.loadingState = $scope.comments.length;
     }, 555);
   };
   var onLoadPosting = function(data, status, headers, config) {
-    $scope.posting = onUpdateDate(data);
+    $scope.posting = onUpdateLink(data);
     postingService.loadComments($routeParams.pid, onLoadComments, onError);
   };
 
@@ -505,7 +579,16 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
   };
 });
 
-angular.module("shreddit").controller("NewController", function($scope, $location, $routeParams, $cookies, postingService, adminService, errorService) {
+/**
+ * The new (posting)-controller provides the information for the new posting-view.
+ *
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param postingService provides access to the postings.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
+ */
+angular.module("shreddit").controller("NewController", function($scope, $location, postingService, adminService, errorService) {
   $scope.posting =
   {
     "title": "Morologie",
@@ -545,20 +628,31 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
   };
 });
 
-angular.module("shreddit").controller("AboutController", function($scope, $location, $routeParams) {
+/**
+ * The about-controller provides the information for the about-view.
+ *
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ */
+angular.module("shreddit").controller("AboutController", function($scope, $location) {
   $scope.close = function() {
     $location.path("/postings");
   };
 });
 
 /**
- * The PostingsController ensures that the requested postings are presented to the user.
+ * The posting-controller provides the information for the posting-view.
  *
- * @content username this contains the name of the currently logged-in user.
- * @content postings contains an array (can be empty) with shown postings.
- * @content loadingState 0: no postings visible,  >0: visible postings,  -1: currently loading
+ * @param $scope the scope of the controller.
+ * @param $location for the navigation within the application.
+ * @param $cookies provides access to the cookies.
+ * @param $rootScope for the broadcast messages.
+ * @param $timeout used to deliberately delay the result of the postings.
+ * @param postingService provides access to the postings.
+ * @param adminService the data-service for this controller.
+ * @param errorService passing the error-information.
  */
-angular.module("shreddit").controller("PostingsController", function($scope, $location, $rootScope, $routeParams, $cookies, $timeout, postingService, adminService, errorService) {
+angular.module("shreddit").controller("PostingsController", function($scope, $location, $cookies, $rootScope, $timeout, postingService, adminService, errorService) {
 
   $scope.username = adminService.getUser();
   $scope.postings = [];
@@ -630,7 +724,7 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   var onLoad = function(data, status, headers, config) {
     // a fake timeout simulating a longer loading time
     $timeout(function() {
-      $scope.postings = onUpdateDate(data);
+      $scope.postings = onUpdateLink(data);
       $scope.loadingState = $scope.postings.length;
       if ($scope.loadingState === 0) {
         jQuery("#si-add-new-posting").effect("highlight", {times: 5, easing: "easeOutQuart"}, 2500);
@@ -661,9 +755,22 @@ angular.module("shreddit").controller("PostingsController", function($scope, $lo
   });
 });
 
-// -------------------------------------------------------------------------
+// *************************************************************************
 // SERVICES
-// -------------------------------------------------------------------------
+// *************************************************************************
+
+/**
+ * The posting-service provides functions for accessing the posting data.<br>
+ *   <ul>
+ *     <li>load all postings</li>
+ *     <li>load a single posting</li>
+ *     <li>create a posting</li>
+ *     <li>delete a posting</li>
+ *     <li>rate a posting</li>
+ *     <li>load the comments of a posting</li>
+ *     <li>create a comment for a posting</li>
+ *   </ul>
+ */
 angular.module("shreddit").factory("postingService", function($http) {
 
   return {
@@ -692,12 +799,18 @@ angular.module("shreddit").factory("postingService", function($http) {
 
 });
 
+/**
+ * The administration-service provides functions for accessing the user data.<br>
+ *   <ul>
+ *     <li>login and logout</li>
+ *     <li>update the user-setting</li>
+ *     <li>accessing: username, logged-in state, locale ...</li>
+ *     <li>check whether an username already exists</li>
+ *     <li>register a new user</li>
+ *   </ul>
+ */
 angular.module("shreddit").factory("adminService", function($http) {
 
-  var languages = [
-    {name: "English", locale: "EN"},
-    {name: "Deutsch", locale: "DE"}
-  ];
   var username = undefined;
   var userdata = null;
 
@@ -759,23 +872,17 @@ angular.module("shreddit").factory("adminService", function($http) {
         "email": email
       };
       $http({url: "/data/register/", method: "POST", data: user}).success(onRegister).error(onError);
-    },
-
-    getLanguage: function(locale) {
-      for (var index = 0; index < languages.length; ++index) {
-        if (languages[index].locale === locale) {
-          return languages[index];
-        }
-      }
-      return languages[0];
-    },
-
-    getLanguages: function() {
-      return languages;
     }
   };
 });
 
+/**
+ * The error-service provides functions for presenting an error to the user.<br>
+ *   <ul>
+ *     <li>set a (new) error</li>
+ *     <li>get the current error</li>
+ *   </ul>
+ */
 angular.module("shreddit").factory("errorService", function() {
 
   var error = {code: 400, message: "MSG_BAD_REQUEST"};
@@ -791,6 +898,13 @@ angular.module("shreddit").factory("errorService", function() {
   };
 });
 
+/**
+ * The language-service provides functions for handling the resource-texts.<br>
+ *   <ul>
+ *     <li>handling the active locale</li>
+ *     <li>provide the english and german resources</li>
+ *   </ul>
+ */
 angular.module("shreddit").factory("languageService", function() {
 
   var languages = [

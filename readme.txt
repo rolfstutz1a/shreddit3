@@ -35,3 +35,9 @@ C. Tests
      or
      nodeunit server/test/shreddit-tests.js --reporter html  > c:/temp/shredditTest.html
 
+
+D. Todo
+   ----
+
+  1. pagination of the posting-list
+  2. send notification when a new comment has been created.

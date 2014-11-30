@@ -1,3 +1,6 @@
+/**
+ * This code implements all the necessary RESTful services for the SHREDDIT application.
+ */
 var express = require("express");
 var session = require("../shreddit-session");
 var router = express.Router();
@@ -158,7 +161,7 @@ router.delete("/comments/:CID", session.checkSession, function(req, res) {
  * Create new rating for posting with PID.
  *
  * Method: PUT
- * Route: /ratinGs/:PID/:USER/:STARS
+ * Route: /ratings/:PID/:USER/:STARS
  *
  * @param PID   the ID of the posting for which the rating is.
  * @param USER  the user who do the rating.
@@ -198,7 +201,7 @@ router.get("/session/:USERNAME", session.checkSession, function(req, res) {
  * Checks whether the USERNAME already exists.
  *
  * Method: GET
- * Route: /session/check/:USERNAME
+ * Route: /check/:USERNAME
  *
  * @param USERNAME the username to check.
  */
@@ -230,7 +233,17 @@ router.post("/register", function(req, res) {
   });
 });
 
-// PUT     /session/:USER                 // update user-setting for USER
+/**
+ * Updates the user settings for the <code>USER</code>.
+ *
+ * Method: PUT
+ * Route: /settings/:USER
+ *
+ * @param USER the username of the user.
+ * @param email the (new) e-mail address of the user.
+ * @param locale the (new) locale (=language) of user-interface.
+ * @param notify send an email when a comment has been added.
+ */
 router.put("/settings/:USER", session.checkSession, function(req, res) {
 
   DB.updateUser(req.params.USER, req.body.email, req.body.locale, req.body.notify, function(err, posting) {
