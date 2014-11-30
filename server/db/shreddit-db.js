@@ -51,7 +51,7 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
     /**
      * Loading all postings from the database.
      *
-     * @param user the username of the user who is requesting the postings
+     * @param userName the username of the user who is requesting the postings
      * @param order how to sort the postings (LATEST: (default) latest postings first, TOP: top rated postings first, MY: only postings from the user).
      * @param search the current active search-text.
      * @param callback(err, data) the callback-method (first argument error [null if no error], second argument an array of postings).
@@ -358,4 +358,3 @@ module.exports = function (path, postingDB, commentDB, ratingDB, userDB) {
         });
     };
 };
-

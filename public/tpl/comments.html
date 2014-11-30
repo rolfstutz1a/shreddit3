@@ -12,7 +12,7 @@
         <blockquote class="sc-posting-comment">
           <p><span class="sp-user-name" ng-show="comment.response">&#64;&nbsp;{{comment.response}}&colon;&nbsp;&nbsp;</span>{{comment.comment}}</p>
           <footer class="sc-posting-commentator">&#x2014;&nbsp;{{TXT.GENERAL.BY}} <span
-              class="sc-user-name">{{comment.user | uppercase}}</span> ({{comment.date | date: 'dd.MM.yyyy HH:mm'}})
+              class="sc-user-name">{{comment.user | uppercase}}</span> ({{comment.time | date: 'dd.MM.yyyy HH:mm'}})
           </footer>
         </blockquote>
       </div>
