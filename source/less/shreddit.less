@@ -1,0 +1,302 @@
+@shreddit-primary: #B674AF;
+@shreddit-border: #9D5B96;
+@shreddit-ground: #FFFFFF;
+@shreddit-primary-invers: #89B98E;
+@shreddit-border-invers: #C8E0CA;
+@shreddit-menu: #FFFFE0;
+@shreddit-error: #B00000;
+@shreddit-graphic: 'Glyphicons Halflings';
+
+body {
+    font-family: Tahoma, Geneva, sans-serif;
+    padding-top: 50px;
+    font-size: 16px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: Tahoma, Geneva, sans-serif;
+}
+
+.sc-content-text {
+    font-family: Tahoma, Geneva, sans-serif;
+    font-size: 1.25rem;
+    letter-spacing: 1px;
+}
+
+.navbar-inverse {
+    background-color: @shreddit-primary;
+}
+
+.navbar-inverse .navbar-brand {
+    color: @shreddit-menu;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: @shreddit-menu;
+}
+
+.btn-primary, .btn-default {
+    border-color: @shreddit-border;
+    background-color: @shreddit-primary;
+}
+
+.btn-primary:hover, .btn-default:hover {
+    border-color: @shreddit-border;
+    background-color: @shreddit-border;
+}
+
+.btn-primary:focus, .btn-default:focus {
+    border-color: @shreddit-primary-invers;
+    background-color: @shreddit-primary-invers;
+}
+
+.btn-primary:disabled, .btn-default:disabled {
+    border-color: @shreddit-primary-invers;
+    background-color: @shreddit-border-invers;
+}
+
+.btn-default, .btn-default:hover {
+    color: @shreddit-ground;
+    font-weight: bold;
+}
+
+.sc-sort-button-unchecked, .sc-sort-button-unchecked:hover, .sc-sort-button-unchecked:focus {
+    color: @shreddit-ground;
+    border-color: @shreddit-border;
+    background-color: @shreddit-border;
+}
+
+.sc-sort-button-checked, .sc-sort-button-checked:hover, .sc-sort-button-checked:focus {
+    color: @shreddit-border;
+    border-color: @shreddit-border;
+    background-color: @shreddit-ground;
+}
+
+.sc-language-button-unchecked, .sc-language-button-unchecked:hover, .sc-language-button-unchecked:focus {
+    color: @shreddit-ground;
+    border-color: @shreddit-border;
+    background-color: @shreddit-border;
+}
+
+.sc-language-button-checked, .sc-language-button-checked:hover, .sc-language-button-checked:focus {
+    color: @shreddit-border;
+    border-color: @shreddit-border;
+    background-color: @shreddit-ground;
+}
+
+#si-sort-order-my-postings {
+    margin-left: 1rem;
+}
+
+#si-language-en {
+    margin-left: 3rem;
+}
+
+.sc-posting-comment p {
+    font-size: 1.5rem;
+    font-weight: normal;
+}
+
+.sc-posting-commentator {
+    font-size: 1rem;
+    font-weight: normal;
+}
+
+.sc-btn-add-comment {
+    margin-bottom: 1.5rem;
+}
+
+.sc-external-link {
+    font-family: @shreddit-graphic;
+}
+
+.sc-stars {
+    font-family: @shreddit-graphic;
+    font-weight: bold;
+    color: @shreddit-border;
+}
+
+.sc-no-stars {
+    font-family: @shreddit-graphic;
+    font-weight: bold;
+    color: #AAAAAA;
+}
+
+.sc-main-menu-item {
+    margin: 0 15px;
+}
+
+.sc-stars:hover, .sc-no-stars:hover + .sc-stars {
+    color: @shreddit-primary;
+}
+
+.sc-no-stars:hover, .sc-stars:hover + .sc-no-stars {
+    color: #888888;
+}
+
+.sc-select-stars, .sc-select-stars:hover, .sc-select-stars:visited, .sc-select-stars:active, .sc-select-stars:focus {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.sc-select-stars:disabled {
+    text-decoration: none;
+    cursor: default;
+}
+
+.sc-credit-table {
+    border: none;
+    padding: 0;
+    margin: 1rem 0;
+}
+
+label {
+    font-size: 1.25rem;
+}
+
+.sc-about-label, .sc-about-info {
+    padding: 1rem 2rem 1rem 0;
+}
+
+.sc-about-info-group {
+    color: @shreddit-primary;
+    font-weight: bold;
+}
+.sc-error-info {
+    color: @shreddit-error;
+    margin-left: 10px;
+}
+
+.sc-search-container {
+    margin: 3px 0 10px 0;
+}
+
+.sc-search-input-group {
+    margin: 0 0 0 auto;
+    max-width: 250px;
+}
+
+.sc-search-field {
+    max-width: 14rem;
+}
+
+.sc-posting-header-box {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.sc-posting-header-title, .sc-info-no-comments {
+    font-size: 1.25rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    flex-grow: 1;
+}
+
+.sc-info-no-postings {
+    font-size: 2rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-top: 2rem;
+}
+
+.sc-posting-header-info {
+    flex-grow: 0;
+    padding-left: 2rem;
+}
+
+.sc-header-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.sc-user-name {
+    color: @shreddit-border;
+    font-weight: bold;
+    font-style: normal;
+}
+
+.sc-text-area {
+    resize: vertical;
+    min-height: 5rem;
+    max-height: 15rem;
+}
+
+.sc-posting-list {
+    margin: 9px auto;
+}
+
+.sc-login {
+    margin: 9px 0;
+}
+
+.sc-error {
+    margin: 9px 0;
+}
+
+.sc-comments {
+    margin: 9px 0;
+}
+
+.sc-new {
+    margin: 9px 0;
+}
+
+.sc-new-comment {
+    margin: 9px 0;
+}
+
+.sc-user-settings {
+    margin: 9px 0;
+}
+
+.sc-about {
+    margin: 9px 0;
+}
+
+.sc-rating-dialog {
+    text-align: center;
+}
+
+.sc-margin-left {
+    margin-left: 1rem;
+}
+
+.sc-goto-button {
+    padding-right: 30px;
+}
+
+.sc-info-loading {
+    text-align: center;
+}
+
+.sc-info-loading img {
+    margin: 50px auto;
+}
+
+@media screen and (max-width: 767px) {
+    .sc-sub-menu-item {
+        color: @shreddit-menu !important; /* not sure why important is necessary! */
+    }
+
+    .sc-sub-menu-item:hover {
+        color: @shreddit-ground !important; /* not sure why important is necessary! */
+    }
+
+    .sc-main-menu-item {
+        margin: 0;
+    }
+
+    #si-language-en {
+        margin-left: 0;
+    }
+}
+
+@media screen and (min-width: 768px) and (max-width: 991px) {
+}
+
+@media screen and (min-width: 992px) and (max-width: 1199px) {
+}
+
+@media screen and (min-width: 1200px) {
+}
