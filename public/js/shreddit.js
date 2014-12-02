@@ -444,17 +444,18 @@ angular.module("shreddit").controller("RegisterController", function($scope, $lo
  * @param $location for the navigation within the application.
  * @param $rootScope for the broadcast messages.
  * @param adminService the data-service for this controller.
+ * @param languageService access to the language settings.
  * @param errorService passing the error-information.
  */
-angular.module("shreddit").controller("SettingsController", function($scope, $location, $rootScope, adminService, errorService) {
+angular.module("shreddit").controller("SettingsController", function($scope, $location, $rootScope, adminService, languageService, errorService) {
 
-  $scope.languages = adminService.getLanguages();
+  $scope.languages = languageService.getLanguages();
   $scope.settings = {};
 
   (function(values) {
     var user = adminService.getUserData();
     values.username = user._id;
-    values.language = adminService.getLanguage(user.locale);
+    values.language = languageService.getLanguage(user.locale);
     values.email = user.email;
     values.notify = user.notify === "true";
     console.log("init settings: " + JSON.stringify(values));
