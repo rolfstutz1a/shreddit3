@@ -40,3 +40,8 @@
 * the LESS file was compiled with the development tool (FileWatcher)
 * the session-handling is our own implementation
 * the language selection is also our own implementation
+
+## Presentation
+
+* **shreddit3.pptx** and **shreddit3.pdf** can be found in the subfolder: presentation
+
