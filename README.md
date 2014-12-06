@@ -10,7 +10,7 @@
 
 ## B. Run
 
-* cd server
+* cd *server*
 * node run.js
 * Link im Browser
     * [http://localhost:8640/](http://localhost:8640/ "Enter this link after staring the server")
@@ -18,8 +18,8 @@
 ## C. Tests
 
 1. install nodeunit >>> npm -g install nodeunit
-2. nodeunit server/test/shreddit-tests.js
-3. *Alternativ:*  nodeunit server/test/shreddit-tests.js --reporter html  > c:/temp/shredditTest.html
+2. nodeunit *server/test/*shreddit-tests.js
+3. *Alternativ:*  nodeunit *server/test/*shreddit-tests.js --reporter html  > c:/temp/shredditTest.html
 
 
 ## D. Known Bugs
@@ -40,8 +40,9 @@
 * the LESS file was compiled with the development tool (FileWatcher)
 * the session-handling is our own implementation
 * the language selection is also our own implementation
+* **FmbH** = Fun mit beschränkter Haftung ;-)
 
 ## Presentation
 
-* **shreddit3.pptx** and **shreddit3.pdf** can be found in the subfolder: presentation
+* **shreddit3.pptx** and **shreddit3.pdf** can be found in the subfolder: *presentation*
 
