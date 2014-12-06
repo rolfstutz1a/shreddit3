@@ -2,7 +2,7 @@
 
 ## A. Installation
 
-* Requirements:
+* Requirements:  
     ** node.js
 * GitHub:
     ** https://github.com/rolfstutz1a/shreddit3
