@@ -30,3 +30,13 @@
 
 * pagination of the posting-list
 * send notification when a new comment has been created.
+* client-side tests
+* integrate accessability
+* integrate security
+
+## Miscellaneous
+
+* the development tool was **IntelliJ** or **WebStorm**
+* the LESS file was compiled with the development tool (FileWatcher)
+* the session-handling is our own implementation
+* the language selection is also our own implementation
