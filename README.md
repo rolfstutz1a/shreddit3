@@ -1,11 +1,11 @@
-# S H R E D D I T  3
+# S H R E D D I T ³
 
 ## A. Installation
 
 * Requirements:
     * node.js
 * GitHub:
-    * https://github.com/rolfstutz1a/shreddit3
+    * (https://github.com/rolfstutz1a/shreddit3/ "GitHub source of SHREDDIT3")
 * npm install
 
 ## B. Run
@@ -13,7 +13,7 @@
 * cd server
 * node run.js
 * Link im Browser
-    * http://localhost:8640
+    * (http://localhost:8640/ "Enter this link after staring the server")
 
 ## C. Tests
 
