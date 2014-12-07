@@ -19,6 +19,7 @@ function resource() {
     },
     MENU: {
       LOGIN_TO: "Login to: S H R E D D I T ³",
+      MENU: "Menu",
       NEW_POSTING_TITLE: "Create a new posting",
       NEW_POSTING_LABEL: "New Posting",
       POSTINGS_TITLE: "Show the postings",
@@ -93,6 +94,7 @@ function resource() {
       LINK_PLACEHOLDER: "Optional: Name of the external link (e.g. BBC)",
       URL_LABEL: "Link-URL",
       URL_PLACEHOLDER: "Optional: External link (e.g. http://www.bbc.co.uk)",
+      URL_INVALID: "The URL is invalid!",
       TAGS_LABEL: "Tag(s)",
       TAGS_PLACEHOLDER: "Optional: (Comma separated) Tags (e.g. Sport, Fun)"
     },
@@ -149,6 +151,7 @@ function resource() {
     },
     MENU: {
       TITLE: "S H R E D D I T ³ - absolut sinnlose Postings",
+      MENU: "Menü",
       NEW_POSTING_TITLE: "Schreibe ein neues Posting",
       NEW_POSTING_LABEL: "Neues Posting",
       POSTINGS_TITLE: "Zeige die Postings",
@@ -223,6 +226,7 @@ function resource() {
       LINK_PLACEHOLDER: "Optional: Name des externen Links (e.g. BBC)",
       URL_LABEL: "Link-URL",
       URL_PLACEHOLDER: "Optional: Externer Link (e.g. http://www.bbc.co.uk)",
+      URL_INVALID: "Die URL ist ungültig!",
       TAGS_LABEL: "Tag(s)",
       TAGS_PLACEHOLDER: "Optional: (Komma getrennte) Tags (e.g. Sport, Fun)"
     },

@@ -36,13 +36,13 @@
     <ul class="nav navbar-nav sc-show-if-loggedin">
       <li><a id="si-add-new-posting" class="sc-main-menu-item" href="" ng-click="addNewPosting()" title="{{TXT.MENU.NEW_POSTING_TITLE}}">{{TXT.MENU.NEW_POSTING_LABEL}}</a></li>
       <li class="dropdown">
-        <a href="" class="dropdown-toggle" data-toggle="dropdown">Menu &hellip; <b class="caret"></b></a>
+        <a href="" class="dropdown-toggle" data-toggle="dropdown">{{TXT.MENU.MENU}} <b class="caret"></b></a>
         <ul class="dropdown-menu">
           <li><a class="sc-sub-menu-item" href="" ng-click="showShreddit()" title="{{TXT.MENU.POSTINGS_TITLE}}"><span class="glyphicon glyphicon-th-list"></span>&nbsp;{{TXT.MENU.POSTINGS_LABEL}}</a></li>
           <li class="divider"></li>
           <li><a class="sc-sub-menu-item" href="" ng-click="showSettings()" title="{{TXT.MENU.SETTINGS_TITLE}}"><span class="glyphicon glyphicon-cog"></span>&nbsp;{{TXT.MENU.SETTINGS_LABEL}}</a></li>
           <li class="divider"></li>
-          <li><a class="sc-sub-menu-item" href="" ng-click="logout()" title="{{TXT.MENU.LOGOUT_TITLE}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.LOGOUT_LABEL}}: {{user.username}}</a></li>
+          <li><a class="sc-sub-menu-item" href="" ng-click="logout()" title="{{TXT.MENU.LOGOUT_TITLE}}"><span class="glyphicon glyphicon-user"></span>&nbsp;{{TXT.MENU.LOGOUT_LABEL}}</a></li>
           <li class="divider"></li>
           <li><a class="sc-sub-menu-item" href="" ng-click="showAbout()" title="{{TXT.MENU.ABOUT_TITLE}}"><span class="glyphicon glyphicon-leaf"></span>&nbsp;{{TXT.MENU.ABOUT_LABEL}} &nbsp;SHREDDIT&sup3;</a></li>
         </ul>

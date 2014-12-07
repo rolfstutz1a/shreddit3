@@ -590,7 +590,8 @@ angular.module("shreddit").controller("CommentsController", function($scope, $lo
  * @param errorService passing the error-information.
  */
 angular.module("shreddit").controller("NewController", function($scope, $location, postingService, adminService, errorService) {
-  $scope.posting =
+  $scope.posting =  { "user": adminService.getUser() };
+  /*
   {
     "title": "Morologie",
     "user": adminService.getUser(),
@@ -598,7 +599,7 @@ angular.module("shreddit").controller("NewController", function($scope, $locatio
     "url": "http://de.wikipedia.org/wiki/Morologie",
     "tags": "Wissenschaft",
     "content": "Die Wissenschaft von der Dummheit heisst Morologie."
-  };
+  };*/
 
   $scope.$on('$locationChangeStart', function(event) {
     if ($scope.newForm.$dirty) {
